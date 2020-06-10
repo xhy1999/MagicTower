@@ -61,7 +61,7 @@ public class KeyInputHandler implements KeyListener {
 
     public void toggle(KeyEvent ke, boolean pressed) {
         int k = ke.getKeyCode();
-        System.out.println("按下了:" + k);
+        //System.out.println("按下了:" + k);
         if(k == KeyEvent.VK_UP) up.toggle(pressed);
         if(k == KeyEvent.VK_DOWN) down.toggle(pressed);
         if(k == KeyEvent.VK_LEFT) left.toggle(pressed);

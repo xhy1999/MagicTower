@@ -8,6 +8,8 @@ import util.ScreenUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
@@ -68,6 +70,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
     JLabel rKeyPicLabel, rKeyLabel;
     JLabel monPicLabel, monLabel;
 
+    JDialog dialogBox;
     JLabel showMesLabel = new JLabel("魔塔(测试版)");
 
     /**
@@ -96,6 +99,8 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
 
     public TowerPanel(Tower tower) {
         this.tower = tower;
+        tower.getPlayer().x = tower.gameMapList.get(floor).upPositionX;
+        tower.getPlayer().y = tower.gameMapList.get(floor).upPositionY;
         monsterMap = new LoadMonster().initMonster();
         wallMap = new LoadWall().initWall();
         doorMap = new LoadDoor().initDoor();
@@ -487,12 +492,8 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
      * 玩家动作帧数计数
      */
     private byte moveNo = 0;
-    private boolean escapeDown = false;
 
     public void tick() {
-        if (input.confirm.down) {
-            escapeDown = true;
-        }
         if (!canMove) {
             lastMove = System.currentTimeMillis();
             return;
@@ -567,6 +568,10 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
      * 玩家伤害临界值
      */
     private short playerCriticalVal = 20;
+    /**
+     * 对话中按下空格
+     */
+    private boolean escapeDown = false;
 
     /**
      * 判断能否移动到 (x,y)
@@ -595,10 +600,15 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                         System.err.println("layer1 (x=" + y + ",y=" + x + ") npcId(" + layer1[y][x] + ") 不存在!");
                         return;
                     }
+                    if (!npc.canMeet) {
+                        canMove = true;
+                        return;
+                    }
                     List<Dialogue> dialogues = npc.dialogues;
                     for (int i = 0; i < dialogues.size(); i++) {
                         Dialogue dialogue = dialogues.get(i);
                         System.out.println(dialogue.name + ":" + dialogue.text);
+                        meetNpc(layer1[y][x], dialogue);
                         while (!escapeDown) {
                             try {
                                 Thread.sleep(100);
@@ -609,8 +619,11 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                         escapeDown = false;
                     }
                     npc.script(tower);
-                    tower.gameMapList.get(floor).layer1[y][x] = "";
+                    if (npc.canRemove) {
+                        tower.gameMapList.get(floor).layer1[y][x] = "";
+                    }
                     canMove = true;
+                    input.up.down = false;
                 }
             }).start();
             return false;
@@ -624,7 +637,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
         if (layer3[y][x].contains("door")) {
             //openDoor(x, y);
             boolean open = false;
-            System.out.println(layer3[y][x]);
+            //System.out.println(layer3[y][x]);
             switch (layer3[y][x]) {
                 case "door01":
                     if (tower.getPlayer().yKey - 1 >= 0) {
@@ -664,7 +677,6 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                                 try {
                                     tower.gameMapList.get(floor).layer3[y][x] = str.substring(0, str.length() - 1) + i;
                                 } catch (IndexOutOfBoundsException e) {
-                                    System.out.println(str.length());
                                     e.printStackTrace();
                                     tower.gameMapList.get(floor).layer3[y][x] = "";
                                 }
@@ -911,6 +923,78 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             }
         }
         return true;
+    }
+
+    /**
+     * 与NPC对话
+     * @param npcId
+     * @param dialogue
+     */
+    public void meetNpc(String npcId, Dialogue dialogue) {
+        NPC npc = npcMap.get(npcId);
+        dialogBox = new JDialog(mainframe, null, true);
+        String s;
+        ImageIcon photo;
+        JPanel dialogp = new JPanel(null);
+        JLabel pict = new JLabel();
+        JLabel name;
+        JTextArea content = new JTextArea();
+        content.setBorder(BorderFactory.createLineBorder(Color.white));
+        JLabel tip = new JLabel("Space...");
+        if (dialogue.name.contains("player")) {
+            pict.setBounds(208, 8, 32, 32);
+            name = new JLabel("勇士");
+            name.setBounds(176, 16, 32, 16);
+            photo = new ImageIcon(tower.getPlayer().getPlayerIcon()[1][0].getImage());
+        } else {
+            pict.setBounds(16, 8, 32, 32);
+            name = new JLabel(npc.getName());
+            name.setBounds(48, 16, 32, 16);
+            photo = new ImageIcon(npcMap.get(npcId).getIcon()[0].getImage());
+        }
+        pict.setIcon(photo);
+        name.setFont(new Font("宋体", Font.BOLD, 13));
+        name.setBackground(Color.white);
+        name.setForeground(Color.white);
+        s = dialogue.text;
+        dialogBox.setSize(256, 128);
+        dialogBox.setUndecorated(true);
+        content.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent arg0) {
+
+            }
+            public void keyReleased(KeyEvent arg0) {
+
+            }
+            public void keyPressed(KeyEvent arg0) {
+                switch (arg0.getKeyCode()) {
+                    case KeyEvent.VK_SPACE:
+                        escapeDown = true;
+                        dialogBox.dispose();
+                        break;
+                }
+            }
+        });
+        dialogp.setSize(256, 128);
+        dialogp.setBackground(Color.black);
+        content.setText(s);
+        content.setLineWrap(true);
+        content.setEditable(false);
+        content.setBounds(8, 48, 248, 58);
+        content.setFont(new Font("宋体", Font.BOLD, 16));
+        content.setBackground(Color.black);
+        content.setForeground(Color.WHITE);
+        tip.setBounds(212, 105, 50, 25);
+        tip.setFont(new Font("微软雅黑", Font.BOLD, 11));
+        tip.setForeground(Color.white);
+        tip.setBackground(Color.white);
+        dialogp.add(pict);
+        dialogp.add(name);
+        dialogp.add(content);
+        dialogp.add(tip);
+        dialogBox.setLocation(mainframe.getLocation().x + 242, mainframe.getLocation().y + 125);
+        dialogBox.add(dialogp);
+        dialogBox.setVisible(true);
     }
 
     @Override
