@@ -64,7 +64,8 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
     JLabel atkPicLabel, atkLabel;
     JLabel defPicLabel, defLabel;
     JLabel expPicLabel, expLabel;
-    /*乘号*/ JLabel symbol1, symbol2, symbol3, symbol4;
+    /*乘号*/
+    JLabel symbol1, symbol2, symbol3, symbol4;
     JLabel yKeyPicLabel, yKeyLabel;
     JLabel bKeyPicLabel, bKeyLabel;
     JLabel rKeyPicLabel, rKeyLabel;
@@ -91,6 +92,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
     private boolean running = false;
     public boolean canMove = true;
     private KeyInputHandler input;
+    public MusicPlayer musicPlayer;
 
     JFrame mainframe = new JFrame("MagicTower  (作者:Vip、疯子)");
     Container contentPane;
@@ -107,6 +109,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
         stairMap = new LoadStair().initStair();
         itemMap = new LoadItem().initItem();
         npcMap = new LoadNPC().initNPC();
+        musicPlayer = new MusicPlayer();
         DIRECTION = DIRECTION_UP;
         input = new KeyInputHandler(this);
         this.setLayout(null);
@@ -504,6 +507,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             if (!canMove(tower.getPlayer().x, (byte) (tower.getPlayer().y - 1))) {
                 return;
             }
+            musicPlayer.walk();
             tower.getPlayer().y--;
             lastMove = System.currentTimeMillis();
         } else if (input.down.down) {
@@ -512,6 +516,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             if (!canMove(tower.getPlayer().x, (byte) (tower.getPlayer().y + 1))) {
                 return;
             }
+            musicPlayer.walk();
             tower.getPlayer().y++;
             lastMove = System.currentTimeMillis();
         } else if (input.left.down) {
@@ -519,6 +524,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             if (!canMove((byte) (tower.getPlayer().x - 1), tower.getPlayer().y)) {
                 return;
             }
+            musicPlayer.walk();
             moveNo = (byte) ((moveNo + 1) % 4);
             tower.getPlayer().x--;
             lastMove = System.currentTimeMillis();
@@ -527,6 +533,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             if (!canMove((byte) (tower.getPlayer().x + 1), tower.getPlayer().y)) {
                 return;
             }
+            musicPlayer.walk();
             moveNo = (byte) ((moveNo + 1) % 4);
             tower.getPlayer().x++;
             lastMove = System.currentTimeMillis();
@@ -543,6 +550,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             return;
         }
         if (layer3[tower.getPlayer().y][tower.getPlayer().x].equals("stair01")) {
+            musicPlayer.upAndDown();
             floor--;
             tower.getPlayer().x = tower.gameMapList.get(floor).downPositionX;
             tower.getPlayer().y = tower.gameMapList.get(floor).downPositionY;
@@ -551,6 +559,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             return;
         }
         if (layer3[tower.getPlayer().y][tower.getPlayer().x].equals("stair02")) {
+            musicPlayer.upAndDown();
             floor++;
             tower.getPlayer().x = tower.gameMapList.get(floor).upPositionX;
             tower.getPlayer().y = tower.gameMapList.get(floor).upPositionY;
@@ -641,18 +650,21 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             switch (layer3[y][x]) {
                 case "door01":
                     if (tower.getPlayer().yKey - 1 >= 0) {
+                        musicPlayer.openDoor();
                         tower.getPlayer().yKey--;
                         open = true;
                     }
                     break;
                 case "door02":
                     if (tower.getPlayer().bKey - 1 >= 0) {
+                        musicPlayer.openDoor();
                         tower.getPlayer().bKey--;
                         open = true;
                     }
                     break;
                 case "door03":
                     if (tower.getPlayer().rKey - 1 >= 0) {
+                        musicPlayer.openDoor();
                         tower.getPlayer().rKey--;
                         open = true;
                     }
@@ -855,7 +867,9 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                         break;
                 }
             }
-            if (!flag) {
+            if (flag) {
+                musicPlayer.getItem();
+            } else {
                 try {
                     showMesLabel.setText("获得" + itemMap.get(layer2[y][x]).getName() + ",嘛事没有");
                 } catch (Exception e) {
@@ -908,6 +922,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                 attackNo++;
             }
             if (mHP <= 0) {
+                musicPlayer.fight();
                 showMesLabel.setText("击杀:" + monsterMap.get(layer1[y][x]).getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
                 tower.gameMapList.get(floor).layer1[y][x] = "";
                 tower.getPlayer().hp = pHP;
@@ -969,6 +984,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             public void keyPressed(KeyEvent arg0) {
                 switch (arg0.getKeyCode()) {
                     case KeyEvent.VK_SPACE:
+                        musicPlayer.dialogueSpace();
                         escapeDown = true;
                         dialogBox.dispose();
                         break;

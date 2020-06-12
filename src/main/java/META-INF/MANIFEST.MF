@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-Description: SLF4J LOG4J-12 Binding
+Implementation-Title: slf4j-log4j12
+Bundle-SymbolicName: slf4j.log4j12
+Implementation-Version: 1.7.30
+Archiver-Version: Plexus Archiver
+Built-By: ceki
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: SLF4J.ORG
+Import-Package: org.slf4j;version=1.7.30,org.slf4j.spi;version=1.7.30,
+ org.slf4j.helpers;version=1.7.30,org.slf4j.event;version=1.7.30,org.a
+ pache.log4j
+Fragment-Host: slf4j.api
+Export-Package: org.slf4j.impl;version=1.7.30
+Bundle-Version: 1.7.30
+Bundle-Name: slf4j-log4j12
+X-Compile-Target-JDK: 1.5
+X-Compile-Source-JDK: 1.5
+Created-By: Apache Maven
+Build-Jdk: 1.8.0_121
+Main-Class: main.Main

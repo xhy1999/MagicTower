@@ -246,7 +246,7 @@ public class LoadMap {
         gameMap.upPositionX = 0;
         gameMap.upPositionY = 1;
         gameMap.downPositionX = 0;
-        gameMap.downPositionY = 10;
+        gameMap.downPositionY = 9;
         mapList.add(gameMap);
 
         layer1 = new String[][]{

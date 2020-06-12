@@ -3,7 +3,6 @@ package main;
 import entity.GameMap;
 import entity.Player;
 import load.LoadMap;
-import util.AudioPlayer;
 import util.PlayBGM;
 import util.PlaySounds;
 
@@ -45,7 +44,7 @@ public class Tower {
 
     public List<GameMap> gameMapList = new ArrayList<>();
 
-    public AudioPlayer audioPlayer;
+//    public AudioPlayer audioPlayer;
 
     public Tower() {
         player = new Player();
