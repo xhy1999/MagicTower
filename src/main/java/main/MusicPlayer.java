@@ -8,7 +8,7 @@ public class MusicPlayer {
 
     PlaySounds ps;
 
-    private Thread openDoor, upAndDown, dialogueSpace, getItem, fight, walk;
+    private Thread openDoor, upAndDown, dialogueSpace, getItem, fight, walk, underground;
 
     private String openDoorSoundURL = "/audio/OpenDoor.mp3";
     private String upAndDownSoundURL = "/audio/UpAndDown.mp3";
@@ -16,6 +16,7 @@ public class MusicPlayer {
     private String getItemSoundURL = "/audio/GetItem.mp3";
     private String fightSoundURL = "/audio/Fight.mp3";
     private String walkSoundURL = "/audio/Walk.mp3";
+    private String undergroundSoundURL = "/audio/Underground.mp3";
 
     public MusicPlayer() {
         openDoor = creatSoundThread(this.getClass().getResourceAsStream(openDoorSoundURL));
@@ -24,6 +25,7 @@ public class MusicPlayer {
         getItem = creatSoundThread(this.getClass().getResourceAsStream(getItemSoundURL));
         fight = creatSoundThread(this.getClass().getResourceAsStream(fightSoundURL));
         walk = creatSoundThread(this.getClass().getResourceAsStream(walkSoundURL));
+        underground = creatSoundThread(this.getClass().getResourceAsStream(undergroundSoundURL));
     }
 
     private Thread creatSoundThread(InputStream sound) {
@@ -59,6 +61,11 @@ public class MusicPlayer {
     public void walk() {
         walk.start();
         walk = creatSoundThread(this.getClass().getResourceAsStream(walkSoundURL));
+    }
+
+    public void underground() {
+        underground.start();
+        underground = creatSoundThread(this.getClass().getResourceAsStream(undergroundSoundURL));
     }
 
 }

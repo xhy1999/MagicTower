@@ -50,8 +50,10 @@ public class Tower {
         player = new Player();
         loadIcon();
         gameMapList = new LoadMap().initMap();
+        ps = new PlayBGM(this.getClass().getResourceAsStream("/audio/HometownDomina.ogg"));
+        bgmThread = new Thread(ps);
         bgmThread.start();
-
+//        new MusicPlayer().underground();
 //        audioPlayer = new AudioPlayer();
 //        audioPlayer.startBackgroundMusic(floor);
     }
@@ -78,8 +80,6 @@ public class Tower {
             }
         }
         player.setPlayerIcon(playerIcon);
-        ps = new PlayBGM(this.getClass().getResourceAsStream("/audio/HometownDomina.ogg"));
-        bgmThread = new Thread(ps);
     }
 
     private Thread creatSoundThread(InputStream sound) {

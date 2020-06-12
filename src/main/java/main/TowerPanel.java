@@ -83,7 +83,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
     private Map<String, Stair> stairMap;
     private Map<String, Item> itemMap;
     private Map<String, NPC> npcMap;
-    public int floor = 0;
+    public int floor = 8;
     /**
      * 帧数(每秒8帧)
      */

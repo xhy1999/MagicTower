@@ -38,9 +38,9 @@ public class Player {
         this.exp = 0;
         this.money = 0;
         this.level = 1;
-        this.yKey = 0;
-        this.bKey = 0;
-        this.rKey = 0;
+        this.yKey = 10;
+        this.bKey = 10;
+        this.rKey = 10;
         this.maxFloor = 1;
         this.minFloor = 1;
         this.x = 0;
