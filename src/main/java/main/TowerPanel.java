@@ -83,7 +83,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
     private Map<String, Stair> stairMap;
     private Map<String, Item> itemMap;
     private Map<String, NPC> npcMap;
-    public int floor = 5;
+    public int floor = 7;
     /**
      * 帧数(每秒8帧)
      */
@@ -685,18 +685,19 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                         if (tower.gameMapList.get(floor).layer3[y][x].equals("") || tower.gameMapList.get(floor).layer3[y][x].contains("open")) {
                             return;
                         }
+                        byte f = (byte)floor;
                         for (int i = 1; i < 5; i++) {
                             if (i == 1) {
-                                tower.gameMapList.get(floor).layer3[y][x] += "open1";
+                                tower.gameMapList.get(f).layer3[y][x] += "open1";
                             } else if (i == 4) {
-                                tower.gameMapList.get(floor).layer3[y][x] = "";
+                                tower.gameMapList.get(f).layer3[y][x] = "";
                             } else {
-                                String str = tower.gameMapList.get(floor).layer3[y][x];
+                                String str = tower.gameMapList.get(f).layer3[y][x];
                                 try {
-                                    tower.gameMapList.get(floor).layer3[y][x] = str.substring(0, str.length() - 1) + i;
+                                    tower.gameMapList.get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
                                 } catch (IndexOutOfBoundsException e) {
                                     e.printStackTrace();
-                                    tower.gameMapList.get(floor).layer3[y][x] = "";
+                                    tower.gameMapList.get(f).layer3[y][x] = "";
                                 }
                             }
                             try {
@@ -705,6 +706,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                                 e.printStackTrace();
                             }
                         }
+                        tower.gameMapList.get(f).layer3[y][x] = "";
                     }
                 }).start();
             }
