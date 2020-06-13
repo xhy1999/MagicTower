@@ -83,7 +83,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
     private Map<String, Stair> stairMap;
     private Map<String, Item> itemMap;
     private Map<String, NPC> npcMap;
-    public int floor = 8;
+    public int floor = 5;
     /**
      * 帧数(每秒8帧)
      */
@@ -359,7 +359,13 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                             }
                         } else {
                             String doorId = doorMap.get(layer3[i][j].substring(0, layer3[i][j].indexOf("open"))).getId();
-                            byte no = Byte.parseByte(layer3[i][j].substring(layer3[i][j].length() - 1));
+                            byte no;
+                            try {
+                                no = Byte.parseByte(layer3[i][j].substring(layer3[i][j].length() - 1));
+                            } catch (Exception e) {
+                                no = -1;
+                                e.printStackTrace();
+                            }
                             try {
                                 g.drawImage(doorMap.get(doorId).getIcon()[no].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
                             } catch (Exception e) {
