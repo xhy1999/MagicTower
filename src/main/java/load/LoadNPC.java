@@ -81,6 +81,13 @@ public class LoadNPC {
                 dialogues);
         npcMap.put(npc.getId(), npc);
 
+        dialogues = new ArrayList<>();
+        npc = new NPC("npc05_1", "公主", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc05_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc05_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
         return npcMap;
     }
 

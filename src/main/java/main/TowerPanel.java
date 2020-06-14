@@ -83,7 +83,8 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
     private Map<String, Stair> stairMap;
     private Map<String, Item> itemMap;
     private Map<String, NPC> npcMap;
-    public int floor = 7;
+    private Map<String, Shop> shopMap;
+    public int floor = 5;
     /**
      * 帧数(每秒8帧)
      */
@@ -109,6 +110,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
         stairMap = new LoadStair().initStair();
         itemMap = new LoadItem().initItem();
         npcMap = new LoadNPC().initNPC();
+        shopMap = new LoadShop().initShop();
         musicPlayer = new MusicPlayer();
         DIRECTION = DIRECTION_UP;
         input = new KeyInputHandler(this);
@@ -404,6 +406,14 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                             System.err.println("layer1 (x=" + i + ",y=" + j + ") npcId(" + layer1[i][j] + ") 不存在!");
                         }
                     }
+                    else if (layer1[i][j].contains("shop")) {
+                        try {
+                            String shopId = shopMap.get(layer1[i][j]).getId();
+                            g.drawImage(getImageFromIcons(shopMap.get(shopId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
+                        } catch (Exception e) {
+                            System.err.println("layer1 (x=" + i + ",y=" + j + ") shopId(" + layer1[i][j] + ") 不存在!");
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
@@ -644,6 +654,24 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             return false;
         }
         else if (layer1[y][x].contains("shop")) {
+            canMove = false;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Shop shop;
+                    try {
+                        shop = shopMap.get(layer1[y][x]);
+                    } catch (Exception e) {
+                        System.err.println("layer1 (x=" + x + ",y=" + y + ") shopId(" + layer1[y][x] + ") 不存在!");
+                        return;
+                    }
+                    if (!shop.canMeet) {
+                        canMove = true;
+                        return;
+                    }
+                    meetShop(shop.getId());
+                }
+            }).start();
             return false;
         }
         if (layer3[y][x].contains("wall")) {
@@ -674,6 +702,9 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                         tower.getPlayer().rKey--;
                         open = true;
                     }
+                    break;
+                case "door05":
+                    open = true;
                     break;
                 default:
                     break;
@@ -1016,6 +1047,61 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
         dialogp.add(name);
         dialogp.add(content);
         dialogp.add(tip);
+        dialogBox.setLocation(mainframe.getLocation().x + 242, mainframe.getLocation().y + 125);
+        dialogBox.add(dialogp);
+        dialogBox.setVisible(true);
+    }
+
+    public void meetShop(String shopId) {
+        Shop shop = shopMap.get(shopId);
+        dialogBox = new JDialog(mainframe, null, true);
+        String s;
+        ImageIcon photo;
+        JPanel dialogp = new JPanel(null);
+        JLabel pict = new JLabel();
+        JLabel name;
+        JTextArea content = new JTextArea();
+        content.setBorder(BorderFactory.createLineBorder(Color.white));
+        pict.setBounds(16, 8, 32, 32);
+        name = new JLabel(shop.getName());
+        name.setBounds(48, 16, 200, 16);
+        photo = new ImageIcon(shop.getIcon()[0].getImage());
+        pict.setIcon(photo);
+        name.setFont(new Font("微软雅黑", Font.BOLD, 20));
+        name.setBackground(Color.white);
+        name.setForeground(Color.white);
+        s = shop.dialogue;
+        dialogBox.setSize(256, 128);
+        dialogBox.setUndecorated(true);
+        content.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent arg0) {
+
+            }
+            public void keyReleased(KeyEvent arg0) {
+
+            }
+            public void keyPressed(KeyEvent arg0) {
+                switch (arg0.getKeyCode()) {
+                    case KeyEvent.VK_SPACE:
+                        musicPlayer.dialogueSpace();
+                        escapeDown = true;
+                        dialogBox.dispose();
+                        break;
+                }
+            }
+        });
+        dialogp.setSize(256, 128);
+        dialogp.setBackground(Color.black);
+        content.setText(s);
+        content.setLineWrap(true);
+        content.setEditable(false);
+        content.setBounds(8, 48, 248, 58);
+        content.setFont(new Font("宋体", Font.BOLD, 16));
+        content.setBackground(Color.black);
+        content.setForeground(Color.WHITE);
+        dialogp.add(pict);
+        dialogp.add(name);
+        dialogp.add(content);
         dialogBox.setLocation(mainframe.getLocation().x + 242, mainframe.getLocation().y + 125);
         dialogBox.add(dialogp);
         dialogBox.setVisible(true);

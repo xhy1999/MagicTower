@@ -303,6 +303,11 @@ public class LoadMonster {
                 new ImageIcon(getClass().getResource("/image/monster/monster06_3_2.png")));
         monsterMap.put(monster.getId(), monster);
 
+        monster = new Monster("monster06_4", "冥界守卫", 1250, 500, 400, 55, 55,
+                new ImageIcon(getClass().getResource("/image/monster/monster06_4_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster06_4_2.png")));
+        monsterMap.put(monster.getId(), monster);
+
         /**
          * 骑士系
          */
