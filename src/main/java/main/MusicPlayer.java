@@ -8,7 +8,7 @@ public class MusicPlayer {
 
     PlaySounds ps;
 
-    private Thread openDoor, upAndDown, dialogueSpace, getItem, fight, walk, underground;
+    private Thread openDoor, upAndDown, dialogueSpace, getItem, fight, walk, shopSelect, shopBuySuc, shopBuyFail, underground;
 
     private String openDoorSoundURL = "/audio/OpenDoor.mp3";
     private String upAndDownSoundURL = "/audio/UpAndDown.mp3";
@@ -16,6 +16,10 @@ public class MusicPlayer {
     private String getItemSoundURL = "/audio/GetItem.mp3";
     private String fightSoundURL = "/audio/Fight.mp3";
     private String walkSoundURL = "/audio/Walk.mp3";
+    private String shopSelectSoundURL = "/audio/ShopSelect.mp3";
+    private String shopBuySucSoundURL = "/audio/ShopBuySuc.mp3";
+    private String shopBuyFailSoundURL = "/audio/ShopBuyFail.mp3";
+
     private String undergroundSoundURL = "/audio/Underground.mp3";
 
     public MusicPlayer() {
@@ -25,6 +29,10 @@ public class MusicPlayer {
         getItem = creatSoundThread(this.getClass().getResourceAsStream(getItemSoundURL));
         fight = creatSoundThread(this.getClass().getResourceAsStream(fightSoundURL));
         walk = creatSoundThread(this.getClass().getResourceAsStream(walkSoundURL));
+        shopSelect = creatSoundThread(this.getClass().getResourceAsStream(shopSelectSoundURL));
+        shopBuySuc = creatSoundThread(this.getClass().getResourceAsStream(shopBuySucSoundURL));
+        shopBuyFail = creatSoundThread(this.getClass().getResourceAsStream(shopBuyFailSoundURL));
+
         underground = creatSoundThread(this.getClass().getResourceAsStream(undergroundSoundURL));
     }
 
@@ -61,6 +69,21 @@ public class MusicPlayer {
     public void walk() {
         walk.start();
         walk = creatSoundThread(this.getClass().getResourceAsStream(walkSoundURL));
+    }
+
+    public void shopSelect() {
+        shopSelect.start();
+        shopSelect = creatSoundThread(this.getClass().getResourceAsStream(shopSelectSoundURL));
+    }
+
+    public void shopBuySuc() {
+        shopBuySuc.start();
+        shopBuySuc = creatSoundThread(this.getClass().getResourceAsStream(shopBuySucSoundURL));
+    }
+
+    public void shopBuyFail() {
+        shopBuyFail.start();
+        shopBuyFail = creatSoundThread(this.getClass().getResourceAsStream(shopBuyFailSoundURL));
     }
 
     public void underground() {

@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * @author Xhy
  */
-public class TowerPanel extends JPanel implements Runnable, MouseListener {
+public class TowerPanel extends JPanel implements Runnable {
 
     private final static Logger logger = LoggerFactory.getLogger(TowerPanel.class);
 
@@ -84,7 +84,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
     private Map<String, Item> itemMap;
     private Map<String, NPC> npcMap;
     private Map<String, Shop> shopMap;
-    public int floor = 5;
+    public int floor = 3;
     /**
      * 帧数(每秒8帧)
      */
@@ -904,10 +904,24 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
                         tower.getPlayer().money += 200;
                         flag = true;
                         break;
+                    case "item09_6":
+                        showMesLabel.setText("获得圣光徽");
+                        flag = true;
+                        break;
                 }
             }
             if (flag) {
                 musicPlayer.getItem();
+                Item item = itemMap.get(layer2[y][x]);
+                if (item.msg != null) {
+                    canMove = false;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            getItem(item);
+                        }
+                    }).start();
+                }
             } else {
                 try {
                     showMesLabel.setText("获得" + itemMap.get(layer2[y][x]).getName() + ",嘛事没有");
@@ -1035,7 +1049,7 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
         content.setText(s);
         content.setLineWrap(true);
         content.setEditable(false);
-        content.setBounds(8, 48, 248, 58);
+        content.setBounds(4, 48, 248, 58);
         content.setFont(new Font("宋体", Font.BOLD, 16));
         content.setBackground(Color.black);
         content.setForeground(Color.WHITE);
@@ -1052,26 +1066,142 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
         dialogBox.setVisible(true);
     }
 
+    byte nowSelected = 0;
+
     public void meetShop(String shopId) {
         Shop shop = shopMap.get(shopId);
         dialogBox = new JDialog(mainframe, null, true);
         String s;
         ImageIcon photo;
         JPanel dialogp = new JPanel(null);
-        JLabel pict = new JLabel();
-        JLabel name;
-        JTextArea content = new JTextArea();
-        content.setBorder(BorderFactory.createLineBorder(Color.white));
-        pict.setBounds(16, 8, 32, 32);
-        name = new JLabel(shop.getName());
-        name.setBounds(48, 16, 200, 16);
+        JLabel shopImg = new JLabel();
+        JTextArea shopDialogue = new JTextArea();
+        //shopDialogue.setBorder(BorderFactory.createLineBorder(Color.white));
+        shopImg.setBounds(10, 8, 32, 32);
+        JLabel name = new JLabel(shop.getName());
+        name.setBounds(50, 12, 200, 25);
         photo = new ImageIcon(shop.getIcon()[0].getImage());
-        pict.setIcon(photo);
+        shopImg.setIcon(photo);
         name.setFont(new Font("微软雅黑", Font.BOLD, 20));
         name.setBackground(Color.white);
         name.setForeground(Color.white);
-        s = shop.dialogue;
-        dialogBox.setSize(256, 128);
+        JLabel selectLabel = new JLabel();
+        selectLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/selected.png")));
+        selectLabel.setBounds(40, 100, 30, 30);
+        selectLabel.setForeground(Color.white);
+        //selectLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        dialogBox.add(selectLabel);
+        List<String> sellNameList = shop.sell.name;
+        for (int i = 0; i < sellNameList.size(); i++) {
+            JLabel label = new JLabel(sellNameList.get(i));
+            label.setBounds(80, 100 + 30 * i, 160, 30);
+            label.setForeground(Color.white);
+            label.setFont(new Font("微软雅黑", Font.BOLD, 16));
+            //label.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            dialogBox.add(label);
+        }
+        shopDialogue.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent arg0) {
+
+            }
+            public void keyReleased(KeyEvent arg0) {
+
+            }
+            public void keyPressed(KeyEvent arg0) {
+                switch (arg0.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                        input.noMove();
+                        if (nowSelected <= 0) {
+                            break;
+                        }
+                        musicPlayer.shopSelect();
+                        nowSelected--;
+                        selectLabel.setBounds(40, 100 + nowSelected * 30, 30, 30);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        input.noMove();
+                        if (nowSelected >= 3) {
+                            break;
+                        }
+                        musicPlayer.shopSelect();
+                        nowSelected++;
+                        selectLabel.setBounds(40, 100 + nowSelected * 30, 30, 30);
+                        break;
+                    case KeyEvent.VK_ENTER:
+                        if (sellNameList.get(nowSelected).contains("离开")) {
+                            musicPlayer.upAndDown();
+                            dialogBox.dispose();
+                            canMove = true;
+                            input.noMove();
+                            nowSelected = 0;
+                            break;
+                        }
+                        short needMoney = (short) (25 + shop.buyNum * 2);
+                        if (tower.getPlayer().money >= needMoney) {
+                            musicPlayer.shopBuySuc();
+                            tower.getPlayer().money -= needMoney;
+                            shopMap.get(shopId).buyNum++;
+                            shopDialogue.setText(shop.dialogue.replaceFirst("%%",  25 + shop.buyNum * 2 + ""));
+                            List<String> attributeList = shop.sell.attribute;
+                            List<Short> valList = shop.sell.val;
+                            if (attributeList.get(nowSelected).contains("hp")) {
+                                tower.getPlayer().hp += valList.get(nowSelected);
+                            }
+                            else if (attributeList.get(nowSelected).contains("attack")) {
+                                tower.getPlayer().attack += valList.get(nowSelected);
+                            }
+                            else if (attributeList.get(nowSelected).contains("defense")) {
+                                tower.getPlayer().defense += valList.get(nowSelected);
+                            }
+                        } else {
+                            musicPlayer.shopBuyFail();
+                        }
+                        break;
+                    case KeyEvent.VK_ESCAPE:
+                        musicPlayer.upAndDown();
+                        dialogBox.dispose();
+                        canMove = true;
+                        input.noMove();
+                        nowSelected = 0;
+                        break;
+
+                }
+            }
+        });
+        dialogp.setSize(268, 235);
+        dialogp.setBackground(Color.black);
+        shopDialogue.setText(shop.dialogue.replaceFirst("%%",  25 + shop.buyNum * 2 + ""));
+        shopDialogue.setLineWrap(true);
+        shopDialogue.setEditable(false);
+        shopDialogue.setBounds(4, 48, 260, 40);
+        shopDialogue.setFont(new Font("宋体", Font.BOLD, 16));
+        shopDialogue.setBackground(Color.black);
+        shopDialogue.setForeground(Color.WHITE);
+        dialogp.add(shopImg);
+        dialogp.add(name);
+        dialogp.add(shopDialogue);
+        dialogBox.setSize(268, 235);
+        dialogBox.setUndecorated(true);
+        dialogBox.setLocation(mainframe.getLocation().x + 237, mainframe.getLocation().y + 100);
+        dialogBox.add(dialogp);
+        dialogBox.setVisible(true);
+    }
+
+    public void getItem(Item item) {
+        dialogBox = new JDialog(mainframe, null, true);
+        JPanel dialogp = new JPanel(null);
+        JLabel pict = new JLabel();
+        JLabel name;
+        JTextArea content = new JTextArea();
+        //content.setBorder(BorderFactory.createLineBorder(Color.white));
+        JLabel tip = new JLabel("Space...");
+        name = new JLabel(item.getName(), JLabel.CENTER);
+        //name.setBorder(BorderFactory.createLineBorder(Color.white));
+        name.setBounds(0, 10, 400, 30);
+        name.setFont(new Font("微软雅黑", Font.BOLD, 20));
+        name.setBackground(Color.white);
+        name.setForeground(Color.white);
+        dialogBox.setSize(400, 128);
         dialogBox.setUndecorated(true);
         content.addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent arg0) {
@@ -1083,52 +1213,39 @@ public class TowerPanel extends JPanel implements Runnable, MouseListener {
             public void keyPressed(KeyEvent arg0) {
                 switch (arg0.getKeyCode()) {
                     case KeyEvent.VK_SPACE:
-                        musicPlayer.dialogueSpace();
-                        escapeDown = true;
                         dialogBox.dispose();
+                        input.noMove();
+                        canMove = true;
+                        break;
+                    case KeyEvent.VK_ESCAPE:
+                        dialogBox.dispose();
+                        input.noMove();
+                        canMove = true;
                         break;
                 }
             }
         });
-        dialogp.setSize(256, 128);
+        dialogp.setSize(400, 128);
         dialogp.setBackground(Color.black);
-        content.setText(s);
+        dialogp.setBorder(BorderFactory.createLineBorder(new Color(228,122,0), 3));
+        content.setText(item.msg);
         content.setLineWrap(true);
         content.setEditable(false);
-        content.setBounds(8, 48, 248, 58);
+        content.setBounds(6, 48, 388, 58);
         content.setFont(new Font("宋体", Font.BOLD, 16));
         content.setBackground(Color.black);
         content.setForeground(Color.WHITE);
+        tip.setBounds(354, 104, 50, 25);
+        tip.setFont(new Font("微软雅黑", Font.BOLD, 11));
+        tip.setForeground(Color.white);
+        tip.setBackground(Color.white);
         dialogp.add(pict);
         dialogp.add(name);
         dialogp.add(content);
-        dialogBox.setLocation(mainframe.getLocation().x + 242, mainframe.getLocation().y + 125);
+        dialogp.add(tip);
+        dialogBox.setLocation(mainframe.getLocation().x + 171, mainframe.getLocation().y + 125);
         dialogBox.add(dialogp);
         dialogBox.setVisible(true);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
 }

@@ -1,5 +1,6 @@
 package load;
 
+import entity.Sell;
 import entity.Shop;
 
 import javax.swing.*;
@@ -22,12 +23,25 @@ public class LoadShop {
         shopMap.put(shop.getId(), shop);
 
 
-        List<String> sellList = new ArrayList<>();
-        sellList.add("增加800点生命值");
-        sellList.add("增加4点攻击");
-        sellList.add("增加4点防御");
-        sellList.add("离开商店");
-        shop = new Shop("shop01_2", "贪婪之神", true, "人类啊,如果你愿意给我%%个金币的话,我可以加强你的战斗力!", sellList,
+        List<String> name = new ArrayList<>();
+        name.add("增加800点生命值");
+        name.add("增加4点攻击");
+        name.add("增加4点防御");
+        name.add("离开商店");
+
+        List<String> attribute = new ArrayList<>();
+        attribute.add("hp");
+        attribute.add("attack");
+        attribute.add("defense");
+
+        List<Short> val = new ArrayList<>();
+        val.add(new Short((short) 800));
+        val.add(new Short((short) 4));
+        val.add(new Short((short) 4));
+
+        Sell sell = new Sell(name, attribute, val);
+
+        shop = new Shop("shop01_2", "贪婪之神", true, "\b人类啊,如果你愿意给我%%个金币的话,我可以提升你的战斗力!", sell,
                 new ImageIcon(getClass().getResource("/image/shop/shop01_2_1.png")),
                 new ImageIcon(getClass().getResource("/image/shop/shop01_2_2.png")));
         shopMap.put(shop.getId(), shop);

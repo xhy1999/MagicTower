@@ -18,12 +18,12 @@ public class LoadMonster {
         /**
          * 史莱姆系
          */
-        Monster monster = new Monster("monster01_1", "绿色史莱姆", 40, 18, 1, 1, 1,
+        Monster monster = new Monster("monster01_1", "绿色史莱姆", 50, 20, 1, 1, 1,
                 new ImageIcon(getClass().getResource("/image/monster/monster01_1_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster01_1_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster01_2", "红色史莱姆", 50, 20, 4, 1, 2,
+        monster = new Monster("monster01_2", "红色史莱姆", 70, 15, 2, 2, 2,
                 new ImageIcon(getClass().getResource("/image/monster/monster01_2_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster01_2_2.png")));
         monsterMap.put(monster.getId(), monster);

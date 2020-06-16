@@ -81,4 +81,11 @@ public class KeyInputHandler implements KeyListener {
         if(k == KeyEvent.VK_L) use_rod.toggle(pressed);
     }
 
+    public void noMove() {
+        up.toggle(false);
+        down.toggle(false);
+        left.toggle(false);
+        right.toggle(false);
+    }
+
 }
