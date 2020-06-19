@@ -10,8 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.List;
 import java.util.Map;
 
@@ -648,7 +646,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         tower.gameMapList.get(floor).layer1[y][x] = "";
                     }
                     canMove = true;
-                    input.up.down = false;
+                    input.noMove();
                 }
             }).start();
             return false;
@@ -911,16 +909,18 @@ public class TowerPanel extends JPanel implements Runnable {
                 }
             }
             if (flag) {
-                musicPlayer.getItem();
                 Item item = itemMap.get(layer2[y][x]);
                 if (item.msg != null) {
                     canMove = false;
+                    musicPlayer.getSpecialItem();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             getItem(item);
                         }
                     }).start();
+                } else {
+                    musicPlayer.getItem();
                 }
             } else {
                 try {
@@ -960,6 +960,11 @@ public class TowerPanel extends JPanel implements Runnable {
             }
             System.out.println("怪物攻击一次的伤害:" + mDamage);
             System.out.println("玩家攻击一次的伤害:" + pDamage);
+            if (pDamage <= 0) {
+                showMesLabel.setText("无法对" + monsterMap.get(layer1[y][x]).getName() + "造成伤害");
+                System.out.println("无法造成伤害");
+                return false;
+            }
             /**
              * 战斗结果计算 默认玩家先攻
              */

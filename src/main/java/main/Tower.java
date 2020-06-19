@@ -50,10 +50,10 @@ public class Tower {
         player = new Player();
         loadIcon();
         gameMapList = new LoadMap().initMap();
-        ps = new PlayBGM(this.getClass().getResourceAsStream("/audio/Underground.mp3"));
-        bgmThread = new Thread(ps);
-        bgmThread.start();
-//        new MusicPlayer().underground();
+//        ps = new PlayBGM(this.getClass().getResourceAsStream("/audio/Underground.mp3"));
+//        bgmThread = new Thread(ps);
+//        bgmThread.start();
+        new MusicPlayer().underground();
 //        audioPlayer = new AudioPlayer();
 //        audioPlayer.startBackgroundMusic(floor);
     }
