@@ -2,6 +2,8 @@ package main;
 
 import util.Audio;
 
+import java.net.URL;
+
 public class MusicPlayer {
 
     Audio ps;
@@ -25,73 +27,73 @@ public class MusicPlayer {
     private String undergroundSound3URL = "/audio/Underground3.mp3";
 
     public MusicPlayer() {
-        openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL).getPath(), false);
-        upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL).getPath(), false);
-        dialogueSpace = creatSoundThread(getClass().getResource(dialogueSpaceSoundURL).getPath(), false);
-        getItem = creatSoundThread(getClass().getResource(getItemSoundURL).getPath(), false);
-        getSpecialItem = creatSoundThread(getClass().getResource(getSpecialItemSoundURL).getPath(), false);
-        fight = creatSoundThread(getClass().getResource(fightSoundURL).getPath(), false);
-        walk = creatSoundThread(getClass().getResource(walkSoundURL).getPath(), false);
-        shopSelect = creatSoundThread(getClass().getResource(shopSelectSoundURL).getPath(), false);
-        shopBuySuc = creatSoundThread(getClass().getResource(shopBuySucSoundURL).getPath(), false);
-        shopBuyFail = creatSoundThread(getClass().getResource(shopBuyFailSoundURL).getPath(), false);
+        openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL), false);
+        upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL), false);
+        dialogueSpace = creatSoundThread(getClass().getResource(dialogueSpaceSoundURL), false);
+        getItem = creatSoundThread(getClass().getResource(getItemSoundURL), false);
+        getSpecialItem = creatSoundThread(getClass().getResource(getSpecialItemSoundURL), false);
+        fight = creatSoundThread(getClass().getResource(fightSoundURL), false);
+        walk = creatSoundThread(getClass().getResource(walkSoundURL), false);
+        shopSelect = creatSoundThread(getClass().getResource(shopSelectSoundURL), false);
+        shopBuySuc = creatSoundThread(getClass().getResource(shopBuySucSoundURL), false);
+        shopBuyFail = creatSoundThread(getClass().getResource(shopBuyFailSoundURL), false);
 
-        underground = creatSoundThread(getClass().getResource(undergroundSound0URL).getPath(), true);
+        underground = creatSoundThread(getClass().getResource(undergroundSound0URL), true);
     }
 
-    private Thread creatSoundThread(String path, boolean isLoop) {
+    private Thread creatSoundThread(URL path, boolean isLoop) {
         ps = new Audio(path, isLoop);
         return (new Thread(ps));
     }
 
     public void openDoor() {
         openDoor.start();
-        openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL).getPath(), false);
+        openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL), false);
     }
 
     public void upAndDown() {
         upAndDown.start();
-        upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL).getPath(), false);
+        upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL), false);
     }
 
     public void dialogueSpace() {
         dialogueSpace.start();
-        dialogueSpace = creatSoundThread(getClass().getResource(dialogueSpaceSoundURL).getPath(), false);
+        dialogueSpace = creatSoundThread(getClass().getResource(dialogueSpaceSoundURL), false);
     }
 
     public void getItem() {
         getItem.start();
-        getItem = creatSoundThread(getClass().getResource(getItemSoundURL).getPath(), false);
+        getItem = creatSoundThread(getClass().getResource(getItemSoundURL), false);
     }
 
     public void getSpecialItem() {
         getSpecialItem.start();
-        getSpecialItem = creatSoundThread(getClass().getResource(getSpecialItemSoundURL).getPath(), false);
+        getSpecialItem = creatSoundThread(getClass().getResource(getSpecialItemSoundURL), false);
     }
 
     public void fight() {
         fight.start();
-        fight = creatSoundThread(getClass().getResource(fightSoundURL).getPath(), false);
+        fight = creatSoundThread(getClass().getResource(fightSoundURL), false);
     }
 
     public void walk() {
         walk.start();
-        walk = creatSoundThread(getClass().getResource(walkSoundURL).getPath(), false);
+        walk = creatSoundThread(getClass().getResource(walkSoundURL), false);
     }
 
     public void shopSelect() {
         shopSelect.start();
-        shopSelect = creatSoundThread(getClass().getResource(shopSelectSoundURL).getPath(), false);
+        shopSelect = creatSoundThread(getClass().getResource(shopSelectSoundURL), false);
     }
 
     public void shopBuySuc() {
         shopBuySuc.start();
-        shopBuySuc = creatSoundThread(getClass().getResource(shopBuySucSoundURL).getPath(), false);
+        shopBuySuc = creatSoundThread(getClass().getResource(shopBuySucSoundURL), false);
     }
 
     public void shopBuyFail() {
         shopBuyFail.start();
-        shopBuyFail = creatSoundThread(getClass().getResource(shopBuyFailSoundURL).getPath(), false);
+        shopBuyFail = creatSoundThread(getClass().getResource(shopBuyFailSoundURL), false);
     }
 
     private int musicNo = -1, newMusicNo = 0;
@@ -112,19 +114,19 @@ public class MusicPlayer {
             underground.stop();
             switch (newMusicNo) {
                 case 0:
-                    underground = creatSoundThread(getClass().getResource(undergroundSound0URL).getPath(), true);
+                    underground = creatSoundThread(getClass().getResource(undergroundSound0URL), true);
                     underground.start();
                     break;
                 case 1:
-                    underground = creatSoundThread(getClass().getResource(undergroundSound1URL).getPath(), true);
+                    underground = creatSoundThread(getClass().getResource(undergroundSound1URL), true);
                     underground.start();
                     break;
                 case 2:
-                    underground = creatSoundThread(getClass().getResource(undergroundSound2URL).getPath(), true);
+                    underground = creatSoundThread(getClass().getResource(undergroundSound2URL), true);
                     underground.start();
                     break;
                 case 3:
-                    underground = creatSoundThread(getClass().getResource(undergroundSound3URL).getPath(), true);
+                    underground = creatSoundThread(getClass().getResource(undergroundSound3URL), true);
                     underground.start();
                     break;
             }

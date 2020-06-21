@@ -2,8 +2,6 @@ package main;
 
 import entity.*;
 import load.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import util.ScreenUtil;
 
 import javax.swing.*;
@@ -17,8 +15,6 @@ import java.util.Map;
  * @author Xhy
  */
 public class TowerPanel extends JPanel implements Runnable {
-
-    private final static Logger logger = LoggerFactory.getLogger(TowerPanel.class);
 
     /**
      * 单个图像大小,默认采用32x32图形,可根据需要调整比例

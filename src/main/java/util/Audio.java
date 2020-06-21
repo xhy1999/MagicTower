@@ -5,6 +5,7 @@ import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * @author Xhy
@@ -12,22 +13,19 @@ import java.io.IOException;
 public class Audio extends Thread {
 
     private boolean isLoop;
-    private String path;
-    private File file;
+    private URL path;
 
-    public Audio(String path, boolean isLoop) {
+    public Audio(URL path, boolean isLoop) {
         this.path = path;
-        this.file = new File(path);
         this.isLoop = isLoop;
     }
 
-    public String getPath() {
+    public URL getPath() {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(URL path) {
         this.path = path;
-        this.file = new File(path);
     }
 
     public boolean isLoop() {
@@ -40,10 +38,7 @@ public class Audio extends Thread {
 
     @Override
     public synchronized void run() {
-        if (!file.exists()) {
-            throw new RuntimeException("文件不存在");
-        }
-        if (path.toLowerCase().endsWith(".mp3")) {
+        if (path.toString().endsWith(".mp3")) {
             try {
                 playMp3();
             } catch (UnsupportedAudioFileException e) {
@@ -52,7 +47,7 @@ public class Audio extends Thread {
                 e.printStackTrace();
             }
         }
-        else if (path.toLowerCase().endsWith(".wav")) {
+        else if (path.toString().endsWith(".wav")) {
             try {
                 playWav();
             } catch (UnsupportedAudioFileException e) {
@@ -61,7 +56,7 @@ public class Audio extends Thread {
                 e.printStackTrace();
             }
         }
-        else if (path.toLowerCase().endsWith(".flac")) {
+        else if (path.toString().endsWith(".flac")) {
             try {
                 playFlac();
             } catch (UnsupportedAudioFileException e) {
@@ -70,7 +65,7 @@ public class Audio extends Thread {
                 e.printStackTrace();
             }
         }
-        else if (path.toLowerCase().endsWith(".pcm")) {
+        else if (path.toString().endsWith(".pcm")) {
             try {
                 playPcm();
             } catch (UnsupportedAudioFileException e) {
@@ -92,13 +87,13 @@ public class Audio extends Thread {
      * @date 2020年6月21日 14:14:48
      */
     public String getInfo() {
-        if (!file.exists()) {
+        if (!new File(path.toString()).exists()) {
             throw new RuntimeException("文件不存在");
         }
         AudioInputStream ais;
         String result = "";
         try {
-            ais = AudioSystem.getAudioInputStream(file);
+            ais = AudioSystem.getAudioInputStream(path);
             AudioFormat af = ais.getFormat();
             result = af.toString();
             System.out.println(result);
@@ -127,7 +122,7 @@ public class Audio extends Thread {
         AudioInputStream stream = null;
         //使用 mp3spi 解码 mp3 音频文件
         MpegAudioFileReader mp = new MpegAudioFileReader();
-        stream = mp.getAudioInputStream(file);
+        stream = mp.getAudioInputStream(path);
         AudioFormat baseFormat = stream.getFormat();
         //设定输出格式为pcm格式的音频文件
         AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
@@ -168,7 +163,7 @@ public class Audio extends Thread {
      * @date 2020年6月21日 14:34:20
      */
     public void playFlac() throws UnsupportedAudioFileException, IOException {
-        AudioInputStream audio = AudioSystem.getAudioInputStream(file);
+        AudioInputStream audio = AudioSystem.getAudioInputStream(path);
         AudioFormat format = audio.getFormat();
         if (format.getEncoding() != AudioFormat.Encoding.PCM_SIGNED) {
             format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
@@ -206,7 +201,7 @@ public class Audio extends Thread {
      * @date 2020年6月21日 14:45:31
      */
     public void playWav() throws UnsupportedAudioFileException, IOException {
-        AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+        AudioInputStream stream = AudioSystem.getAudioInputStream(path);
         AudioFormat target = stream.getFormat();
         DataLine.Info dinfo = new DataLine.Info(SourceDataLine.class, target);
         SourceDataLine line = null;
@@ -241,7 +236,7 @@ public class Audio extends Thread {
      * @date 2020年6月21日 14:48:10
      */
     public void playPcm() throws UnsupportedAudioFileException, IOException {
-        AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+        AudioInputStream stream = AudioSystem.getAudioInputStream(path);
         AudioFormat target = stream.getFormat();
         DataLine.Info dinfo = new DataLine.Info(SourceDataLine.class, target, AudioSystem.NOT_SPECIFIED);
         SourceDataLine line = null;
