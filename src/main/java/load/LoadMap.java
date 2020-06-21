@@ -197,7 +197,7 @@ public class LoadMap {
                 {"", "", "", "wall01", "", "stair01", "", "wall01", "", "", ""}};
 
         gameMap = new GameMap(1, layer1, layer2, layer3);
-        gameMap.upPositionX = 1;
+        gameMap.upPositionX = 5;
         gameMap.upPositionY = 9;
         gameMap.downPositionX = 1;
         gameMap.downPositionY = 0;

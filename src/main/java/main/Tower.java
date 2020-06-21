@@ -3,12 +3,9 @@ package main;
 import entity.GameMap;
 import entity.Player;
 import load.LoadMap;
-import util.PlayBGM;
-import util.PlaySounds;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +19,6 @@ public class Tower {
      */
     public int DIRECTION;
 
-    /**
-     * BGM
-     */
-    PlaySounds ps;
-    public Thread bgmThread;
-    
     /**
      * 楼层
      */
@@ -50,12 +41,6 @@ public class Tower {
         player = new Player();
         loadIcon();
         gameMapList = new LoadMap().initMap();
-//        ps = new PlayBGM(this.getClass().getResourceAsStream("/audio/Underground.mp3"));
-//        bgmThread = new Thread(ps);
-//        bgmThread.start();
-        new MusicPlayer().underground();
-//        audioPlayer = new AudioPlayer();
-//        audioPlayer.startBackgroundMusic(floor);
     }
 
     private void loadIcon() {
@@ -80,11 +65,6 @@ public class Tower {
             }
         }
         player.setPlayerIcon(playerIcon);
-    }
-
-    private Thread creatSoundThread(InputStream sound) {
-        ps = new PlaySounds(sound);
-        return (new Thread(ps));
     }
 
     public Image[] getFloorImage() {

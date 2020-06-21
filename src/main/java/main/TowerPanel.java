@@ -82,7 +82,7 @@ public class TowerPanel extends JPanel implements Runnable {
     private Map<String, Item> itemMap;
     private Map<String, NPC> npcMap;
     private Map<String, Shop> shopMap;
-    public int floor = 3;
+    public static int floor = 2;
     /**
      * 帧数(每秒8帧)
      */
@@ -110,6 +110,7 @@ public class TowerPanel extends JPanel implements Runnable {
         npcMap = new LoadNPC().initNPC();
         shopMap = new LoadShop().initShop();
         musicPlayer = new MusicPlayer();
+        musicPlayer.playBackgroundMusic(floor);
         DIRECTION = DIRECTION_UP;
         input = new KeyInputHandler(this);
         this.setLayout(null);
@@ -563,24 +564,6 @@ public class TowerPanel extends JPanel implements Runnable {
             tower.gameMapList.get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
             return;
         }
-        if (layer3[tower.getPlayer().y][tower.getPlayer().x].equals("stair01")) {
-            musicPlayer.upAndDown();
-            floor--;
-            tower.getPlayer().x = tower.gameMapList.get(floor).downPositionX;
-            tower.getPlayer().y = tower.gameMapList.get(floor).downPositionY;
-            showMesLabel.setText("魔塔 第" + floor + "层");
-            DIRECTION = DIRECTION_DOWN;
-            return;
-        }
-        if (layer3[tower.getPlayer().y][tower.getPlayer().x].equals("stair02")) {
-            musicPlayer.upAndDown();
-            floor++;
-            tower.getPlayer().x = tower.gameMapList.get(floor).upPositionX;
-            tower.getPlayer().y = tower.gameMapList.get(floor).upPositionY;
-            showMesLabel.setText("魔塔 第" + floor + "层");
-            DIRECTION = DIRECTION_DOWN;
-            return;
-        }
     }
 
     /**
@@ -675,7 +658,7 @@ public class TowerPanel extends JPanel implements Runnable {
         if (layer3[y][x].contains("wall")) {
             return false;
         }
-        if (layer3[y][x].contains("door")) {
+        else if (layer3[y][x].contains("door")) {
             //openDoor(x, y);
             boolean open = false;
             //System.out.println(layer3[y][x]);
@@ -739,6 +722,26 @@ public class TowerPanel extends JPanel implements Runnable {
                     }
                 }).start();
             }
+            return false;
+        }
+        else if (layer3[y][x].equals("stair01")) {
+            musicPlayer.upAndDown();
+            floor--;
+            tower.getPlayer().x = tower.gameMapList.get(floor).downPositionX;
+            tower.getPlayer().y = tower.gameMapList.get(floor).downPositionY;
+            showMesLabel.setText("魔塔 第" + floor + "层");
+            DIRECTION = DIRECTION_DOWN;
+            musicPlayer.playBackgroundMusic(floor);
+            return false;
+        }
+        else if (layer3[y][x].equals("stair02")) {
+            musicPlayer.upAndDown();
+            floor++;
+            tower.getPlayer().x = tower.gameMapList.get(floor).upPositionX;
+            tower.getPlayer().y = tower.gameMapList.get(floor).upPositionY;
+            showMesLabel.setText("魔塔 第" + floor + "层");
+            DIRECTION = DIRECTION_DOWN;
+            musicPlayer.playBackgroundMusic(floor);
             return false;
         }
         if (layer2[y][x].contains("item")) {
