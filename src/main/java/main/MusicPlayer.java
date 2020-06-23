@@ -6,7 +6,7 @@ import java.net.URL;
 
 public class MusicPlayer {
 
-    Audio ps;
+    Audio audio;
 
     private Thread openDoor, upAndDown, dialogueSpace, getItem, getSpecialItem, fight, walk, shopSelect, shopBuySuc, shopBuyFail, underground;
 
@@ -42,8 +42,8 @@ public class MusicPlayer {
     }
 
     private Thread creatSoundThread(URL path, boolean isLoop) {
-        ps = new Audio(path, isLoop);
-        return (new Thread(ps));
+        audio = new Audio(path, isLoop);
+        return (new Thread(audio));
     }
 
     public void openDoor() {
@@ -111,6 +111,7 @@ public class MusicPlayer {
             newMusicNo = 3;
         }
         if (musicNo != newMusicNo) {
+            //注意! 这里只能使用stop(),不能使用interrupt()
             underground.stop();
             switch (newMusicNo) {
                 case 0:

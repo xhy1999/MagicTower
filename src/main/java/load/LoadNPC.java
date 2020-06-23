@@ -55,6 +55,10 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "仙子,我已经将那个十字架找到了。"));
+        dialogues.add(new Dialogue("elf", "你做的很好。那么,现在我就开始授予你更强的力量!\n...咪啦哆咪哗!"));
+        dialogues.add(new Dialogue("elf", "好了,我已经将你现在的能量提升了!不过你要记住:如果你没有足够的实力的话,不要去第21层!"));
+        dialogues.add(new Dialogue("elf", "在那一层里,你所有的宝物的法力都会失去作用!"));
         npc = new NPC("npc01_2", "仙子", false, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc01_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc01_2.png")),
@@ -75,6 +79,19 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "你已经得救了!"));
+        dialogues.add(new Dialogue("thief", "啊,那真是太好了,我又可以在这里面寻宝了!"));
+        dialogues.add(new Dialogue("thief", "哦,还没有自我介绍,我叫杰克,是这附近有名的小偷,什么金银财宝我样样都偷过。"));
+        dialogues.add(new Dialogue("thief", "不过这次运气可不是太好,刚进来就被抓了。现在你帮我打开了门,那我就帮你做一件事吧。"));
+        dialogues.add(new Dialogue("player", "快走吧,外面还有很多怪物,我可能顾不上你。"));
+        dialogues.add(new Dialogue("thief", "不,不,不会有事的。快说吧,叫我做什么?"));
+        dialogues.add(new Dialogue("player", "......\n你会开门吗?"));
+        dialogues.add(new Dialogue("thief", "那当然。"));
+        dialogues.add(new Dialogue("player", "那就请你帮我打开第二层的门吧!"));
+        dialogues.add(new Dialogue("thief", "那个简单,不过,如果你能帮我找到一把嵌了红宝石的铁锒头的话,我还能帮你打通第18层的路。"));
+        dialogues.add(new Dialogue("player", "嵌了红宝石的铁锒头?好吧,我帮你找找。"));
+        dialogues.add(new Dialogue("thief", "非常的感谢。一会儿我便会将第二层的门打开。如果你找到那个铁锒头的话,还是来这里找我！"));
+
         npc = new NPC("npc04_1", "小偷", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc04_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc04_2.png")),
@@ -82,7 +99,28 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        npc = new NPC("npc05_1", "公主", true, true,
+        dialogues.add(new Dialogue("player", "哈,快看,我找到了什么!"));
+        dialogues.add(new Dialogue("thief", "太好了,这东西果然是在这里。\n好吧,我这就帮你去修好第18层的路面。"));
+        npc = new NPC("npc04_2", "小偷", false, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc04_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc04_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "公主!你得救了!"));
+        dialogues.add(new Dialogue("princess", "啊,你是来救我的吗?"));
+        dialogues.add(new Dialogue("player", "是的,我奉国王的命令来救你的。请你快随我出去吧!"));
+        dialogues.add(new Dialogue("princess", "不,我还不想走。"));
+        dialogues.add(new Dialogue("player", "为什么?这里面到处都是恶魔。"));
+        dialogues.add(new Dialogue("princess", "正是因为这里面到处都是恶魔,所以才不可以就这样出去,我要看着那个恶魔被杀死!"));
+        dialogues.add(new Dialogue("princess", "英雄的勇士,如果你能将那个大恶魔杀死,我就和你一起出去!"));
+        dialogues.add(new Dialogue("player", "大恶魔?我已经杀死了一个魔王!"));
+        dialogues.add(new Dialogue("princess", "大恶魔就是这座塔的最顶层,你杀死的可能是一个小队长之类的恶魔。"));
+        dialogues.add(new Dialogue("player", "好,那你等着,等我杀了那个恶魔再来这里找你!"));
+        dialogues.add(new Dialogue("princess", "大恶魔比你刚才杀死的那个厉害多了。而且他还会变身,变身后的魔王的攻击力和防御力都会提升至少一半以上,你得小心!请一定要杀死大魔王!"));
+        dialogues.add(new Dialogue("princess", "升至少一半以上,你得小心!请一定要杀死大魔王!"));
+        npc = new NPC("npc05_1", "公主", true, false,
                 new ImageIcon(getClass().getResource("/image/npc/npc05_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc05_2.png")),
                 dialogues);

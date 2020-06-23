@@ -91,7 +91,7 @@ public class LoadMonster {
                 new ImageIcon(getClass().getResource("/image/monster/monster02_1_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster02_2", "大蝙蝠", 65, 55, 150, 30, 50,
+        monster = new Monster("monster02_2", "大蝙蝠", 65, 55, 50, 30, 50,
                 new ImageIcon(getClass().getResource("/image/monster/monster02_2_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster02_2_2.png")));
         monsterMap.put(monster.getId(), monster);

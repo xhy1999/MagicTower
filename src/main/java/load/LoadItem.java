@@ -133,7 +133,7 @@ public class LoadItem {
                 new ImageIcon(getClass().getResource("/image/item/item06_2.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item06_3", "圣水", null,
+        item = new Item("item06_3", "圣水瓶", "\b它可以将你的体质增加一倍(生命值加倍)。",
                 new ImageIcon(getClass().getResource("/image/item/item06_3.png")));
         itemMap.put(item.getId(), item);
 
@@ -193,11 +193,11 @@ public class LoadItem {
                 new ImageIcon(getClass().getResource("/image/item/item09_3.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item09_4", "寒冰之境", null,
+        item = new Item("item09_4", "风之罗盘", "\b该宝物可以随意在已经走过的楼层间自由上下,当主角位于上行楼梯或下行楼梯时可以使用\bJ\b键在已经走过的楼层间进行跳跃。",
                 new ImageIcon(getClass().getResource("/image/item/item09_4.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item09_5", "十字架", null,
+        item = new Item("item09_5", "幸运十字架", "\b把他交给彩蝶仙子,可以将自身的所有能力提升一些(攻击、防御和生命值)。",
                 new ImageIcon(getClass().getResource("/image/item/item09_5.png")));
         itemMap.put(item.getId(), item);
 
@@ -209,7 +209,7 @@ public class LoadItem {
                 new ImageIcon(getClass().getResource("/image/item/item09_7.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item09_8", "红宝石稿子", null,
+        item = new Item("item09_8", "星光神锒", "\b把它交给第四层的小偷,小偷便会用它打开第18层的隐藏地面(你就可以救出公主了)。",
                 new ImageIcon(getClass().getResource("/image/item/item09_8.png")));
         itemMap.put(item.getId(), item);
 

@@ -1,13 +1,13 @@
 package main;
 
-import entity.GameMap;
-import entity.Player;
-import load.LoadMap;
+import entity.*;
+import load.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Xhy
@@ -30,6 +30,17 @@ public class Tower {
     public Player player;
 
 
+    /**
+     * 怪物
+     */
+    public Map<String, Monster> monsterMap;
+    public Map<String, Wall> wallMap;
+    public Map<String, Door> doorMap;
+    public Map<String, Stair> stairMap;
+    public Map<String, Item> itemMap;
+    public Map<String, NPC> npcMap;
+    public Map<String, Shop> shopMap;
+
     private Image[] floorImage = new Image[3];
     private Image[] wallImage = new Image[8];
 
@@ -41,6 +52,14 @@ public class Tower {
         player = new Player();
         loadIcon();
         gameMapList = new LoadMap().initMap();
+
+        monsterMap = new LoadMonster().initMonster();
+        wallMap = new LoadWall().initWall();
+        doorMap = new LoadDoor().initDoor();
+        stairMap = new LoadStair().initStair();
+        itemMap = new LoadItem().initItem();
+        npcMap = new LoadNPC().initNPC();
+        shopMap = new LoadShop().initShop();
     }
 
     private void loadIcon() {

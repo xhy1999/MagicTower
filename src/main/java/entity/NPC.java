@@ -54,11 +54,28 @@ public class NPC extends Entity {
     }
 
     public void script(Tower tower) {
+        System.out.println(this.id.equals("npc01_2"));
         if (this.id.equals("npc01_1")) {
             tower.player.yKey++;
             tower.player.bKey++;
             tower.player.rKey++;
-            tower.gameMapList.get(2).layer1[8][4] = "npc01_2";
+            tower.gameMapList.get(0 + 2).layer1[8][4] = "npc01_2";
+        }
+        else if (this.id.equals("npc01_2")) {
+            tower.player.attack = tower.player.attack * 4/3;
+            tower.player.defense = tower.player.defense * 4/3;
+        }
+        else if (this.id.equals("npc04_1")) {
+            tower.doorMap.get("door04_1").openable = true;
+            tower.gameMapList.get(4 + 2).layer1[0][5] = "npc04_2";
+        }
+        else if (this.id.equals("npc04_2")) {
+            tower.gameMapList.get(18 + 2).layer3[8][5] = "";
+            tower.gameMapList.get(18 + 2).layer3[9][5] = "";
+        }
+        else if (this.id.equals("npc05_1")) {
+            this.canMeet = false;
+            tower.gameMapList.get(18 + 2).layer3[10][10] = "stair02";
         }
     }
 
