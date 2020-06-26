@@ -1,6 +1,8 @@
 package entity;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Xhy
@@ -24,6 +26,8 @@ public class Player {
     public byte x;
     public byte y;
 
+    public Map<String, Integer> inventory;
+
     /**
      * 注意 不需要父类的icon
      * [方向][帧数]
@@ -45,6 +49,7 @@ public class Player {
         this.minFloor = 1;
         this.x = 0;
         this.y = 0;
+        this.inventory = new HashMap<>();
         this.playerIcon = new ImageIcon[4][4];
     }
 

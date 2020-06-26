@@ -53,29 +53,36 @@ public class NPC extends Entity {
         this.dialogues = dialogues;
     }
 
-    public void script(Tower tower) {
-        System.out.println(this.id.equals("npc01_2"));
+    public void script_start(Tower tower) {
+        if (this.id.equals("npc01_2")) {
+            if (tower.getPlayer().inventory.get("item09_5").equals(1)) {
+                this.canMeet = true;
+            }
+        }
+    }
+
+    public void script_end(Tower tower) {
         if (this.id.equals("npc01_1")) {
-            tower.player.yKey++;
-            tower.player.bKey++;
-            tower.player.rKey++;
-            tower.gameMapList.get(0 + 2).layer1[8][4] = "npc01_2";
+            tower.getPlayer().yKey++;
+            tower.getPlayer().bKey++;
+            tower.getPlayer().rKey++;
+            tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_2";
         }
         else if (this.id.equals("npc01_2")) {
-            tower.player.attack = tower.player.attack * 4/3;
-            tower.player.defense = tower.player.defense * 4/3;
+            tower.getPlayer().attack = tower.getPlayer().attack * 4/3;
+            tower.getPlayer().defense = tower.getPlayer().defense * 4/3;
         }
         else if (this.id.equals("npc04_1")) {
-            tower.doorMap.get("door04_1").openable = true;
-            tower.gameMapList.get(4 + 2).layer1[0][5] = "npc04_2";
+            tower.getDoorMap().get("door04_1").openable = true;
+            tower.getGameMapList().get(4 + 2).layer1[0][5] = "npc04_2";
         }
         else if (this.id.equals("npc04_2")) {
-            tower.gameMapList.get(18 + 2).layer3[8][5] = "";
-            tower.gameMapList.get(18 + 2).layer3[9][5] = "";
+            tower.getGameMapList().get(18 + 2).layer3[8][5] = "";
+            tower.getGameMapList().get(18 + 2).layer3[9][5] = "";
         }
         else if (this.id.equals("npc05_1")) {
             this.canMeet = false;
-            tower.gameMapList.get(18 + 2).layer3[10][10] = "stair02";
+            tower.getGameMapList().get(18 + 2).layer3[10][10] = "stair02";
         }
     }
 

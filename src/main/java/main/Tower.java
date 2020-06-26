@@ -15,36 +15,26 @@ import java.util.Map;
 public class Tower {
 
     /**
-     * 人物方向
-     */
-    public int DIRECTION;
-
-    /**
-     * 楼层
-     */
-    private int floor = 1;
-
-    /**
      * 主角
      */
-    public Player player;
+    private Player player;
 
 
     /**
      * 怪物
      */
-    public Map<String, Monster> monsterMap;
-    public Map<String, Wall> wallMap;
-    public Map<String, Door> doorMap;
-    public Map<String, Stair> stairMap;
-    public Map<String, Item> itemMap;
-    public Map<String, NPC> npcMap;
-    public Map<String, Shop> shopMap;
+    private Map<String, Monster> monsterMap;
+    private Map<String, Wall> wallMap;
+    private Map<String, Door> doorMap;
+    private Map<String, Stair> stairMap;
+    private Map<String, Item> itemMap;
+    private Map<String, NPC> npcMap;
+    private Map<String, Shop> shopMap;
 
     private Image[] floorImage = new Image[3];
     private Image[] wallImage = new Image[8];
 
-    public List<GameMap> gameMapList = new ArrayList<>();
+    private List<GameMap> gameMapList;
 
 //    public AudioPlayer audioPlayer;
 
@@ -102,18 +92,37 @@ public class Tower {
         this.wallImage = wallImage;
     }
 
-    public int getFloor() {
-        return floor;
-    }
-
-    public void setFloor(int floor) {
-        this.floor = floor;
-    }
-
     public Player getPlayer() {
         return player;
     }
 
+    public Map<String, Monster> getMonsterMap() {
+        return monsterMap;
+    }
+
+    public Map<String, Wall> getWallMap() {
+        return wallMap;
+    }
+
+    public Map<String, Door> getDoorMap() {
+        return doorMap;
+    }
+
+    public Map<String, Stair> getStairMap() {
+        return stairMap;
+    }
+
+    public Map<String, Item> getItemMap() {
+        return itemMap;
+    }
+
+    public Map<String, NPC> getNpcMap() {
+        return npcMap;
+    }
+
+    public Map<String, Shop> getShopMap() {
+        return shopMap;
+    }
 
     public List<GameMap> getGameMapList() {
         return gameMapList;

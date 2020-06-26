@@ -85,8 +85,8 @@ public class TowerPanel extends JPanel implements Runnable {
 
     public TowerPanel(Tower tower) {
         this.tower = tower;
-        tower.getPlayer().x = tower.gameMapList.get(floor).upPositionX;
-        tower.getPlayer().y = tower.gameMapList.get(floor).upPositionY;
+        tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
+        tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
         DIRECTION = DIRECTION_UP;
@@ -312,7 +312,7 @@ public class TowerPanel extends JPanel implements Runnable {
     private void drawMap(Graphics g) {
         //System.out.println("构造地图中..." + frames);
         repaint();
-        GameMap gameMap = tower.gameMapList.get(floor);
+        GameMap gameMap = tower.getGameMapList().get(floor);
         String[][] layer1 = gameMap.layer1;
         String[][] layer2 = gameMap.layer2;
         String[][] layer3 = gameMap.layer3;
@@ -323,21 +323,21 @@ public class TowerPanel extends JPanel implements Runnable {
                 for (int j = 0; j < GAME_COL; j++) {
                     if (layer3[i][j].contains("wall")) {
                         try {
-                            String wallId = tower.wallMap.get(layer3[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.wallMap.get(wallId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
+                            String wallId = tower.getWallMap().get(layer3[i][j]).getId();
+                            g.drawImage(getImageFromIcons(tower.getWallMap().get(wallId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
                         } catch (Exception e) {
                             System.err.println("layer3 (x=" + i + ",y=" + j + ") wallId(" + layer3[i][j] + ") 不存在!");
                         }
                     } else if (layer3[i][j].contains("door")) {
                         if (!layer3[i][j].contains("open")) {
                             try {
-                                String doorId = tower.doorMap.get(layer3[i][j]).getId();
-                                g.drawImage(tower.doorMap.get(doorId).getIcon()[0].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
+                                String doorId = tower.getDoorMap().get(layer3[i][j]).getId();
+                                g.drawImage(tower.getDoorMap().get(doorId).getIcon()[0].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
                             } catch (Exception e) {
                                 System.err.println("layer3 (x=" + i + ",y=" + j + ") doorId(" + layer3[i][j] + ") 不存在!");
                             }
                         } else {
-                            String doorId = tower.doorMap.get(layer3[i][j].substring(0, layer3[i][j].indexOf("open"))).getId();
+                            String doorId = tower.getDoorMap().get(layer3[i][j].substring(0, layer3[i][j].indexOf("open"))).getId();
                             byte no;
                             try {
                                 no = Byte.parseByte(layer3[i][j].substring(layer3[i][j].length() - 1));
@@ -346,45 +346,45 @@ public class TowerPanel extends JPanel implements Runnable {
                                 e.printStackTrace();
                             }
                             try {
-                                g.drawImage(tower.doorMap.get(doorId).getIcon()[no].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
+                                g.drawImage(tower.getDoorMap().get(doorId).getIcon()[no].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     } else if (layer3[i][j].contains("stair")) {
                         try {
-                            String stairId = tower.stairMap.get(layer3[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.stairMap.get(stairId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
+                            String stairId = tower.getStairMap().get(layer3[i][j]).getId();
+                            g.drawImage(getImageFromIcons(tower.getStairMap().get(stairId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
                         } catch (Exception e) {
                             System.err.println("layer3 (x=" + i + ",y=" + j + ") wallId(" + layer3[i][j] + ") 不存在!");
                         }
                     }
                     if (layer2[i][j].contains("item")) {
                         try {
-                            String itemId = tower.itemMap.get(layer2[i][j]).getId();
-                            g.drawImage(tower.itemMap.get(itemId).getIcon()[0].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
+                            String itemId = tower.getItemMap().get(layer2[i][j]).getId();
+                            g.drawImage(tower.getItemMap().get(itemId).getIcon()[0].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
                         } catch (Exception e) {
                             System.err.println("layer2 (x=" + i + ",y=" + j + ") itemId(" + layer2[i][j] + ") 不存在!");
                         }
                     }
                     if (layer1[i][j].contains("monster")) {
                         try {
-                            String monsterId = tower.monsterMap.get(layer1[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.monsterMap.get(monsterId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
+                            String monsterId = tower.getMonsterMap().get(layer1[i][j]).getId();
+                            g.drawImage(getImageFromIcons(tower.getMonsterMap().get(monsterId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
                         } catch (Exception e) {
                             System.err.println("layer1 (x=" + i + ",y=" + j + ") monsterId(" + layer1[i][j] + ") 不存在!");
                         }
                     } else if (layer1[i][j].contains("npc")) {
                         try {
-                            String npcId = tower.npcMap.get(layer1[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.npcMap.get(npcId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
+                            String npcId = tower.getNpcMap().get(layer1[i][j]).getId();
+                            g.drawImage(getImageFromIcons(tower.getNpcMap().get(npcId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
                         } catch (Exception e) {
                             System.err.println("layer1 (x=" + i + ",y=" + j + ") npcId(" + layer1[i][j] + ") 不存在!");
                         }
                     } else if (layer1[i][j].contains("shop")) {
                         try {
-                            String shopId = tower.shopMap.get(layer1[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.shopMap.get(shopId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
+                            String shopId = tower.getShopMap().get(layer1[i][j]).getId();
+                            g.drawImage(getImageFromIcons(tower.getShopMap().get(shopId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
                         } catch (Exception e) {
                             System.err.println("layer1 (x=" + i + ",y=" + j + ") shopId(" + layer1[i][j] + ") 不存在!");
                         }
@@ -460,7 +460,7 @@ public class TowerPanel extends JPanel implements Runnable {
             //render();
             if (System.currentTimeMillis() - fpsTimer > 125) {
                 playerPicLabel.setIcon(tower.getPlayer().getPlayerIcon()[1][frames % 4]);
-                //playerPicLabel.setIcon(monsterMap.get("1_12").getIcon()[no % 2]);
+                //playerPicLabel.setIcon(getMonsterMap().get("1_12").getIcon()[no % 2]);
                 if (frames == 7) {
                     System.out.printf("%d fps, %d tick%n", fps, tick);
                     frames = 0;
@@ -490,6 +490,7 @@ public class TowerPanel extends JPanel implements Runnable {
     public void tick() {
         if (!canMove) {
             lastMove = System.currentTimeMillis();
+            moveNo = 0;
             return;
         }
         if (input.up.down) {
@@ -532,12 +533,12 @@ public class TowerPanel extends JPanel implements Runnable {
         if (System.currentTimeMillis() - lastMove > stopTime) {
             moveNo = 0;
         }
-        GameMap gameMap = tower.gameMapList.get(floor);
+        GameMap gameMap = tower.getGameMapList().get(floor);
         String[][] layer1 = gameMap.layer1;
         String[][] layer2 = gameMap.layer2;
         String[][] layer3 = gameMap.layer3;
         if (layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
-            tower.gameMapList.get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
+            tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
             return;
         }
     }
@@ -563,7 +564,7 @@ public class TowerPanel extends JPanel implements Runnable {
      * @return
      */
     private boolean canMove(byte x, byte y) {
-        GameMap gameMap = tower.gameMapList.get(floor);
+        GameMap gameMap = tower.getGameMapList().get(floor);
         String[][] layer1 = gameMap.layer1;
         String[][] layer2 = gameMap.layer2;
         String[][] layer3 = gameMap.layer3;
@@ -577,11 +578,12 @@ public class TowerPanel extends JPanel implements Runnable {
                 public void run() {
                     NPC npc;
                     try {
-                        npc = tower.npcMap.get(layer1[y][x]);
+                        npc = tower.getNpcMap().get(layer1[y][x]);
                     } catch (Exception e) {
                         System.err.println("layer1 (x=" + y + ",y=" + x + ") npcId(" + layer1[y][x] + ") 不存在!");
                         return;
                     }
+                    npc.script_start(tower);
                     if (!npc.canMeet) {
                         canMove = true;
                         return;
@@ -601,9 +603,9 @@ public class TowerPanel extends JPanel implements Runnable {
                         escapeDown = false;
                     }
                     if (npc.canRemove) {
-                        tower.gameMapList.get(floor).layer1[y][x] = "";
+                        tower.getGameMapList().get(floor).layer1[y][x] = "";
                     }
-                    npc.script(tower);
+                    npc.script_end(tower);
                     canMove = true;
                     input.noMove();
                 }
@@ -616,7 +618,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 public void run() {
                     Shop shop;
                     try {
-                        shop = tower.shopMap.get(layer1[y][x]);
+                        shop = tower.getShopMap().get(layer1[y][x]);
                     } catch (Exception e) {
                         System.err.println("layer1 (x=" + x + ",y=" + y + ") shopId(" + layer1[y][x] + ") 不存在!");
                         return;
@@ -661,7 +663,7 @@ public class TowerPanel extends JPanel implements Runnable {
             }
             if (!open && (layer3[y][x].contains("door04") || layer3[y][x].contains("door05"))) {
                 try {
-                    if (tower.doorMap.get(layer3[y][x]).openable) {
+                    if (tower.getDoorMap().get(layer3[y][x]).openable) {
                         open = true;
                     }
                 } catch (Exception e) {
@@ -673,22 +675,22 @@ public class TowerPanel extends JPanel implements Runnable {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (tower.gameMapList.get(floor).layer3[y][x].equals("") || tower.gameMapList.get(floor).layer3[y][x].contains("open")) {
+                        if (tower.getGameMapList().get(floor).layer3[y][x].equals("") || tower.getGameMapList().get(floor).layer3[y][x].contains("open")) {
                             return;
                         }
                         byte f = (byte) floor;
                         for (int i = 1; i < 5; i++) {
                             if (i == 1) {
-                                tower.gameMapList.get(f).layer3[y][x] += "open1";
+                                tower.getGameMapList().get(f).layer3[y][x] += "open1";
                             } else if (i == 4) {
-                                tower.gameMapList.get(f).layer3[y][x] = "";
+                                tower.getGameMapList().get(f).layer3[y][x] = "";
                             } else {
-                                String str = tower.gameMapList.get(f).layer3[y][x];
+                                String str = tower.getGameMapList().get(f).layer3[y][x];
                                 try {
-                                    tower.gameMapList.get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
+                                    tower.getGameMapList().get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
                                 } catch (IndexOutOfBoundsException e) {
                                     e.printStackTrace();
-                                    tower.gameMapList.get(f).layer3[y][x] = "";
+                                    tower.getGameMapList().get(f).layer3[y][x] = "";
                                 }
                             }
                             try {
@@ -697,7 +699,7 @@ public class TowerPanel extends JPanel implements Runnable {
                                 e.printStackTrace();
                             }
                         }
-                        tower.gameMapList.get(f).layer3[y][x] = "";
+                        tower.getGameMapList().get(f).layer3[y][x] = "";
                     }
                 }).start();
             }
@@ -705,8 +707,8 @@ public class TowerPanel extends JPanel implements Runnable {
         } else if (layer3[y][x].equals("stair01")) {
             musicPlayer.upAndDown();
             floor--;
-            tower.getPlayer().x = tower.gameMapList.get(floor).downPositionX;
-            tower.getPlayer().y = tower.gameMapList.get(floor).downPositionY;
+            tower.getPlayer().x = tower.getGameMapList().get(floor).downPositionX;
+            tower.getPlayer().y = tower.getGameMapList().get(floor).downPositionY;
             showMesLabel.setText("魔塔 第" + floor + "层");
             DIRECTION = DIRECTION_DOWN;
             musicPlayer.playBackgroundMusic(floor);
@@ -714,8 +716,8 @@ public class TowerPanel extends JPanel implements Runnable {
         } else if (layer3[y][x].equals("stair02")) {
             musicPlayer.upAndDown();
             floor++;
-            tower.getPlayer().x = tower.gameMapList.get(floor).upPositionX;
-            tower.getPlayer().y = tower.gameMapList.get(floor).upPositionY;
+            tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
+            tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
             showMesLabel.setText("魔塔 第" + floor + "层");
             DIRECTION = DIRECTION_DOWN;
             musicPlayer.playBackgroundMusic(floor);
@@ -880,7 +882,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         break;
                     case "item09_5":
                         showMesLabel.setText("获得幸运十字架");
-                        tower.npcMap.get("npc01_2").canMeet = true;
+                        tower.getPlayer().inventory.put("item09_5", 1);
                         flag = true;
                         break;
                     case "item09_6":
@@ -889,13 +891,13 @@ public class TowerPanel extends JPanel implements Runnable {
                         break;
                     case "item09_8":
                         showMesLabel.setText("获得星光神锒");
-                        tower.npcMap.get("npc04_2").canMeet = true;
+                        tower.getNpcMap().get("npc04_2").canMeet = true;
                         flag = true;
                         break;
                 }
             }
             if (flag) {
-                Item item = tower.itemMap.get(layer2[y][x]);
+                Item item = tower.getItemMap().get(layer2[y][x]);
                 if (item.msg != null) {
                     canMove = false;
                     musicPlayer.getSpecialItem();
@@ -910,16 +912,16 @@ public class TowerPanel extends JPanel implements Runnable {
                 }
             } else {
                 try {
-                    showMesLabel.setText("获得" + tower.itemMap.get(layer2[y][x]).getName() + ",嘛事没有");
+                    showMesLabel.setText("获得" + tower.getItemMap().get(layer2[y][x]).getName() + ",嘛事没有");
                 } catch (Exception e) {
                     System.err.println("layer2 (x=" + x + ",y=" + y + ") itemId(" + layer2[y][x] + ") 不存在!");
                 }
             }
-            tower.gameMapList.get(floor).layer2[y][x] = "";
+            tower.getGameMapList().get(floor).layer2[y][x] = "";
             return false;
         }
         if (layer1[y][x].contains("monster")) {
-            Monster monster = tower.monsterMap.get(layer1[y][x]);
+            Monster monster = tower.getMonsterMap().get(layer1[y][x]);
             if (!monster.hostile) {
                 return false;
             }
@@ -947,7 +949,7 @@ public class TowerPanel extends JPanel implements Runnable {
             System.out.println("怪物攻击一次的伤害:" + mDamage);
             System.out.println("玩家攻击一次的伤害:" + pDamage);
             if (pDamage <= 0) {
-                showMesLabel.setText("无法对" + tower.monsterMap.get(layer1[y][x]).getName() + "造成伤害");
+                showMesLabel.setText("无法对" + tower.getMonsterMap().get(layer1[y][x]).getName() + "造成伤害");
                 System.out.println("无法造成伤害");
                 return false;
             }
@@ -967,8 +969,8 @@ public class TowerPanel extends JPanel implements Runnable {
             }
             if (mHP <= 0) {
                 musicPlayer.fight();
-                showMesLabel.setText("击杀:" + tower.monsterMap.get(layer1[y][x]).getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
-                tower.gameMapList.get(floor).layer1[y][x] = "";
+                showMesLabel.setText("击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
+                tower.getGameMapList().get(floor).layer1[y][x] = "";
                 tower.getPlayer().hp = pHP;
                 tower.getPlayer().money += monster.getMoney();
                 tower.getPlayer().exp += monster.getExp();
@@ -976,7 +978,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 System.out.println("怪物攻击次数:" + (attackNo - pAttackNo));
                 return true;
             } else {
-                showMesLabel.setText("无法击杀:" + tower.monsterMap.get(layer1[y][x]).getName());
+                showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
                 System.out.println("无法击杀");
                 return false;
             }
@@ -991,7 +993,7 @@ public class TowerPanel extends JPanel implements Runnable {
      * @param dialogue
      */
     public void meetNpc(String npcId, Dialogue dialogue) {
-        NPC npc = tower.npcMap.get(npcId);
+        NPC npc = tower.getNpcMap().get(npcId);
         dialogBox = new JDialog(mainframe, null, true);
         String s;
         ImageIcon photo;
@@ -1010,7 +1012,7 @@ public class TowerPanel extends JPanel implements Runnable {
             pict.setBounds(13, 8, 32, 32);
             name = new JLabel(npc.getName());
             name.setBounds(48, 16, 32, 16);
-            photo = new ImageIcon(tower.npcMap.get(npcId).getIcon()[0].getImage());
+            photo = new ImageIcon(tower.getNpcMap().get(npcId).getIcon()[0].getImage());
         }
         pict.setIcon(photo);
         name.setFont(new Font("宋体", Font.BOLD, 13));
@@ -1063,7 +1065,7 @@ public class TowerPanel extends JPanel implements Runnable {
     byte nowSelected = 0;
 
     public void meetShop(String shopId) {
-        Shop shop = tower.shopMap.get(shopId);
+        Shop shop = tower.getShopMap().get(shopId);
         dialogBox = new JDialog(mainframe, null, true);
         String s;
         ImageIcon photo;
@@ -1136,7 +1138,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         if (tower.getPlayer().money >= needMoney) {
                             musicPlayer.shopBuySuc();
                             tower.getPlayer().money -= needMoney;
-                            tower.shopMap.get(shopId).buyNum++;
+                            tower.getShopMap().get(shopId).buyNum++;
                             shopDialogue.setText(shop.dialogue.replaceFirst("%%", 25 + shop.buyNum * 2 + ""));
                             List<String> attributeList = shop.sell.attribute;
                             List<Short> valList = shop.sell.val;
