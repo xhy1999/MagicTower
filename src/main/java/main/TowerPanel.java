@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -529,6 +531,37 @@ public class TowerPanel extends JPanel implements Runnable {
             moveNo = (byte) ((moveNo + 1) % 4);
             tower.getPlayer().x++;
             lastMove = System.currentTimeMillis();
+        } else if (input.use_rod.down) {
+            canMove = false;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("开始计算");
+                    String[][] monsterLayer = tower.getGameMapList().get(floor).layer1;
+                    Map<String, Boolean> monsterIdMap = new HashMap<>();
+                    //y
+                    for (int i = 0; i < monsterLayer.length; i++) {
+                        //x
+                        for (int j = 0; j < monsterLayer[i].length; j++) {
+                            if (monsterLayer[j][i] != null && !monsterLayer[j][i].equals("") && monsterLayer[j][i].contains("monster")) {
+                                monsterIdMap.put(monsterLayer[j][i], true);
+                            }
+                        }
+                    }
+                    Iterator iter = monsterIdMap.entrySet().iterator();
+                    int monsterNo = 0;
+                    while (iter.hasNext()) {
+                        Map.Entry entry = (Map.Entry) iter.next();
+                        Object key = entry.getKey();
+                        Object val = entry.getValue();
+                        Monster monster = tower.getMonsterMap().get(key);
+                        System.out.println("击杀 " + monster.getName() + " 需要损失" + attack(key.toString()) + "体力");
+                        monsterNo++;
+                    }
+                    canMove = true;
+                    System.out.println("计算完成,共" + monsterNo + "只怪物");
+                }
+            }).start();
         }
         if (System.currentTimeMillis() - lastMove > stopTime) {
             moveNo = 0;
@@ -922,60 +955,20 @@ public class TowerPanel extends JPanel implements Runnable {
         }
         if (layer1[y][x].contains("monster")) {
             Monster monster = tower.getMonsterMap().get(layer1[y][x]);
-            if (!monster.hostile) {
+            int mDamageTotal = attack(layer1[y][x]);
+            if (mDamageTotal == -1) {
+                showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
+                System.out.println("无法击杀");
                 return false;
             }
-            int mHP = monster.getHp();
-            int pHP = tower.getPlayer().hp;
-            int mDamage;
-            //魔法师系的怪物攻击玩家为真实伤害
-            if (layer1[y][x].contains("monster04")) {
-                mDamage = monster.getAttack();
-            } else {
-                mDamage = monster.getAttack() - tower.getPlayer().defense;
-            }
-            int pDamage = tower.getPlayer().attack - monster.getDefense();
-            //-20为怪物伤害临界值
-            if (mDamage <= 0 && mDamage > -20) {
-                mDamage = 1;
-            } else if (mDamage <= -20) {
-                mDamage = 0;
-            }
-            if (pDamage <= 0 && pDamage > -playerCriticalVal) {
-                pDamage = 1;
-            } else if (pDamage <= -20) {
-                pDamage = 0;
-            }
-            System.out.println("怪物攻击一次的伤害:" + mDamage);
-            System.out.println("玩家攻击一次的伤害:" + pDamage);
-            if (pDamage <= 0) {
-                showMesLabel.setText("无法对" + tower.getMonsterMap().get(layer1[y][x]).getName() + "造成伤害");
-                System.out.println("无法造成伤害");
-                return false;
-            }
-            /**
-             * 战斗结果计算 默认玩家先攻
-             */
-            short pAttackNo = 0;
-            short attackNo = 0;
-            while (mHP > 0 && pHP > 0) {
-                if (attackNo % 2 == 0) {
-                    pAttackNo++;
-                    mHP -= pDamage;
-                } else {
-                    pHP -= mDamage;
-                }
-                attackNo++;
-            }
-            if (mHP <= 0) {
+            int pHP = tower.getPlayer().hp - mDamageTotal;
+            if (pHP > 0) {
                 musicPlayer.fight();
-                showMesLabel.setText("击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
+                showMesLabel.setText("击杀:" + monster.getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
                 tower.getGameMapList().get(floor).layer1[y][x] = "";
                 tower.getPlayer().hp = pHP;
                 tower.getPlayer().money += monster.getMoney();
                 tower.getPlayer().exp += monster.getExp();
-                System.out.println("玩家攻击次数:" + pAttackNo);
-                System.out.println("怪物攻击次数:" + (attackNo - pAttackNo));
                 return true;
             } else {
                 showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
@@ -984,6 +977,68 @@ public class TowerPanel extends JPanel implements Runnable {
             }
         }
         return true;
+    }
+
+    public int attack(String monsterId) {
+        Monster monster = null;
+        try {
+            monster = tower.getMonsterMap().get(monsterId);
+        } catch (NullPointerException e) {
+            System.err.println("怪物" + monsterId + "不存在!");
+            return -1;
+        }
+        if (!monster.hostile) {
+            return -1;
+        }
+        int mHP = monster.getHp();
+        int pHP = tower.getPlayer().hp;
+        int mDamage;
+        //魔法师系的怪物攻击玩家为真实伤害
+        if (monsterId.contains("monster04")) {
+            mDamage = monster.getAttack();
+        } else {
+            mDamage = monster.getAttack() - tower.getPlayer().defense;
+        }
+        int pDamage = tower.getPlayer().attack - monster.getDefense();
+        //-20为怪物伤害临界值
+        if (mDamage <= 0 && mDamage > -20) {
+            mDamage = 1;
+        } else if (mDamage <= -20) {
+            mDamage = 0;
+        }
+        if (pDamage <= 0 && pDamage > -playerCriticalVal) {
+            pDamage = 1;
+        } else if (pDamage <= -20) {
+            pDamage = 0;
+        }
+        System.out.println("怪物攻击一次的伤害:" + mDamage);
+        System.out.println("玩家攻击一次的伤害:" + pDamage);
+        if (pDamage <= 0) {
+            showMesLabel.setText("无法对" + tower.getMonsterMap().get(monsterId).getName() + "造成伤害");
+            System.out.println("无法造成伤害");
+            return -1;
+        }
+        /**
+         * 战斗结果计算 默认玩家先攻
+         */
+        short pAttackNo = 0;
+        short attackNo = 0;
+        int pDamageTotal = 0;
+        int mDamageTotal = 0;
+        while (mHP > 0 && pHP > 0) {
+            if (attackNo % 2 == 0) {
+                pAttackNo++;
+                mHP -= pDamage;
+                pDamageTotal += pDamage;
+            } else {
+                pHP -= mDamage;
+                mDamageTotal += mDamage;
+            }
+            attackNo++;
+        }
+        System.out.println("玩家攻击次数:" + pAttackNo);
+        System.out.println("怪物攻击次数:" + (attackNo - pAttackNo));
+        return mDamageTotal;
     }
 
     /**
