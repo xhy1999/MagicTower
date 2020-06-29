@@ -8,10 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Xhy
@@ -24,6 +22,9 @@ public class TowerPanel extends JPanel implements Runnable {
      * 如果一行设置15个,那么就是480
      */
     private static final int CS = 32;
+
+    //标题栏高度
+    private static final int TITLE_HEIGHT = 26;
 
     //行
     private static final int GAME_ROW = 11;
@@ -69,7 +70,7 @@ public class TowerPanel extends JPanel implements Runnable {
     JDialog dialogBox;
     JLabel showMesLabel = new JLabel("魔塔(测试版)");
 
-    public static int floor = 0;
+    public static int floor = 1;
     /**
      * 帧数(每秒8帧)
      */
@@ -550,16 +551,35 @@ public class TowerPanel extends JPanel implements Runnable {
                     }
                     Iterator iter = monsterIdMap.entrySet().iterator();
                     int monsterNo = 0;
+                    List<FightCalc> fightCalcList = new ArrayList<>();
                     while (iter.hasNext()) {
                         Map.Entry entry = (Map.Entry) iter.next();
                         Object key = entry.getKey();
                         Object val = entry.getValue();
                         Monster monster = tower.getMonsterMap().get(key);
-                        System.out.println("击杀 " + monster.getName() + " 需要损失" + attack(key.toString()) + "体力");
+                        FightCalc fightCalc = new FightCalc(tower.getPlayer(), monster);
+                        if (fightCalc.canAttack) {
+                            //System.out.println("击杀 " + monster.getName() + " 需要损失" + fightCalc.mDamageTotal + "体力");
+                        } else {
+                            //System.out.println("无法击杀 " + monster.getName() + ", 至少需要 " + fightCalc.mDamageTotal + " 体力才能击杀");
+                        }
                         monsterNo++;
+                        int no = 0;
+                        for (int i = 0; i < fightCalcList.size(); i++) {
+                            if (!fightCalc.canAttack) {
+                                no = fightCalcList.size();
+                                break;
+                            }
+                            if (fightCalcList.get(i).mDamageTotal >= fightCalc.mDamageTotal) {
+                                no = i;
+                                break;
+                            }
+                        }
+                        fightCalcList.add(no, fightCalc);
                     }
-                    canMove = true;
                     System.out.println("计算完成,共" + monsterNo + "只怪物");
+                    showMonsterManual(fightCalcList);
+                    canMove = true;
                 }
             }).start();
         }
@@ -580,10 +600,6 @@ public class TowerPanel extends JPanel implements Runnable {
      * 开门时间
      */
     private static final byte DOOR_OPEN_TIME = 40;
-    /**
-     * 玩家伤害临界值
-     */
-    private short playerCriticalVal = 20;
     /**
      * 对话中按下空格
      */
@@ -640,7 +656,7 @@ public class TowerPanel extends JPanel implements Runnable {
                     }
                     npc.script_end(tower);
                     canMove = true;
-                    input.noMove();
+                    input.clear();
                 }
             }).start();
             return false;
@@ -745,6 +761,7 @@ public class TowerPanel extends JPanel implements Runnable {
             showMesLabel.setText("魔塔 第" + floor + "层");
             DIRECTION = DIRECTION_DOWN;
             musicPlayer.playBackgroundMusic(floor);
+            nowMonsterManual = 0;
             return false;
         } else if (layer3[y][x].equals("stair02")) {
             musicPlayer.upAndDown();
@@ -754,6 +771,7 @@ public class TowerPanel extends JPanel implements Runnable {
             showMesLabel.setText("魔塔 第" + floor + "层");
             DIRECTION = DIRECTION_DOWN;
             musicPlayer.playBackgroundMusic(floor);
+            nowMonsterManual = 0;
             return false;
         }
         if (layer2[y][x].contains("item")) {
@@ -954,14 +972,19 @@ public class TowerPanel extends JPanel implements Runnable {
             return false;
         }
         if (layer1[y][x].contains("monster")) {
-            Monster monster = tower.getMonsterMap().get(layer1[y][x]);
-            int mDamageTotal = attack(layer1[y][x]);
-            if (mDamageTotal == -1) {
+            Monster monster = null;
+            try {
+                monster = tower.getMonsterMap().get(layer1[y][x]);
+            } catch (Exception e) {
+                System.err.println("layer1 (x=" + x + ",y=" + y + ") monsterId(" + layer1[y][x] + ") 不存在!");
+            }
+            FightCalc fightCalc = new FightCalc(tower.getPlayer(), monster);
+            if (!fightCalc.canAttack) {
                 showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
                 System.out.println("无法击杀");
                 return false;
             }
-            int pHP = tower.getPlayer().hp - mDamageTotal;
+            int pHP = tower.getPlayer().hp - fightCalc.mDamageTotal;
             if (pHP > 0) {
                 musicPlayer.fight();
                 showMesLabel.setText("击杀:" + monster.getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
@@ -977,68 +1000,6 @@ public class TowerPanel extends JPanel implements Runnable {
             }
         }
         return true;
-    }
-
-    public int attack(String monsterId) {
-        Monster monster = null;
-        try {
-            monster = tower.getMonsterMap().get(monsterId);
-        } catch (NullPointerException e) {
-            System.err.println("怪物" + monsterId + "不存在!");
-            return -1;
-        }
-        if (!monster.hostile) {
-            return -1;
-        }
-        int mHP = monster.getHp();
-        int pHP = tower.getPlayer().hp;
-        int mDamage;
-        //魔法师系的怪物攻击玩家为真实伤害
-        if (monsterId.contains("monster04")) {
-            mDamage = monster.getAttack();
-        } else {
-            mDamage = monster.getAttack() - tower.getPlayer().defense;
-        }
-        int pDamage = tower.getPlayer().attack - monster.getDefense();
-        //-20为怪物伤害临界值
-        if (mDamage <= 0 && mDamage > -20) {
-            mDamage = 1;
-        } else if (mDamage <= -20) {
-            mDamage = 0;
-        }
-        if (pDamage <= 0 && pDamage > -playerCriticalVal) {
-            pDamage = 1;
-        } else if (pDamage <= -20) {
-            pDamage = 0;
-        }
-        System.out.println("怪物攻击一次的伤害:" + mDamage);
-        System.out.println("玩家攻击一次的伤害:" + pDamage);
-        if (pDamage <= 0) {
-            showMesLabel.setText("无法对" + tower.getMonsterMap().get(monsterId).getName() + "造成伤害");
-            System.out.println("无法造成伤害");
-            return -1;
-        }
-        /**
-         * 战斗结果计算 默认玩家先攻
-         */
-        short pAttackNo = 0;
-        short attackNo = 0;
-        int pDamageTotal = 0;
-        int mDamageTotal = 0;
-        while (mHP > 0 && pHP > 0) {
-            if (attackNo % 2 == 0) {
-                pAttackNo++;
-                mHP -= pDamage;
-                pDamageTotal += pDamage;
-            } else {
-                pHP -= mDamage;
-                mDamageTotal += mDamage;
-            }
-            attackNo++;
-        }
-        System.out.println("玩家攻击次数:" + pAttackNo);
-        System.out.println("怪物攻击次数:" + (attackNo - pAttackNo));
-        return mDamageTotal;
     }
 
     /**
@@ -1163,7 +1124,7 @@ public class TowerPanel extends JPanel implements Runnable {
             public void keyPressed(KeyEvent arg0) {
                 switch (arg0.getKeyCode()) {
                     case KeyEvent.VK_UP:
-                        input.noMove();
+                        input.clear();
                         if (nowSelected <= 0) {
                             break;
                         }
@@ -1172,7 +1133,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         selectLabel.setBounds(40, 100 + nowSelected * 30, 30, 30);
                         break;
                     case KeyEvent.VK_DOWN:
-                        input.noMove();
+                        input.clear();
                         if (nowSelected >= 3) {
                             break;
                         }
@@ -1185,16 +1146,16 @@ public class TowerPanel extends JPanel implements Runnable {
                             musicPlayer.upAndDown();
                             dialogBox.dispose();
                             canMove = true;
-                            input.noMove();
+                            input.clear();
                             nowSelected = 0;
                             break;
                         }
-                        short needMoney = (short) (25 + shop.buyNum * 2);
+                        short needMoney = 25;
                         if (tower.getPlayer().money >= needMoney) {
                             musicPlayer.shopBuySuc();
                             tower.getPlayer().money -= needMoney;
                             tower.getShopMap().get(shopId).buyNum++;
-                            shopDialogue.setText(shop.dialogue.replaceFirst("%%", 25 + shop.buyNum * 2 + ""));
+                            shopDialogue.setText(shop.dialogue.replaceFirst("%%", 25 + ""));
                             List<String> attributeList = shop.sell.attribute;
                             List<Short> valList = shop.sell.val;
                             if (attributeList.get(nowSelected).contains("hp")) {
@@ -1212,7 +1173,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         musicPlayer.upAndDown();
                         dialogBox.dispose();
                         canMove = true;
-                        input.noMove();
+                        input.clear();
                         nowSelected = 0;
                         break;
 
@@ -1221,7 +1182,7 @@ public class TowerPanel extends JPanel implements Runnable {
         });
         dialogp.setSize(268, 235);
         dialogp.setBackground(Color.black);
-        shopDialogue.setText(shop.dialogue.replaceFirst("%%", 25 + shop.buyNum * 2 + ""));
+        shopDialogue.setText(shop.dialogue.replaceFirst("%%", 25 + ""));
         shopDialogue.setLineWrap(true);
         shopDialogue.setEditable(false);
         shopDialogue.setBounds(4, 48, 260, 40);
@@ -1267,12 +1228,12 @@ public class TowerPanel extends JPanel implements Runnable {
                 switch (arg0.getKeyCode()) {
                     case KeyEvent.VK_SPACE:
                         dialogBox.dispose();
-                        input.noMove();
+                        input.clear();
                         canMove = true;
                         break;
                     case KeyEvent.VK_ESCAPE:
                         dialogBox.dispose();
-                        input.noMove();
+                        input.clear();
                         canMove = true;
                         break;
                 }
@@ -1297,6 +1258,186 @@ public class TowerPanel extends JPanel implements Runnable {
         dialogp.add(content);
         dialogp.add(tip);
         dialogBox.setLocation(mainframe.getLocation().x + 171, mainframe.getLocation().y + 125);
+        dialogBox.add(dialogp);
+        dialogBox.setVisible(true);
+    }
+
+    byte nowMonsterManual = 0;
+
+    public void showMonsterManual(List<FightCalc> fightCalcList) {
+        if (fightCalcList.size() == 0) {
+            return;
+        }
+        dialogBox = new JDialog(mainframe, null, true);
+        JPanel dialogp = new JPanel(null);
+        JLabel pict = new JLabel();
+        JTextArea content = new JTextArea();
+        //content.setBorder(BorderFactory.createLineBorder(Color.white));
+        dialogBox.setSize(352, 352);
+        dialogBox.setUndecorated(true);
+        for (int i = 8 * nowMonsterManual; i < fightCalcList.size() && i < 8 * (nowMonsterManual + 1); i++) {
+            Monster monster = fightCalcList.get(i).getMonster();
+            JLabel mainLabel = new JLabel();
+            mainLabel.setBounds(3, 8 + 42 * (i % 8), 346, 40);
+            mainLabel.setForeground(Color.white);
+            mainLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
+
+            JLabel picLabel = new JLabel();
+            picLabel.setBounds(3, 4, 32, 32);
+            picLabel.setIcon(monster.getIcon()[0]);
+
+            ImageIcon background = new ImageIcon(tower.getFloorImage()[0]);
+            background.setImage(background.getImage().getScaledInstance(background.getIconWidth(), background.getIconHeight(), Image.SCALE_DEFAULT));
+
+            JLabel backgroundLabel = new JLabel();
+            backgroundLabel.setIcon(background);
+            backgroundLabel.setBounds(3, 4, 32, 32);
+
+            JLabel nameLabel = new JLabel("名称", JLabel.CENTER);
+            nameLabel.setBounds(38, 3, 30, 15);
+            nameLabel.setForeground(Color.white);
+            nameLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+            //nameLabel.setOpaque(true);
+            //nameLabel.setBackground(new Color(255, 255, 255, 100));
+
+            JLabel nameValLabel = new JLabel(monster.getName(), JLabel.CENTER);
+            nameValLabel.setBounds(68, 3, 95, 15);
+            nameValLabel.setForeground(Color.white);
+            nameValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel hpLabel = new JLabel("生命", JLabel.CENTER);
+            hpLabel.setBounds(38, 21, 30, 15);
+            hpLabel.setForeground(Color.white);
+            hpLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel hpValLabel = new JLabel(monster.getHp() + "", JLabel.CENTER);
+            hpValLabel.setBounds(68, 21, 95, 15);
+            hpValLabel.setForeground(Color.white);
+            hpValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel attackLabel = new JLabel("攻击", JLabel.CENTER);
+            attackLabel.setBounds(163, 3, 30, 15);
+            attackLabel.setForeground(Color.white);
+            attackLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel attackValLabel = new JLabel(monster.getAttack() + "", JLabel.RIGHT);
+            attackValLabel.setBounds(193, 3, 35, 15);
+            attackValLabel.setForeground(Color.white);
+            attackValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel defenseLabel = new JLabel("防御", JLabel.CENTER);
+            defenseLabel.setBounds(163, 21, 30, 15);
+            defenseLabel.setForeground(Color.white);
+            defenseLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel defenseValLabel = new JLabel(monster.getDefense() + "", JLabel.RIGHT);
+            defenseValLabel.setBounds(193, 21, 35, 15);
+            defenseValLabel.setForeground(Color.white);
+            defenseValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel rewardLabel = new JLabel("金·经", JLabel.CENTER);
+            rewardLabel.setBounds(228, 3, 45, 15);
+            rewardLabel.setForeground(Color.white);
+            rewardLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel rewardValLabel = new JLabel(monster.getMoney() + "·" + monster.getExp(), JLabel.CENTER);
+            rewardValLabel.setBounds(273, 3, 70, 15);
+            rewardValLabel.setForeground(Color.white);
+            rewardValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel damageLabel = new JLabel("损失", JLabel.CENTER);
+            damageLabel.setBounds(228, 21, 45, 15);
+            damageLabel.setForeground(Color.white);
+            damageLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            JLabel damageValLabel = new JLabel("", JLabel.CENTER);
+            if (fightCalcList.get(i).canAttack) {
+                damageValLabel.setText(fightCalcList.get(i).mDamageTotal + "");
+            } else {
+                damageValLabel.setText("∞");
+            }
+            damageValLabel.setBounds(273, 21, 70, 15);
+            damageValLabel.setForeground(Color.white);
+            damageValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+            mainLabel.add(picLabel);
+            mainLabel.add(backgroundLabel);
+            mainLabel.add(nameLabel);
+            mainLabel.add(nameValLabel);
+            mainLabel.add(hpLabel);
+            mainLabel.add(hpValLabel);
+            mainLabel.add(attackLabel);
+            mainLabel.add(attackValLabel);
+            mainLabel.add(defenseLabel);
+            mainLabel.add(defenseValLabel);
+            mainLabel.add(rewardLabel);
+            mainLabel.add(rewardValLabel);
+            mainLabel.add(damageLabel);
+            mainLabel.add(damageValLabel);
+            dialogBox.add(mainLabel);
+        }
+        content.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent arg0) {
+
+            }
+
+            public void keyReleased(KeyEvent arg0) {
+
+            }
+
+            public void keyPressed(KeyEvent arg0) {
+                boolean closeFlag = false;
+                boolean changeFlag = false;
+                switch (arg0.getKeyCode()) {
+                    case KeyEvent.VK_SPACE:
+                        closeFlag = true;
+                        break;
+                    case KeyEvent.VK_ESCAPE:
+                        closeFlag = true;
+                        break;
+                    case KeyEvent.VK_ENTER:
+                        closeFlag = true;
+                        break;
+                    case KeyEvent.VK_L:
+                        closeFlag = true;
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        if (nowMonsterManual != 0) {
+                            nowMonsterManual--;
+                            changeFlag = true;
+                        }
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        if (nowMonsterManual < fightCalcList.size() / 8.0 - 1) {
+                            nowMonsterManual++;
+                            changeFlag = true;
+                        }
+                        break;
+                    default:
+                        return;
+                }
+                if (closeFlag) {
+                    dialogBox.dispose();
+                    input.clear();
+                    canMove = true;
+                }
+                if (changeFlag) {
+                    input.clear();
+                    dialogBox.dispose();
+                    showMonsterManual(fightCalcList);
+                }
+            }
+        });
+        content.setLineWrap(true);
+        content.setEditable(false);
+        content.setBounds(0, 0, 1, 1);
+        content.setBackground(Color.black);
+        dialogp.setSize(352, 352);
+        dialogp.setBackground(Color.black);
+        dialogp.setBorder(BorderFactory.createLineBorder(new Color(228, 122, 0), 3));
+        dialogp.add(pict);
+        dialogp.add(content);
+        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32);
         dialogBox.add(dialogp);
         dialogBox.setVisible(true);
     }

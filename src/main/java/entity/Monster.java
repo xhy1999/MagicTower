@@ -24,4 +24,8 @@ public class Monster extends Entity {
         this.icon[1] = imageIcon2;
     }
 
+    @Override
+    public String toString() {
+        return "Monster{" + "id='" + id + '\'' + ", hp=" + hp + ", attack=" + attack + ", defense=" + defense + ", exp=" + exp + ", money=" + money + ", name='" + name + '\'' + ", removed=" + removed + ", hostile=" + hostile + '}';
+    }
 }

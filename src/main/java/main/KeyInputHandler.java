@@ -67,10 +67,10 @@ public class KeyInputHandler implements KeyListener {
         if(k == KeyEvent.VK_LEFT) left.toggle(pressed);
         if(k == KeyEvent.VK_RIGHT) right.toggle(pressed);
 
-        if(k == KeyEvent.VK_W) up.toggle(pressed);
-        if(k == KeyEvent.VK_S) down.toggle(pressed);
-        if(k == KeyEvent.VK_A) left.toggle(pressed);
-        if(k == KeyEvent.VK_D) right.toggle(pressed);
+//        if(k == KeyEvent.VK_W) up.toggle(pressed);
+//        if(k == KeyEvent.VK_S) down.toggle(pressed);
+//        if(k == KeyEvent.VK_A) left.toggle(pressed);
+//        if(k == KeyEvent.VK_D) right.toggle(pressed);
 
         if(k == KeyEvent.VK_2) cursor_up.toggle(pressed);
         if(k == KeyEvent.VK_8) cursor_down.toggle(pressed);
@@ -81,11 +81,12 @@ public class KeyInputHandler implements KeyListener {
         if(k == KeyEvent.VK_L) use_rod.toggle(pressed);
     }
 
-    public void noMove() {
+    public void clear() {
         up.toggle(false);
         down.toggle(false);
         left.toggle(false);
         right.toggle(false);
+        use_rod.toggle(false);
     }
 
 }
