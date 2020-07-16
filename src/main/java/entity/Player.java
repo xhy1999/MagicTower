@@ -40,7 +40,7 @@ public class Player {
         this.attack = 10;
         this.defense = 10;
         this.exp = 0;
-        this.money = 0;
+        this.money = 10000;
         this.level = 1;
         this.yKey = 100;
         this.bKey = 100;

@@ -70,7 +70,7 @@ public class TowerPanel extends JPanel implements Runnable {
     JDialog dialogBox;
     JLabel showMesLabel = new JLabel("魔塔(测试版)");
 
-    public static int floor = 1;
+    public static int floor = 13;
     /**
      * 帧数(每秒8帧)
      */
@@ -552,6 +552,7 @@ public class TowerPanel extends JPanel implements Runnable {
                     Iterator iter = monsterIdMap.entrySet().iterator();
                     int monsterNo = 0;
                     List<FightCalc> fightCalcList = new ArrayList<>();
+                    List<FightCalc> dieAttackList = new ArrayList<>();
                     while (iter.hasNext()) {
                         Map.Entry entry = (Map.Entry) iter.next();
                         Object key = entry.getKey();
@@ -565,18 +566,33 @@ public class TowerPanel extends JPanel implements Runnable {
                         }
                         monsterNo++;
                         int no = 0;
-                        for (int i = 0; i < fightCalcList.size(); i++) {
-                            if (!fightCalc.canAttack) {
-                                no = fightCalcList.size();
-                                break;
+                        if (fightCalc.canAttack) {
+                            for (int i = 0; i < fightCalcList.size(); i++) {
+                                if (fightCalcList.get(i).mDamageTotal >= fightCalc.mDamageTotal) {
+                                    no = i;
+                                    break;
+                                }
+                                if (i == fightCalcList.size() - 1) {
+                                    no = fightCalcList.size();
+                                    break;
+                                }
                             }
-                            if (fightCalcList.get(i).mDamageTotal >= fightCalc.mDamageTotal) {
-                                no = i;
-                                break;
+                            fightCalcList.add(no, fightCalc);
+                        } else {
+                            for (int i = 0; i < dieAttackList.size(); i++) {
+                                if (dieAttackList.get(i).getMonster().getAttack() >= fightCalc.getMonster().getAttack()) {
+                                    no = i;
+                                    break;
+                                }
+                                if (i == dieAttackList.size() - 1) {
+                                    no = dieAttackList.size();
+                                    break;
+                                }
                             }
+                            dieAttackList.add(no, fightCalc);
                         }
-                        fightCalcList.add(no, fightCalc);
                     }
+                    fightCalcList.addAll(dieAttackList);
                     System.out.println("计算完成,共" + monsterNo + "只怪物");
                     showMonsterManual(fightCalcList);
                     canMove = true;
@@ -1122,6 +1138,7 @@ public class TowerPanel extends JPanel implements Runnable {
             }
 
             public void keyPressed(KeyEvent arg0) {
+                Shop shop = tower.getShopMap().get(shopId);
                 switch (arg0.getKeyCode()) {
                     case KeyEvent.VK_UP:
                         input.clear();
@@ -1150,23 +1167,44 @@ public class TowerPanel extends JPanel implements Runnable {
                             nowSelected = 0;
                             break;
                         }
-                        short needMoney = 25;
-                        if (tower.getPlayer().money >= needMoney) {
-                            musicPlayer.shopBuySuc();
-                            tower.getPlayer().money -= needMoney;
-                            tower.getShopMap().get(shopId).buyNum++;
-                            shopDialogue.setText(shop.dialogue.replaceFirst("%%", 25 + ""));
-                            List<String> attributeList = shop.sell.attribute;
-                            List<Short> valList = shop.sell.val;
-                            if (attributeList.get(nowSelected).contains("hp")) {
-                                tower.getPlayer().hp += valList.get(nowSelected);
-                            } else if (attributeList.get(nowSelected).contains("attack")) {
-                                tower.getPlayer().attack += valList.get(nowSelected);
-                            } else if (attributeList.get(nowSelected).contains("defense")) {
-                                tower.getPlayer().defense += valList.get(nowSelected);
+                        short price = (short) shop.price;
+                        if (shop.need.equals("money")) {
+                            if (tower.getPlayer().money >= price) {
+                                musicPlayer.shopBuySuc();
+                                tower.getPlayer().money -= price;
+                                shop.buyNum++;
+                                shopDialogue.setText(shop.dialogue.replaceFirst("%%", shop.price + ""));
+                                List<String> attributeList = shop.sell.attribute;
+                                List<Short> valList = shop.sell.val;
+                                if (attributeList.get(nowSelected).contains("hp")) {
+                                    tower.getPlayer().hp += valList.get(nowSelected);
+                                } else if (attributeList.get(nowSelected).contains("attack")) {
+                                    tower.getPlayer().attack += valList.get(nowSelected);
+                                } else if (attributeList.get(nowSelected).contains("defense")) {
+                                    tower.getPlayer().defense += valList.get(nowSelected);
+                                }
+                            } else {
+                                musicPlayer.shopBuyFail();
                             }
-                        } else {
-                            musicPlayer.shopBuyFail();
+                        }
+                        else if (shop.need.equals("exp")) {
+                            if (tower.getPlayer().exp >= price) {
+                                musicPlayer.shopBuySuc();
+                                tower.getPlayer().exp -= price;
+                                shop.buyNum++;
+                                shopDialogue.setText(shop.dialogue.replaceFirst("%%", shop.price + ""));
+                                List<String> attributeList = shop.sell.attribute;
+                                List<Short> valList = shop.sell.val;
+                                if (attributeList.get(nowSelected).contains("hp")) {
+                                    tower.getPlayer().hp += valList.get(nowSelected);
+                                } else if (attributeList.get(nowSelected).contains("attack")) {
+                                    tower.getPlayer().attack += valList.get(nowSelected);
+                                } else if (attributeList.get(nowSelected).contains("defense")) {
+                                    tower.getPlayer().defense += valList.get(nowSelected);
+                                }
+                            } else {
+                                musicPlayer.shopBuyFail();
+                            }
                         }
                         break;
                     case KeyEvent.VK_ESCAPE:
@@ -1182,7 +1220,7 @@ public class TowerPanel extends JPanel implements Runnable {
         });
         dialogp.setSize(268, 235);
         dialogp.setBackground(Color.black);
-        shopDialogue.setText(shop.dialogue.replaceFirst("%%", 25 + ""));
+        shopDialogue.setText(shop.dialogue.replaceFirst("%%", shop.price + ""));
         shopDialogue.setLineWrap(true);
         shopDialogue.setEditable(false);
         shopDialogue.setBounds(4, 48, 260, 40);
@@ -1354,7 +1392,7 @@ public class TowerPanel extends JPanel implements Runnable {
             if (fightCalcList.get(i).canAttack) {
                 damageValLabel.setText(fightCalcList.get(i).mDamageTotal + "");
             } else {
-                damageValLabel.setText("∞");
+                damageValLabel.setText("DIE");
             }
             damageValLabel.setBounds(273, 21, 70, 15);
             damageValLabel.setForeground(Color.white);

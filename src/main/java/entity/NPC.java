@@ -55,7 +55,7 @@ public class NPC extends Entity {
 
     public void script_start(Tower tower) {
         if (this.id.equals("npc01_2")) {
-            if (tower.getPlayer().inventory.get("item09_5").equals(1)) {
+            if (tower.getPlayer().inventory.containsKey("item09_5") && tower.getPlayer().inventory.get("item09_5").equals(1)) {
                 this.canMeet = true;
             }
         }
