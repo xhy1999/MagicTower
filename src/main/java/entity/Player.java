@@ -45,8 +45,8 @@ public class Player {
         this.yKey = 100;
         this.bKey = 100;
         this.rKey = 100;
-        this.maxFloor = 1;
-        this.minFloor = 1;
+        this.maxFloor = 0;
+        this.minFloor = 0;
         this.x = 0;
         this.y = 0;
         this.inventory = new HashMap<>();

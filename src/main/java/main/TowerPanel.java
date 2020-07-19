@@ -90,6 +90,8 @@ public class TowerPanel extends JPanel implements Runnable {
         this.tower = tower;
         tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
         tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
+        tower.getPlayer().maxFloor = floor;
+        tower.getPlayer().minFloor = floor;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
         DIRECTION = DIRECTION_UP;
@@ -599,6 +601,16 @@ public class TowerPanel extends JPanel implements Runnable {
                 }
             }).start();
         }
+        else if (input.use_floor_transfer.down) {
+            canMove = false;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    showFloorTransfer();
+                    canMove = true;
+                }
+            }).start();
+        }
         if (System.currentTimeMillis() - lastMove > stopTime) {
             moveNo = 0;
         }
@@ -778,6 +790,9 @@ public class TowerPanel extends JPanel implements Runnable {
             DIRECTION = DIRECTION_DOWN;
             musicPlayer.playBackgroundMusic(floor);
             nowMonsterManual = 0;
+            if (floor < tower.getPlayer().minFloor) {
+                tower.getPlayer().minFloor = floor + 1;
+            }
             return false;
         } else if (layer3[y][x].equals("stair02")) {
             musicPlayer.upAndDown();
@@ -788,6 +803,9 @@ public class TowerPanel extends JPanel implements Runnable {
             DIRECTION = DIRECTION_DOWN;
             musicPlayer.playBackgroundMusic(floor);
             nowMonsterManual = 0;
+            if (floor > tower.getPlayer().maxFloor) {
+                tower.getPlayer().maxFloor = floor - 1;
+            }
             return false;
         }
         if (layer2[y][x].contains("item")) {
@@ -1173,7 +1191,7 @@ public class TowerPanel extends JPanel implements Runnable {
                                 musicPlayer.shopBuySuc();
                                 tower.getPlayer().money -= price;
                                 shop.buyNum++;
-                                shopDialogue.setText(shop.dialogue.replaceFirst("%%", shop.price + ""));
+                                shopDialogue.setText(shop.dialogue.replaceFirst("%%", String.valueOf(shop.price)));
                                 List<String> attributeList = shop.sell.attribute;
                                 List<Short> valList = shop.sell.val;
                                 if (attributeList.get(nowSelected).contains("hp")) {
@@ -1192,7 +1210,7 @@ public class TowerPanel extends JPanel implements Runnable {
                                 musicPlayer.shopBuySuc();
                                 tower.getPlayer().exp -= price;
                                 shop.buyNum++;
-                                shopDialogue.setText(shop.dialogue.replaceFirst("%%", shop.price + ""));
+                                shopDialogue.setText(shop.dialogue.replaceFirst("%%", String.valueOf(shop.price)));
                                 List<String> attributeList = shop.sell.attribute;
                                 List<Short> valList = shop.sell.val;
                                 if (attributeList.get(nowSelected).contains("hp")) {
@@ -1220,7 +1238,7 @@ public class TowerPanel extends JPanel implements Runnable {
         });
         dialogp.setSize(268, 235);
         dialogp.setBackground(Color.black);
-        shopDialogue.setText(shop.dialogue.replaceFirst("%%", shop.price + ""));
+        shopDialogue.setText(shop.dialogue.replaceFirst("%%", String.valueOf(shop.price)));
         shopDialogue.setLineWrap(true);
         shopDialogue.setEditable(false);
         shopDialogue.setBounds(4, 48, 260, 40);
@@ -1348,7 +1366,7 @@ public class TowerPanel extends JPanel implements Runnable {
             hpLabel.setForeground(Color.white);
             hpLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 
-            JLabel hpValLabel = new JLabel(monster.getHp() + "", JLabel.CENTER);
+            JLabel hpValLabel = new JLabel(String.valueOf(monster.getHp()), JLabel.CENTER);
             hpValLabel.setBounds(68, 21, 95, 15);
             hpValLabel.setForeground(Color.white);
             hpValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
@@ -1358,7 +1376,7 @@ public class TowerPanel extends JPanel implements Runnable {
             attackLabel.setForeground(Color.white);
             attackLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 
-            JLabel attackValLabel = new JLabel(monster.getAttack() + "", JLabel.RIGHT);
+            JLabel attackValLabel = new JLabel(String.valueOf(monster.getAttack()), JLabel.RIGHT);
             attackValLabel.setBounds(193, 3, 35, 15);
             attackValLabel.setForeground(Color.white);
             attackValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
@@ -1368,7 +1386,7 @@ public class TowerPanel extends JPanel implements Runnable {
             defenseLabel.setForeground(Color.white);
             defenseLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 
-            JLabel defenseValLabel = new JLabel(monster.getDefense() + "", JLabel.RIGHT);
+            JLabel defenseValLabel = new JLabel(String.valueOf(monster.getDefense()), JLabel.RIGHT);
             defenseValLabel.setBounds(193, 21, 35, 15);
             defenseValLabel.setForeground(Color.white);
             defenseValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
@@ -1390,7 +1408,7 @@ public class TowerPanel extends JPanel implements Runnable {
 
             JLabel damageValLabel = new JLabel("", JLabel.CENTER);
             if (fightCalcList.get(i).canAttack) {
-                damageValLabel.setText(fightCalcList.get(i).mDamageTotal + "");
+                damageValLabel.setText(String.valueOf(fightCalcList.get(i).mDamageTotal));
             } else {
                 damageValLabel.setText("DIE");
             }
@@ -1479,5 +1497,150 @@ public class TowerPanel extends JPanel implements Runnable {
         dialogBox.add(dialogp);
         dialogBox.setVisible(true);
     }
+
+    int nowSelectFloor = 0;
+
+    public void showFloorTransfer() {
+        nowSelectFloor = floor;
+        dialogBox = new JDialog(mainframe, null, true);
+        JPanel dialogp = new JPanel(null);
+        JLabel pict = new JLabel();
+        JTextArea content = new JTextArea();
+        //content.setBorder(BorderFactory.createLineBorder(Color.white));
+        dialogBox.setSize(352, 352);
+        dialogBox.setUndecorated(true);
+
+        JLabel mainLabel = new JLabel();
+        mainLabel.setBounds(50, 135, 250, 80);
+        mainLabel.setForeground(Color.white);
+        mainLabel.setBorder(BorderFactory.createLineBorder(new Color(0, 153, 204), 3));
+
+        JLabel floorNoLabel = new JLabel(String.valueOf(floor), JLabel.RIGHT);
+        floorNoLabel.setBounds(0, 0, 150, 80);
+        floorNoLabel.setForeground(Color.white);
+        floorNoLabel.setFont(new Font("微软雅黑", Font.PLAIN, 38));
+
+        JLabel floorLabel = new JLabel("F", JLabel.CENTER);
+        floorLabel.setBounds(150, 0, 100, 80);
+        floorLabel.setForeground(Color.white);
+        floorLabel.setFont(new Font("微软雅黑", Font.PLAIN, 38));
+
+
+        System.out.println("nowSelectFloor:" + nowSelectFloor);
+        System.out.println("maxFloor:" + tower.getPlayer().maxFloor);
+        System.out.println("minFloor:" + tower.getPlayer().minFloor);
+        JLabel upPicLabel = new JLabel();
+        if (nowSelectFloor + 1 <= tower.getPlayer().maxFloor) {
+            upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_1.png")));
+        } else {
+            upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_2.png")));
+        }
+        upPicLabel.setBounds(160, 95, 32, 32);
+        upPicLabel.setForeground(Color.white);
+
+        JLabel downPicLabel = new JLabel();
+        if (nowSelectFloor - 1 >= tower.getPlayer().minFloor) {
+            downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_1.png")));
+        } else {
+            downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_2.png")));
+        }
+        downPicLabel.setBounds(160, 223, 32, 32);
+        downPicLabel.setForeground(Color.white);
+
+        JLabel enterLabel = new JLabel("-Enter-", JLabel.CENTER);
+        enterLabel.setBounds(220, 230, 80, 30);
+        enterLabel.setForeground(Color.white);
+        enterLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
+
+        JLabel quitLabel = new JLabel("-Quit(F)-", JLabel.CENTER);
+        quitLabel.setBounds(240, 310, 100, 30);
+        quitLabel.setForeground(Color.white);
+        quitLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
+
+        mainLabel.add(floorNoLabel);
+        mainLabel.add(floorLabel);
+        dialogBox.add(mainLabel);
+        dialogBox.add(upPicLabel);
+        dialogBox.add(downPicLabel);
+        dialogBox.add(enterLabel);
+        dialogBox.add(quitLabel);
+        
+        content.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent arg0) {
+
+            }
+
+            public void keyReleased(KeyEvent arg0) {
+
+            }
+
+            public void keyPressed(KeyEvent arg0) {
+                boolean closeFlag = false;
+                boolean changeFlag = false;
+                switch (arg0.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                        if (nowSelectFloor + 1 > tower.getPlayer().maxFloor) {
+                            break;
+                        }
+                        if (nowSelectFloor++ == tower.getPlayer().maxFloor) {
+                            upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_2.png")));
+                            floorNoLabel.setText(String.valueOf(nowSelectFloor));
+                        } else {
+                            floorNoLabel.setText(String.valueOf(nowSelectFloor));
+                        }
+                        changeFlag = true;
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        if (nowSelectFloor - 1 < tower.getPlayer().minFloor) {
+                            break;
+                        }
+                        if (nowSelectFloor-- == tower.getPlayer().minFloor) {
+                            downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_2.png")));
+                            floorNoLabel.setText(String.valueOf(nowSelectFloor));
+                        } else {
+                            floorNoLabel.setText(String.valueOf(nowSelectFloor));
+                        }
+                        changeFlag = true;
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        closeFlag = true;
+                        break;
+                    case KeyEvent.VK_ESCAPE:
+                        closeFlag = true;
+                        break;
+                    case KeyEvent.VK_ENTER:
+                        closeFlag = true;
+                        break;
+                    case KeyEvent.VK_F:
+                        closeFlag = true;
+                        break;
+                    default:
+                        return;
+                }
+                if (closeFlag) {
+                    dialogBox.dispose();
+                    input.clear();
+                    canMove = true;
+                }
+                if (changeFlag) {
+                    //input.clear();
+                    //dialogBox.dispose();
+                }
+            }
+        });
+        content.setLineWrap(true);
+        content.setEditable(false);
+        content.setBounds(0, 0, 1, 1);
+        content.setBackground(Color.black);
+        dialogp.setSize(352, 352);
+        dialogp.setBackground(Color.black);
+        dialogp.setBorder(BorderFactory.createLineBorder(new Color(0, 153, 204), 2));
+        dialogp.add(pict);
+        dialogp.add(content);
+        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32);
+        dialogBox.add(dialogp);
+        dialogBox.setVisible(true);
+    }
+
 
 }

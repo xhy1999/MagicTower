@@ -37,11 +37,12 @@ public class KeyInputHandler implements KeyListener {
     public Key left = new Key();
     public Key right = new Key();
     public Key enter = new Key();
-    public Key use_rod = new Key();
     public Key cursor_up = new Key();
     public Key cursor_down = new Key();
     public Key confirm = new Key();
     public Key escape = new Key();
+    public Key use_rod = new Key();
+    public Key use_floor_transfer = new Key();
 
     public KeyInputHandler(TowerPanel game) {
         game.addKeyListener(this);
@@ -79,6 +80,7 @@ public class KeyInputHandler implements KeyListener {
         if(k == KeyEvent.VK_ENTER) enter.toggle(pressed);
 
         if(k == KeyEvent.VK_L) use_rod.toggle(pressed);
+        if(k == KeyEvent.VK_F) use_floor_transfer.toggle(pressed);
     }
 
     public void clear() {
@@ -87,6 +89,7 @@ public class KeyInputHandler implements KeyListener {
         left.toggle(false);
         right.toggle(false);
         use_rod.toggle(false);
+        use_floor_transfer.toggle(false);
     }
 
 }
