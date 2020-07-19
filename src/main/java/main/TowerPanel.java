@@ -741,6 +741,7 @@ public class TowerPanel extends JPanel implements Runnable {
             if (!open && (layer3[y][x].contains("door04") || layer3[y][x].contains("door05"))) {
                 try {
                     if (tower.getDoorMap().get(layer3[y][x]).openable) {
+                        musicPlayer.openSpecialDoor();
                         open = true;
                     }
                 } catch (Exception e) {
@@ -791,7 +792,7 @@ public class TowerPanel extends JPanel implements Runnable {
             musicPlayer.playBackgroundMusic(floor);
             nowMonsterManual = 0;
             if (floor < tower.getPlayer().minFloor) {
-                tower.getPlayer().minFloor = floor + 1;
+                tower.getPlayer().minFloor = floor;
             }
             return false;
         } else if (layer3[y][x].equals("stair02")) {
@@ -804,7 +805,7 @@ public class TowerPanel extends JPanel implements Runnable {
             musicPlayer.playBackgroundMusic(floor);
             nowMonsterManual = 0;
             if (floor > tower.getPlayer().maxFloor) {
-                tower.getPlayer().maxFloor = floor - 1;
+                tower.getPlayer().maxFloor = floor;
             }
             return false;
         }
@@ -1515,27 +1516,23 @@ public class TowerPanel extends JPanel implements Runnable {
         mainLabel.setForeground(Color.white);
         mainLabel.setBorder(BorderFactory.createLineBorder(new Color(0, 153, 204), 3));
 
-        JLabel floorNoLabel = new JLabel(String.valueOf(floor), JLabel.RIGHT);
-        floorNoLabel.setBounds(0, 0, 150, 80);
+        JLabel floorNoLabel = new JLabel(String.valueOf(floor), JLabel.CENTER);
+        floorNoLabel.setBounds(75, 0, 100, 80);
         floorNoLabel.setForeground(Color.white);
         floorNoLabel.setFont(new Font("微软雅黑", Font.PLAIN, 38));
 
         JLabel floorLabel = new JLabel("F", JLabel.CENTER);
-        floorLabel.setBounds(150, 0, 100, 80);
+        floorLabel.setBounds(140, 0, 100, 80);
         floorLabel.setForeground(Color.white);
         floorLabel.setFont(new Font("微软雅黑", Font.PLAIN, 38));
 
-
-        System.out.println("nowSelectFloor:" + nowSelectFloor);
-        System.out.println("maxFloor:" + tower.getPlayer().maxFloor);
-        System.out.println("minFloor:" + tower.getPlayer().minFloor);
         JLabel upPicLabel = new JLabel();
         if (nowSelectFloor + 1 <= tower.getPlayer().maxFloor) {
             upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_1.png")));
         } else {
             upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_2.png")));
         }
-        upPicLabel.setBounds(160, 95, 32, 32);
+        upPicLabel.setBounds(160, 85, 32, 32);
         upPicLabel.setForeground(Color.white);
 
         JLabel downPicLabel = new JLabel();
@@ -1544,7 +1541,7 @@ public class TowerPanel extends JPanel implements Runnable {
         } else {
             downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_2.png")));
         }
-        downPicLabel.setBounds(160, 223, 32, 32);
+        downPicLabel.setBounds(160, 233, 32, 32);
         downPicLabel.setForeground(Color.white);
 
         JLabel enterLabel = new JLabel("-Enter-", JLabel.CENTER);
@@ -1564,7 +1561,7 @@ public class TowerPanel extends JPanel implements Runnable {
         dialogBox.add(downPicLabel);
         dialogBox.add(enterLabel);
         dialogBox.add(quitLabel);
-        
+
         content.addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent arg0) {
 
@@ -1582,34 +1579,41 @@ public class TowerPanel extends JPanel implements Runnable {
                         if (nowSelectFloor + 1 > tower.getPlayer().maxFloor) {
                             break;
                         }
-                        if (nowSelectFloor++ == tower.getPlayer().maxFloor) {
-                            upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_2.png")));
-                            floorNoLabel.setText(String.valueOf(nowSelectFloor));
-                        } else {
-                            floorNoLabel.setText(String.valueOf(nowSelectFloor));
-                        }
+                        musicPlayer.floorTransferSelect();
+                        nowSelectFloor++;
                         changeFlag = true;
                         break;
                     case KeyEvent.VK_DOWN:
                         if (nowSelectFloor - 1 < tower.getPlayer().minFloor) {
                             break;
                         }
-                        if (nowSelectFloor-- == tower.getPlayer().minFloor) {
-                            downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_2.png")));
-                            floorNoLabel.setText(String.valueOf(nowSelectFloor));
-                        } else {
-                            floorNoLabel.setText(String.valueOf(nowSelectFloor));
-                        }
+                        musicPlayer.floorTransferSelect();
+                        nowSelectFloor--;
                         changeFlag = true;
                         break;
                     case KeyEvent.VK_SPACE:
                         closeFlag = true;
                         break;
-                    case KeyEvent.VK_ESCAPE:
-                        closeFlag = true;
-                        break;
                     case KeyEvent.VK_ENTER:
                         closeFlag = true;
+                        musicPlayer.upAndDown();
+                        if (floor < nowSelectFloor) {
+                            tower.getPlayer().x = tower.getGameMapList().get(nowSelectFloor).upPositionX;
+                            tower.getPlayer().y = tower.getGameMapList().get(nowSelectFloor).upPositionY;
+                            showMesLabel.setText("魔塔 第" + nowSelectFloor + "层");
+                            DIRECTION = DIRECTION_DOWN;
+                            musicPlayer.playBackgroundMusic(nowSelectFloor);
+                            nowMonsterManual = 0;
+                        }
+                        else if (floor > nowSelectFloor) {
+                            tower.getPlayer().x = tower.getGameMapList().get(nowSelectFloor).downPositionX;
+                            tower.getPlayer().y = tower.getGameMapList().get(nowSelectFloor).downPositionY;
+                            showMesLabel.setText("魔塔 第" + nowSelectFloor + "层");
+                            DIRECTION = DIRECTION_DOWN;
+                            musicPlayer.playBackgroundMusic(nowSelectFloor);
+                            nowMonsterManual = 0;
+                        }
+                        floor = nowSelectFloor;
                         break;
                     case KeyEvent.VK_F:
                         closeFlag = true;
@@ -1623,8 +1627,17 @@ public class TowerPanel extends JPanel implements Runnable {
                     canMove = true;
                 }
                 if (changeFlag) {
-                    //input.clear();
-                    //dialogBox.dispose();
+                    floorNoLabel.setText(String.valueOf(nowSelectFloor));
+                    if (nowSelectFloor >= tower.getPlayer().maxFloor) {
+                        upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_2.png")));
+                    } else {
+                        upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_1.png")));
+                    }
+                    if (nowSelectFloor <= tower.getPlayer().minFloor) {
+                        downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_2.png")));
+                    } else {
+                        downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_1.png")));
+                    }
                 }
             }
         });
