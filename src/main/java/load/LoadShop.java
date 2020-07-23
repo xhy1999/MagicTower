@@ -77,6 +77,118 @@ public class LoadShop {
                 new ImageIcon(getClass().getResource("/image/shop/shop02_2_2.png")));
         shopMap.put(shop.getId(), shop);
 
+        name = new ArrayList<>();
+        name.add("等级提升1级(需要100点)");
+        name.add("增加5点攻击(需要30点)");
+        name.add("增加5点防御(需要30点)");
+        name.add("离开商店");
+
+        attribute = new ArrayList<>();
+        attribute.add("lv");
+        attribute.add("attack");
+        attribute.add("defense");
+
+        val = new ArrayList<>();
+        val.add(new Short((short) 1));
+        val.add(new Short((short) 5));
+        val.add(new Short((short) 5));
+
+        List<Integer> priceList = new ArrayList<>();
+        priceList.add(100);
+        priceList.add(30);
+        priceList.add(30);
+
+        sell = new Sell(name, attribute, val, priceList);
+
+        shop = new Shop("shop03_1", "神秘老人", "exp", 0, true, "\b勇士,只要你有足够的经验,我就可以让你变得更强大!", sell,
+                new ImageIcon(getClass().getResource("/image/shop/shop03_1.png")),
+                new ImageIcon(getClass().getResource("/image/shop/shop03_2.png")));
+        shopMap.put(shop.getId(), shop);
+
+        name = new ArrayList<>();
+        name.add("购买1把黄钥匙($10)");
+        name.add("购买1把蓝钥匙($50)");
+        name.add("购买1把红钥匙($100)");
+        name.add("离开商店");
+
+        attribute = new ArrayList<>();
+        attribute.add("yKey");
+        attribute.add("bKey");
+        attribute.add("rKey");
+
+        val = new ArrayList<>();
+        val.add(new Short((short) 1));
+        val.add(new Short((short) 1));
+        val.add(new Short((short) 1));
+
+        priceList = new ArrayList<>();
+        priceList.add(10);
+        priceList.add(50);
+        priceList.add(100);
+
+        sell = new Sell(name, attribute, val, priceList);
+
+        shop = new Shop("shop04_1", "钥匙商人", "money", 0, true, "\b相信你一定有特殊需要,只要你有金币,我就可以帮你!", sell,
+                new ImageIcon(getClass().getResource("/image/shop/shop04_1.png")),
+                new ImageIcon(getClass().getResource("/image/shop/shop04_2.png")));
+        shopMap.put(shop.getId(), shop);
+
+        name = new ArrayList<>();
+        name.add("卖出1把黄钥匙($7)");
+        name.add("卖出1把蓝钥匙($35)");
+        name.add("卖出1把红钥匙($70)");
+        name.add("离开商店");
+
+        attribute = new ArrayList<>();
+        attribute.add("yKey");
+        attribute.add("bKey");
+        attribute.add("rKey");
+
+        val = new ArrayList<>();
+        val.add(new Short((short) 1));
+        val.add(new Short((short) 1));
+        val.add(new Short((short) 1));
+
+        priceList = new ArrayList<>();
+        priceList.add(7);
+        priceList.add(35);
+        priceList.add(70);
+
+        sell = new Sell(name, attribute, val, priceList);
+
+        shop = new Shop("shop05_1", "钥匙商人", "item", 0, true, "\b嘿,欢迎你的到来,如果你手里缺少金币,我可以帮你!", sell,
+                new ImageIcon(getClass().getResource("/image/shop/shop04_1.png")),
+                new ImageIcon(getClass().getResource("/image/shop/shop04_2.png")));
+        shopMap.put(shop.getId(), shop);
+
+        name = new ArrayList<>();
+        name.add("等级提升3级(需要270点)");
+        name.add("增加17点攻击(需要95点)");
+        name.add("增加17点防御(需要95点)");
+        name.add("离开商店");
+
+        attribute = new ArrayList<>();
+        attribute.add("lv");
+        attribute.add("attack");
+        attribute.add("defense");
+
+        val = new ArrayList<>();
+        val.add(new Short((short) 3));
+        val.add(new Short((short) 17));
+        val.add(new Short((short) 17));
+
+        priceList = new ArrayList<>();
+        priceList.add(270);
+        priceList.add(95);
+        priceList.add(95);
+
+        sell = new Sell(name, attribute, val, priceList);
+
+        shop = new Shop("shop06_1", "神秘老人", "exp", 0, true, "\b勇士,只要你有足够的经验,我就可以让你变得更强大!", sell,
+                new ImageIcon(getClass().getResource("/image/shop/shop03_1.png")),
+                new ImageIcon(getClass().getResource("/image/shop/shop03_2.png")));
+        shopMap.put(shop.getId(), shop);
+
         return shopMap;
     }
 

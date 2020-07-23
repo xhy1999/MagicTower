@@ -70,7 +70,7 @@ public class TowerPanel extends JPanel implements Runnable {
     JDialog dialogBox;
     JLabel showMesLabel = new JLabel("魔塔(测试版)");
 
-    public static int floor = 13;
+    public static int floor = 0;
     /**
      * 帧数(每秒8帧)
      */
@@ -881,8 +881,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         flag = true;
                         break;
                     case "item04_2":
-                        showMesLabel.setText("获得银剑,攻击+20");
-                        tower.getPlayer().attack += 20;
+                        showMesLabel.setText("获得银剑,攻击+30");
+                        tower.getPlayer().attack += 30;
                         flag = true;
                         break;
                     case "item04_3":
@@ -891,8 +891,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         flag = true;
                         break;
                     case "item04_4":
-                        showMesLabel.setText("获得圣剑,攻击+100");
-                        tower.getPlayer().attack += 100;
+                        showMesLabel.setText("获得圣剑,攻击+120");
+                        tower.getPlayer().attack += 120;
                         flag = true;
                         break;
                     case "item04_5":
@@ -909,8 +909,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         flag = true;
                         break;
                     case "item05_2":
-                        showMesLabel.setText("获得银盾,防御+20");
-                        tower.getPlayer().defense += 20;
+                        showMesLabel.setText("获得银盾,防御+30");
+                        tower.getPlayer().defense += 30;
                         flag = true;
                         break;
                     case "item05_3":
@@ -919,8 +919,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         flag = true;
                         break;
                     case "item05_4":
-                        showMesLabel.setText("获得圣盾,防御+100");
-                        tower.getPlayer().defense += 100;
+                        showMesLabel.setText("获得圣盾,防御+120");
+                        tower.getPlayer().defense += 120;
                         flag = true;
                         break;
                     case "item05_5":
@@ -1062,7 +1062,7 @@ public class TowerPanel extends JPanel implements Runnable {
         } else {
             pict.setBounds(13, 8, 32, 32);
             name = new JLabel(npc.getName());
-            name.setBounds(48, 16, 32, 16);
+            name.setBounds(48, 16, 60, 16);
             photo = new ImageIcon(tower.getNpcMap().get(npcId).getIcon()[0].getImage());
         }
         pict.setIcon(photo);
@@ -1134,17 +1134,18 @@ public class TowerPanel extends JPanel implements Runnable {
         name.setForeground(Color.white);
         JLabel selectLabel = new JLabel();
         selectLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/selected.png")));
-        selectLabel.setBounds(40, 100, 30, 30);
+        selectLabel.setBounds(10, 100, 30, 30);
         selectLabel.setForeground(Color.white);
         //selectLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         dialogBox.add(selectLabel);
         List<String> sellNameList = shop.sell.name;
         for (int i = 0; i < sellNameList.size(); i++) {
-            JLabel label = new JLabel(sellNameList.get(i));
-            label.setBounds(80, 100 + 30 * i, 160, 30);
+            JLabel label = new JLabel(sellNameList.get(i), JLabel.CENTER);
+            label.setBounds(34, 100 + 30 * i, 200, 30);
             label.setForeground(Color.white);
             label.setFont(new Font("微软雅黑", Font.BOLD, 16));
-            //label.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            //label.setOpaque(true);
+            //label.setBackground(new Color(255, 255, 255, 100));
             dialogBox.add(label);
         }
         shopDialogue.addKeyListener(new KeyListener() {
@@ -1166,7 +1167,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         }
                         musicPlayer.shopSelect();
                         nowSelected--;
-                        selectLabel.setBounds(40, 100 + nowSelected * 30, 30, 30);
+                        selectLabel.setBounds(10, 100 + nowSelected * 30, 30, 30);
                         break;
                     case KeyEvent.VK_DOWN:
                         input.clear();
@@ -1175,7 +1176,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         }
                         musicPlayer.shopSelect();
                         nowSelected++;
-                        selectLabel.setBounds(40, 100 + nowSelected * 30, 30, 30);
+                        selectLabel.setBounds(10, 100 + nowSelected * 30, 30, 30);
                         break;
                     case KeyEvent.VK_ENTER:
                         if (sellNameList.get(nowSelected).contains("离开")) {
@@ -1186,7 +1187,12 @@ public class TowerPanel extends JPanel implements Runnable {
                             nowSelected = 0;
                             break;
                         }
-                        short price = (short) shop.price;
+                        short price;
+                        if (shop.price != 0) {
+                            price = (short) shop.price;
+                        } else {
+                            price = Short.valueOf(shop.sell.price.get(nowSelected) + "");
+                        }
                         if (shop.need.equals("money")) {
                             if (tower.getPlayer().money >= price) {
                                 musicPlayer.shopBuySuc();
@@ -1201,6 +1207,12 @@ public class TowerPanel extends JPanel implements Runnable {
                                     tower.getPlayer().attack += valList.get(nowSelected);
                                 } else if (attributeList.get(nowSelected).contains("defense")) {
                                     tower.getPlayer().defense += valList.get(nowSelected);
+                                } else if (attributeList.get(nowSelected).contains("yKey")) {
+                                    tower.getPlayer().yKey += valList.get(nowSelected);
+                                } else if (attributeList.get(nowSelected).contains("bKey")) {
+                                    tower.getPlayer().bKey += valList.get(nowSelected);
+                                } else if (attributeList.get(nowSelected).contains("rKey")) {
+                                    tower.getPlayer().rKey += valList.get(nowSelected);
                                 }
                             } else {
                                 musicPlayer.shopBuyFail();
@@ -1208,19 +1220,53 @@ public class TowerPanel extends JPanel implements Runnable {
                         }
                         else if (shop.need.equals("exp")) {
                             if (tower.getPlayer().exp >= price) {
-                                musicPlayer.shopBuySuc();
+                                musicPlayer.shopExpBuySuc();
                                 tower.getPlayer().exp -= price;
                                 shop.buyNum++;
                                 shopDialogue.setText(shop.dialogue.replaceFirst("%%", String.valueOf(shop.price)));
                                 List<String> attributeList = shop.sell.attribute;
                                 List<Short> valList = shop.sell.val;
-                                if (attributeList.get(nowSelected).contains("hp")) {
-                                    tower.getPlayer().hp += valList.get(nowSelected);
+                                if (attributeList.get(nowSelected).contains("lv")) {
+                                    int var = valList.get(nowSelected);
+                                    tower.getPlayer().level += var;
+                                    tower.getPlayer().hp += 1000 * var;
+                                    tower.getPlayer().attack += 7 * var;
+                                    tower.getPlayer().defense += 7 * var;
                                 } else if (attributeList.get(nowSelected).contains("attack")) {
                                     tower.getPlayer().attack += valList.get(nowSelected);
                                 } else if (attributeList.get(nowSelected).contains("defense")) {
                                     tower.getPlayer().defense += valList.get(nowSelected);
                                 }
+                            } else {
+                                musicPlayer.shopBuyFail();
+                            }
+                        }
+                        else if (shop.need.equals("item")) {
+                            boolean sell = false;
+                            List<String> attributeList = shop.sell.attribute;
+                            if (attributeList.get(nowSelected).contains("yKey")) {
+                                if (tower.getPlayer().yKey >= shop.sell.val.get(nowSelected)) {
+                                    tower.getPlayer().yKey -= shop.sell.val.get(nowSelected);
+                                    tower.getPlayer().money += shop.sell.price.get(nowSelected);
+                                    sell = true;
+                                }
+                            }
+                            else if (attributeList.get(nowSelected).contains("bKey")) {
+                                if (tower.getPlayer().bKey >= shop.sell.val.get(nowSelected)) {
+                                    tower.getPlayer().bKey -= shop.sell.val.get(nowSelected);
+                                    tower.getPlayer().money += shop.sell.price.get(nowSelected);
+                                    sell = true;
+                                }
+                            }
+                            else if (attributeList.get(nowSelected).contains("rKey")) {
+                                if (tower.getPlayer().rKey >= shop.sell.val.get(nowSelected)) {
+                                    tower.getPlayer().rKey -= shop.sell.val.get(nowSelected);
+                                    tower.getPlayer().money += shop.sell.price.get(nowSelected);
+                                    sell = true;
+                                }
+                            }
+                            if (sell) {
+                                musicPlayer.shopBuySuc();
                             } else {
                                 musicPlayer.shopBuyFail();
                             }

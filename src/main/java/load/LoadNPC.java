@@ -95,6 +95,19 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
+        npc = new NPC("npc02_0", "老者", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "您已经得救了!"));
+        dialogues.add(new Dialogue("elder", "哦,我的孩子,真是太感谢你了!"));
+        dialogues.add(new Dialogue("elder", "这个地方又脏又坏,我真的是快呆不下去了。"));
+        dialogues.add(new Dialogue("player", "快走吧,我还得去救被关在这里的公主。"));
+        dialogues.add(new Dialogue("elder", "哦,你是来救公主的,为了表示对你的感谢,这个东西就送给你吧,这还是我年轻的时候用过的。"));
+        dialogues.add(new Dialogue("elder", "拿着它去解救公主吧!"));
         npc = new NPC("npc02_1", "老者", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
@@ -102,7 +115,71 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("elder", "你好,勇敢的孩子,你终于来到这里了。"));
+        dialogues.add(new Dialogue("elder", "我将给你一个非常好的宝物,它可以使你的攻击力提升120点,但你必须用500点经验来交换。"));
+        dialogues.add(new Dialogue("elder", "考虑一下吧!"));
+        npc = new NPC("npc02_2_1", "神秘老人", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("elder", "你好,勇敢的孩子,你终于来到这里了。"));
+        dialogues.add(new Dialogue("elder", "我将给你一个非常好的宝物,它可以使你的攻击力提升120点,但你必须用500点经验来交换。"));
+        dialogues.add(new Dialogue("elder", "考虑一下吧!"));
+        npc = new NPC("npc02_2_1", "神秘老人", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "我考虑好了,那就将那把剑给我吧!"));
+        dialogues.add(new Dialogue("elder", "那好吧,这把剑就给你了!"));
+        npc = new NPC("npc02_2_2", "神秘老人", false, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        npc = new NPC("npc03_0", "商人", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "您已经得救了!"));
+        dialogues.add(new Dialogue("businessman", "哦,是吗!真是太感谢你了!"));
+        dialogues.add(new Dialogue("businessman", "我是个商人,不知为什么被抓到这里来了。"));
+        dialogues.add(new Dialogue("player", "快走吧,现在您已经自由了。"));
+        dialogues.add(new Dialogue("businessman", "哦,对对对,我已经自由了。"));
+        dialogues.add(new Dialogue("businessman", "那这个东西就给你吧,本来我是准备卖钱的。"));
+        dialogues.add(new Dialogue("businessman", "相信它对你一定很有帮助!"));
         npc = new NPC("npc03_1", "商人", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("businessman", "啊哈,欢迎你的到来!"));
+        dialogues.add(new Dialogue("businessman", "我这里有一件对你来说非常好的宝物,只要你出得起钱,我就卖给你。"));
+        dialogues.add(new Dialogue("player", "什么宝物?要多少钱?"));
+        dialogues.add(new Dialogue("businessman", "是这个游戏里最好的盾牌,防御值可以增加120点,而你只要出500个金币就可以买下。"));
+        dialogues.add(new Dialogue("businessman", "怎么样?你有500个金币吗?"));
+        npc = new NPC("npc03_2_1", "商人", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "我有500个金币。"));
+        dialogues.add(new Dialogue("businessman", "好,成交!"));
+        npc = new NPC("npc03_2_2", "商人", false, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
                 dialogues);
@@ -120,7 +197,7 @@ public class LoadNPC {
         dialogues.add(new Dialogue("player", "那就请你帮我打开第二层的门吧!"));
         dialogues.add(new Dialogue("thief", "那个简单,不过,如果你能帮我找到一把嵌了红宝石的铁锒头的话,我还能帮你打通第18层的路。"));
         dialogues.add(new Dialogue("player", "嵌了红宝石的铁锒头?好吧,我帮你找找。"));
-        dialogues.add(new Dialogue("thief", "非常的感谢。一会儿我便会将第二层的门打开。如果你找到那个铁锒头的话,还是来这里找我！"));
+        dialogues.add(new Dialogue("thief", "非常的感谢。一会儿我便会将第二层的门打开。如果你找到那个铁锒头的话,还是来这里找我!"));
 
         npc = new NPC("npc04_1", "小偷", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc04_1.png")),

@@ -37,14 +37,14 @@ public class Player {
     public Player() {
         this.name = "Hero";
         this.hp = 2000;
-        this.attack = 10;
-        this.defense = 10;
-        this.exp = 0;
+        this.attack = 100;
+        this.defense = 100;
+        this.exp = 10000;
         this.money = 10000;
         this.level = 1;
-        this.yKey = 100;
-        this.bKey = 100;
-        this.rKey = 100;
+        this.yKey = 10;
+        this.bKey = 10;
+        this.rKey = 10;
         this.maxFloor = 0;
         this.minFloor = 0;
         this.x = 0;

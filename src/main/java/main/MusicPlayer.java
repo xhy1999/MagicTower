@@ -8,7 +8,7 @@ public class MusicPlayer {
 
     Audio audio;
 
-    private Thread openDoor, openSpecialDoor, upAndDown, dialogueSpace, getItem, getSpecialItem, fight, walk, floorTransferSelect, shopSelect, shopBuySuc, shopBuyFail, underground;
+    private Thread openDoor, openSpecialDoor, upAndDown, dialogueSpace, getItem, getSpecialItem, fight, walk, floorTransferSelect, shopSelect, shopBuySuc, shopExpBuySuc, shopBuyFail, underground;
 
     private String openDoorSoundURL = "/audio/OpenDoor.mp3";
     private String openSpecialDoorSoundURL = "/audio/OpenSpecialDoor.mp3";
@@ -21,6 +21,7 @@ public class MusicPlayer {
     private String floorTransferSelectSoundURL = "/audio/FloorTransferSelect.mp3";
     private String shopSelectSoundURL = "/audio/ShopSelect.mp3";
     private String shopBuySucSoundURL = "/audio/ShopBuySuc.mp3";
+    private String shopExpBuySucSoundURL = "/audio/ShopExpBuySuc.mp3";
     private String shopBuyFailSoundURL = "/audio/ShopBuyFail.mp3";
 
     private String undergroundSound0URL = "/audio/Underground0.mp3";
@@ -40,6 +41,7 @@ public class MusicPlayer {
         floorTransferSelect = creatSoundThread(getClass().getResource(floorTransferSelectSoundURL), false);
         shopSelect = creatSoundThread(getClass().getResource(shopSelectSoundURL), false);
         shopBuySuc = creatSoundThread(getClass().getResource(shopBuySucSoundURL), false);
+        shopExpBuySuc = creatSoundThread(getClass().getResource(shopExpBuySucSoundURL), false);
         shopBuyFail = creatSoundThread(getClass().getResource(shopBuyFailSoundURL), false);
 
         underground = creatSoundThread(getClass().getResource(undergroundSound0URL), true);
@@ -103,6 +105,11 @@ public class MusicPlayer {
     public void shopBuySuc() {
         shopBuySuc.start();
         shopBuySuc = creatSoundThread(getClass().getResource(shopBuySucSoundURL), false);
+    }
+
+    public void shopExpBuySuc() {
+        shopExpBuySuc.start();
+        shopExpBuySuc = creatSoundThread(getClass().getResource(shopExpBuySucSoundURL), false);
     }
 
     public void shopBuyFail() {

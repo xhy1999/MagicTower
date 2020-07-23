@@ -59,6 +59,18 @@ public class NPC extends Entity {
                 this.canMeet = true;
             }
         }
+        else if (this.id.equals("npc02_2_2")) {
+            if (tower.getPlayer().exp >= 500) {
+                tower.getPlayer().exp -= 500;
+                this.canMeet = true;
+            }
+        }
+        else if (this.id.equals("npc03_2_2")) {
+            if (tower.getPlayer().money >= 500) {
+                tower.getPlayer().money -= 500;
+                this.canMeet = true;
+            }
+        }
     }
 
     public void script_end(Tower tower) {
@@ -71,6 +83,24 @@ public class NPC extends Entity {
         else if (this.id.equals("npc01_2")) {
             tower.getPlayer().attack = tower.getPlayer().attack * 4/3;
             tower.getPlayer().defense = tower.getPlayer().defense * 4/3;
+        }
+        else if (this.id.equals("npc02_1")) {
+            tower.getGameMapList().get(2 + 2).layer2[10][7] = "item04_2";
+        }
+        else if (this.id.equals("npc02_2_1")) {
+            tower.getGameMapList().get(15 + 2).layer1[3][4] = "npc02_2_2";
+        }
+        else if (this.id.equals("npc02_2_2")) {
+            tower.getGameMapList().get(15 + 2).layer2[3][4] = "item04_4";
+        }
+        else if (this.id.equals("npc03_1")) {
+            tower.getGameMapList().get(2 + 2).layer2[10][9] = "item05_2";
+        }
+        else if (this.id.equals("npc03_2_1")) {
+            tower.getGameMapList().get(15 + 2).layer1[3][6] = "npc03_2_2";
+        }
+        else if (this.id.equals("npc03_2_2")) {
+            tower.getGameMapList().get(15 + 2).layer2[3][6] = "item05_4";
         }
         else if (this.id.equals("npc04_1")) {
             tower.getDoorMap().get("door04_1").openable = true;

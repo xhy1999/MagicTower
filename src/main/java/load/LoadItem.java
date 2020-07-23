@@ -193,7 +193,7 @@ public class LoadItem {
                 new ImageIcon(getClass().getResource("/image/item/item09_3.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item09_4", "风之罗盘", "\b该宝物可以随意在已经走过的楼层间自由上下,当主角位于上行楼梯或下行楼梯时可以使用\bJ\b键在已经走过的楼层间进行跳跃。",
+        item = new Item("item09_4", "风之罗盘", "\b该宝物可以随意在已经走过的楼层间自由上下,当主角位于上行楼梯或下行楼梯时可以使用\bF\b键在已经走过的楼层间进行跳跃。",
                 new ImageIcon(getClass().getResource("/image/item/item09_4.png")));
         itemMap.put(item.getId(), item);
 
