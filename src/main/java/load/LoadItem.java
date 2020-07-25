@@ -201,7 +201,7 @@ public class LoadItem {
                 new ImageIcon(getClass().getResource("/image/item/item09_5.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item09_6", "圣光徽", "\b该宝物可以查看怪物的基本信息。使用时按下键盘上的\bL\b键便可进行查看,再次按\bL\b键则取消显示。",
+        item = new Item("item09_6", "圣光徽", "\b该宝物可以查看怪物的基本信息。使用时按下键盘上的\bD\b键便可进行查看,再次按\bD\b键则取消显示。",
                 new ImageIcon(getClass().getResource("/image/item/item09_6.png")));
         itemMap.put(item.getId(), item);
 

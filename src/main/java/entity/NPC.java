@@ -54,9 +54,18 @@ public class NPC extends Entity {
     }
 
     public void script_start(Tower tower) {
-        if (this.id.equals("npc01_2")) {
+        if (this.id.equals("npc01_1_2")) {
             if (tower.getPlayer().inventory.containsKey("item09_5") && tower.getPlayer().inventory.get("item09_5").equals(1)) {
+                if (tower.getPlayer().inventory.containsKey("MysteryTreasure") && !tower.getPlayer().inventory.get("MysteryTreasure").equals(1)) {
+                    tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_1_4";
+                    return;
+                }
                 this.canMeet = true;
+                return;
+            }
+            if (tower.getPlayer().inventory.containsKey("MysteryTreasure") && tower.getPlayer().inventory.get("MysteryTreasure").equals(1)) {
+                tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_1_3";
+                return;
             }
         }
         else if (this.id.equals("npc02_2_2")) {
@@ -74,15 +83,20 @@ public class NPC extends Entity {
     }
 
     public void script_end(Tower tower) {
-        if (this.id.equals("npc01_1")) {
+        if (this.id.equals("npc01_1_1")) {
             tower.getPlayer().yKey++;
             tower.getPlayer().bKey++;
             tower.getPlayer().rKey++;
-            tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_2";
+            tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_1_2";
         }
-        else if (this.id.equals("npc01_2")) {
+        else if (this.id.equals("npc01_1_2")) {
             tower.getPlayer().attack = tower.getPlayer().attack * 4/3;
             tower.getPlayer().defense = tower.getPlayer().defense * 4/3;
+            tower.getGameMapList().get(20 + 2).layer3[7][5] = "stair02";
+        }
+        else if (this.id.equals("npc01_1_3")) {
+            tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_1_2";
+            tower.getPlayer().inventory.put("MysteryTreasure", 0);
         }
         else if (this.id.equals("npc02_1")) {
             tower.getGameMapList().get(2 + 2).layer2[10][7] = "item04_2";
@@ -101,6 +115,9 @@ public class NPC extends Entity {
         }
         else if (this.id.equals("npc03_2_2")) {
             tower.getGameMapList().get(15 + 2).layer2[3][6] = "item05_4";
+        }
+        else if (this.id.equals("npc02_3")) {
+            tower.getPlayer().inventory.put("MysteryTreasure", 1);
         }
         else if (this.id.equals("npc04_1")) {
             tower.getDoorMap().get("door04_1").openable = true;

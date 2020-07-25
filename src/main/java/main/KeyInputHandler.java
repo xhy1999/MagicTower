@@ -79,7 +79,7 @@ public class KeyInputHandler implements KeyListener {
         if(k == KeyEvent.VK_ESCAPE) escape.toggle(pressed);
         if(k == KeyEvent.VK_ENTER) enter.toggle(pressed);
 
-        if(k == KeyEvent.VK_L) use_rod.toggle(pressed);
+        if(k == KeyEvent.VK_D) use_rod.toggle(pressed);
         if(k == KeyEvent.VK_F) use_floor_transfer.toggle(pressed);
     }
 

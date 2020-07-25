@@ -22,73 +22,75 @@ public class LoadNPC {
         Map<String, NPC> npcMap = new HashMap<>();
 
         List<Dialogue> dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "......"));
-        dialogues.add(new Dialogue("elf", "你醒啦!"));
-        dialogues.add(new Dialogue("player", "......你是谁,我在哪里?"));
-        dialogues.add(new Dialogue("elf", "我是这里的仙子,刚才你被这里的小怪打晕了。"));
-        dialogues.add(new Dialogue("player", "......剑,剑,我的剑呢?"));
-        dialogues.add(new Dialogue("elf", "你的剑被他们抢走了,我只来得及将你救出来。"));
-        dialogues.add(new Dialogue("player", "那,公主呢?我是来救公主的。"));
-        dialogues.add(new Dialogue("elf", "公主还在里面,你这样进去是打不过小怪的。"));
-        dialogues.add(new Dialogue("player", "那,我怎么办?我答应了国王一定要把公主救出来的,那我现在应该怎么办呢?"));
-        dialogues.add(new Dialogue("elf", "放心吧,我把我的力量借给你,你就可以打赢那些小怪了。不过,你得先帮我去找一样东西,找到"));
+        dialogues.add(new Dialogue("player", "\b......"));
+        dialogues.add(new Dialogue("elf", "\b你醒啦!"));
+        dialogues.add(new Dialogue("player", "\b......你是谁,我在哪里?"));
+        dialogues.add(new Dialogue("elf", "\b我是这里的仙子,刚才你被这里的小怪打晕了。"));
+        dialogues.add(new Dialogue("player", "\b......剑,剑,我的剑呢?"));
+        dialogues.add(new Dialogue("elf", "\b你的剑被他们抢走了,我只来得及将你救出来。"));
+        dialogues.add(new Dialogue("player", "\b那,公主呢?我是来救公主的。"));
+        dialogues.add(new Dialogue("elf", "\b公主还在里面,你这样进去是打不过小怪的。"));
+        dialogues.add(new Dialogue("player", "\b那,我怎么办?我答应了国王一定要把公主救出来的,那我现在应该怎么办呢?"));
+        dialogues.add(new Dialogue("elf", "\b放心吧,我把我的力量借给你,你就可以打赢那些小怪了。不过,你得先帮我去找一样东西,找到"));
         dialogues.add(new Dialogue("elf", "了再来这里找我。"));
-        dialogues.add(new Dialogue("player", "找东西?找什么东西?"));
-        dialogues.add(new Dialogue("elf", "是一个十字架,中间有一颗红色的宝石。"));
-        dialogues.add(new Dialogue("player", "那个东西有什么用吗?"));
-        dialogues.add(new Dialogue("elf", "我本是这座塔的守护者,可不久前,从北方来了一批恶魔,他们占领了这座塔,并将我的魔力封印"));
-        dialogues.add(new Dialogue("elf", "在这个十字架里面,如果你能将它带出塔来,那我的魔力便会慢慢地恢复,到那时候,我便可以把"));
-        dialogues.add(new Dialogue("elf", "力量借给你去救公主了。"));
-        dialogues.add(new Dialogue("elf", "要记住:只有用我的魔力才可以打开21层的门。"));
-        dialogues.add(new Dialogue("player", "......好吧,我试试看。"));
-        dialogues.add(new Dialogue("elf", "刚才我去看过了,你的剑被放在3楼,你的盾在5楼上,那个十字架被放在7楼。要到7楼,你得先取"));
-        dialogues.add(new Dialogue("elf", "回你的剑和盾。另外,在塔里的其他楼层上,还存放了好几百年的宝剑和宝物,如果得到他们,对"));
-        dialogues.add(new Dialogue("elf", "于你对付里面的怪物将有很大的帮助。"));
-        dialogues.add(new Dialogue("player", "可是,我怎么进去呢。"));
-        dialogues.add(new Dialogue("elf", "我这里有3把钥匙,你先拿去,在塔里面还有很多这样的钥匙,你一定要珍惜使用。"));
-        dialogues.add(new Dialogue("elf", "勇敢的去吧,勇士!"));
+        dialogues.add(new Dialogue("player", "\b找东西?找什么东西?"));
+        dialogues.add(new Dialogue("elf", "\b是一个十字架,中间有一颗红色的宝石。"));
+        dialogues.add(new Dialogue("player", "\b那个东西有什么用吗?"));
+        dialogues.add(new Dialogue("elf", "\b我本是这座塔的守护者,可不久前,从北方来了一批恶魔,他们占领了这座塔,并将我的魔力封"));
+        dialogues.add(new Dialogue("elf", "印在这个十字架里面,如果你能将它带出塔来,那我的魔力便会慢慢地恢复,到那时候,我便可以"));
+        dialogues.add(new Dialogue("elf", "把力量借给你去救公主了。"));
+        dialogues.add(new Dialogue("elf", "\b要记住:只有用我的魔力才可以打开21层的门。"));
+        dialogues.add(new Dialogue("player", "\b......好吧,我试试看。"));
+        dialogues.add(new Dialogue("elf", "\b刚才我去看过了,你的剑被放在3楼,你的盾在5楼上,那个十字架被放在7楼。要到7楼,你得先"));
+        dialogues.add(new Dialogue("elf", "取回你的剑和盾。另外,在塔里的其他楼层上,还存放了好几百年的宝剑和宝物,如果得到他们,"));
+        dialogues.add(new Dialogue("elf", "对于你对付里面的怪物将有很大的帮助。"));
+        dialogues.add(new Dialogue("player", "\b可是,我怎么进去呢。"));
+        dialogues.add(new Dialogue("elf", "\b我这里有3把钥匙,你先拿去,在塔里面还有很多这样的钥匙,你一定要珍惜使用。"));
+        dialogues.add(new Dialogue("elf", "\b勇敢的去吧,勇士!"));
 
-        NPC npc = new NPC("npc01_1", "仙子", true, true,
+        NPC npc = new NPC("npc01_1_1", "仙子", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc01_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc01_2.png")),
                 dialogues);
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "仙子,我已经将那个十字架找到了。"));
-        dialogues.add(new Dialogue("elf", "你做的很好。那么,现在我就开始授予你更强的力量!\n...咪啦哆咪哗!"));
-        dialogues.add(new Dialogue("elf", "好了,我已经将你现在的能量提升了!不过你要记住:如果你没有足够的实力的话,不要去第21层!"));
-        dialogues.add(new Dialogue("elf", "在那一层里,你所有的宝物的法力都会失去作用!"));
-        npc = new NPC("npc01_2", "仙子", false, true,
+        dialogues.add(new Dialogue("player", "\b仙子,我已经将那个十字架找到了。"));
+        dialogues.add(new Dialogue("elf", "\b你做的很好。那么,现在我就开始授予你更强的力量!\n...咪啦哆咪哗!"));
+        dialogues.add(new Dialogue("elf", "\b好了,我已经将你现在的能量提升了!不过你要记住:如果你没有足够的实力的话,不要去21层!"));
+        dialogues.add(new Dialogue("elf", "\b在那一层里,你所有的宝物的法力都会失去作用!"));
+        npc = new NPC("npc01_1_2", "仙子", false, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc01_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc01_2.png")),
                 dialogues);
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("elf", "嗯?!你手里的那个东西是什么?"));
-        dialogues.add(new Dialogue("player", "这个?这是一个老人交给我的,他是叫我带它来找你的。他说你知道它的来历和作用。"));
-        dialogues.add(new Dialogue("elf", "这个东西是仙界的圣物,名叫\"灵之杖\",是很久以前的一个圣者留下的\b他们一共有三个,分别镶着红、绿、蓝三种颜色的宝石。"));
-        dialogues.add(new Dialogue("elf", "你现在拿着的是一个镶有蓝宝石的\"冰之灵杖\",应该还有一个镶有绿宝石的\"心之灵杖\"和镶有红宝石的\"炎之灵杖\"。"));
-        dialogues.add(new Dialogue("elf", "在这座塔的下面,封印着一只魔界的世兽,名叫\"血影\",这三把\"灵之杖\"就是封印的钥匙。"));
-        dialogues.add(new Dialogue("player", "封印钥匙?"));
-        dialogues.add(new Dialogue("elf", "每一个\"灵之杖\"里面都有着很强的魔法力量,如果被恶魔得到了将会使它的力量增倍。"));
-        dialogues.add(new Dialogue("elf", "如果被恶魔将它们三个找齐的话。"));
-        dialogues.add(new Dialogue("elf", "那么\"血影\"的封印便会解除!"));
-        dialogues.add(new Dialogue("elf", "勇士,你还是快去把我要的东西找来吧,等我恢复了魔力,我就可以帮你将\"灵之杖\"中的魔力都开放出来!"));
-        npc = new NPC("npc01_3", "仙子", false, true,
+        dialogues.add(new Dialogue("elf", "\b嗯?你手里的那个东西是什么?"));
+        dialogues.add(new Dialogue("player", "\b这个?这是一个老人交给我的,他是叫我带它来找你的。他说你知道它的来历和作用。"));
+        dialogues.add(new Dialogue("elf", "\b这个东西是仙界的圣物,名叫\"灵之杖\",是很久以前的一个圣者留下的。"));
+        dialogues.add(new Dialogue("elf", "\b他们一共有三个,分别镶着红、绿、蓝三种颜色的宝石。"));
+        dialogues.add(new Dialogue("elf", "\b你现在拿着的是一个镶有蓝宝石的\"冰之灵杖\",应该还有一个镶有绿宝石的\"心之灵杖\"和镶有"));
+        dialogues.add(new Dialogue("elf", "红宝石的\"炎之灵杖\"。"));
+        dialogues.add(new Dialogue("elf", "\b在这座塔的下面,封印着一只魔界的世兽,名叫\"血影\",这三把\"灵之杖\"就是封印的钥匙。"));
+        dialogues.add(new Dialogue("player", "\b封印钥匙?"));
+        dialogues.add(new Dialogue("elf", "\b每一个\"灵之杖\"里面都有着很强的魔法力量,如果被恶魔得到了将会使它的力量增倍。"));
+        dialogues.add(new Dialogue("elf", "\b如果被恶魔将它们三个找齐的话,\"血影\"的封印便会解除!"));
+        dialogues.add(new Dialogue("elf", "\b勇士,你还是快去把我要的东西找来吧,等我恢复了魔力,我就可以帮你将\"灵之杖\"中的魔力都"));
+        dialogues.add(new Dialogue("elf", "开放出来!"));
+        npc = new NPC("npc01_1_3", "仙子", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc01_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc01_2.png")),
                 dialogues);
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "仙子,我已经将那个十字架找到了。"));
-        dialogues.add(new Dialogue("elf", "你做的很好。那么,现在我就开始授予你更强的力量!\n...咪啦哆咪哗!"));
-        dialogues.add(new Dialogue("elf", "好了,我已经将你现在的能量提升了!不过你要记住:如果你没有足够的实力的话,不要去第21层!"));
-        dialogues.add(new Dialogue("elf", "在那一层里,你所有的宝物的法力都会失去作用!"));
-        dialogues.add(new Dialogue("elf", "快走吧,杀死魔王后,来第22层上找我!"));
-        npc = new NPC("npc01_4", "仙子", false, true,
+        dialogues.add(new Dialogue("player", "\b仙子,我已经将那个十字架找到了。"));
+        dialogues.add(new Dialogue("elf", "\b你做的很好。那么,现在我就开始授予你更强的力量!\n...咪啦哆咪哗!"));
+        dialogues.add(new Dialogue("elf", "\b好了,我已经将你现在的能量提升了!不过你要记住:如果你没有足够的实力的话,不要去21层!"));
+        dialogues.add(new Dialogue("elf", "\b在那一层里,你所有的宝物的法力都会失去作用!"));
+        dialogues.add(new Dialogue("elf", "\b快走吧,杀死魔王后,来第22层上找我!"));
+        npc = new NPC("npc01_1_4", "仙子", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc01_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc01_2.png")),
                 dialogues);
@@ -102,12 +104,12 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "您已经得救了!"));
-        dialogues.add(new Dialogue("elder", "哦,我的孩子,真是太感谢你了!"));
-        dialogues.add(new Dialogue("elder", "这个地方又脏又坏,我真的是快呆不下去了。"));
-        dialogues.add(new Dialogue("player", "快走吧,我还得去救被关在这里的公主。"));
-        dialogues.add(new Dialogue("elder", "哦,你是来救公主的,为了表示对你的感谢,这个东西就送给你吧,这还是我年轻的时候用过的。"));
-        dialogues.add(new Dialogue("elder", "拿着它去解救公主吧!"));
+        dialogues.add(new Dialogue("player", "\b您已经得救了!"));
+        dialogues.add(new Dialogue("elder", "\b哦,我的孩子,真是太感谢你了!"));
+        dialogues.add(new Dialogue("elder", "\b这个地方又脏又坏,我真的是快呆不下去了。"));
+        dialogues.add(new Dialogue("player", "\b快走吧,我还得去救被关在这里的公主。"));
+        dialogues.add(new Dialogue("elder", "\b哦,你是来救公主的,为了表示对你的感谢,这个东西就送给你吧,这还是我年轻时候用过的。"));
+        dialogues.add(new Dialogue("elder", "\b拿着它去解救公主吧!"));
         npc = new NPC("npc02_1", "老者", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
@@ -115,9 +117,9 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("elder", "你好,勇敢的孩子,你终于来到这里了。"));
-        dialogues.add(new Dialogue("elder", "我将给你一个非常好的宝物,它可以使你的攻击力提升120点,但你必须用500点经验来交换。"));
-        dialogues.add(new Dialogue("elder", "考虑一下吧!"));
+        dialogues.add(new Dialogue("elder", "\b你好,勇敢的孩子,你终于来到这里了。"));
+        dialogues.add(new Dialogue("elder", "\b我将给你一个非常好的宝物,它可以使你的攻击力提升120点,但你必须用500点经验来交换。"));
+        dialogues.add(new Dialogue("elder", "\b考虑一下吧!"));
         npc = new NPC("npc02_2_1", "神秘老人", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
@@ -125,19 +127,20 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("elder", "你好,勇敢的孩子,你终于来到这里了。"));
-        dialogues.add(new Dialogue("elder", "我将给你一个非常好的宝物,它可以使你的攻击力提升120点,但你必须用500点经验来交换。"));
-        dialogues.add(new Dialogue("elder", "考虑一下吧!"));
-        npc = new NPC("npc02_2_1", "神秘老人", true, true,
-                new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
-                new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
-                dialogues);
-        npcMap.put(npc.getId(), npc);
-
-        dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "我考虑好了,那就将那把剑给我吧!"));
-        dialogues.add(new Dialogue("elder", "那好吧,这把剑就给你了!"));
+        dialogues.add(new Dialogue("player", "\b我考虑好了,那就将那把剑给我吧!"));
+        dialogues.add(new Dialogue("elder", "\b那好吧,这把剑就给你了!"));
         npc = new NPC("npc02_2_2", "神秘老人", false, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("elder", "\b年轻人,你终于来了!"));
+        dialogues.add(new Dialogue("player", "\b您怎么了?"));
+        dialogues.add(new Dialogue("elder", "\b我已经快封不住它了,请你将这个东西交给彩蝶仙子,他会告诉你这是什么东西,有什么用的!"));
+        dialogues.add(new Dialogue("elder", "\b快去吧,再迟就来不及了!"));
+        npc = new NPC("npc02_3", "神秘老人", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
                 dialogues);
@@ -151,13 +154,13 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "您已经得救了!"));
-        dialogues.add(new Dialogue("businessman", "哦,是吗!真是太感谢你了!"));
-        dialogues.add(new Dialogue("businessman", "我是个商人,不知为什么被抓到这里来了。"));
-        dialogues.add(new Dialogue("player", "快走吧,现在您已经自由了。"));
-        dialogues.add(new Dialogue("businessman", "哦,对对对,我已经自由了。"));
-        dialogues.add(new Dialogue("businessman", "那这个东西就给你吧,本来我是准备卖钱的。"));
-        dialogues.add(new Dialogue("businessman", "相信它对你一定很有帮助!"));
+        dialogues.add(new Dialogue("player", "\b您已经得救了!"));
+        dialogues.add(new Dialogue("businessman", "\b哦,是吗!真是太感谢你了!"));
+        dialogues.add(new Dialogue("businessman", "\b我是个商人,不知为什么被抓到这里来了。"));
+        dialogues.add(new Dialogue("player", "\b快走吧,现在您已经自由了。"));
+        dialogues.add(new Dialogue("businessman", "\b哦,对对对,我已经自由了。"));
+        dialogues.add(new Dialogue("businessman", "\b那这个东西就给你吧,本来我是准备卖钱的。"));
+        dialogues.add(new Dialogue("businessman", "\b相信它对你一定很有帮助!"));
         npc = new NPC("npc03_1", "商人", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
@@ -165,11 +168,11 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("businessman", "啊哈,欢迎你的到来!"));
-        dialogues.add(new Dialogue("businessman", "我这里有一件对你来说非常好的宝物,只要你出得起钱,我就卖给你。"));
-        dialogues.add(new Dialogue("player", "什么宝物?要多少钱?"));
-        dialogues.add(new Dialogue("businessman", "是这个游戏里最好的盾牌,防御值可以增加120点,而你只要出500个金币就可以买下。"));
-        dialogues.add(new Dialogue("businessman", "怎么样?你有500个金币吗?"));
+        dialogues.add(new Dialogue("businessman", "\b啊哈,欢迎你的到来!"));
+        dialogues.add(new Dialogue("businessman", "\b我这里有一件对你来说非常好的宝物,只要你出得起钱,我就卖给你。"));
+        dialogues.add(new Dialogue("player", "\b什么宝物?要多少钱?"));
+        dialogues.add(new Dialogue("businessman", "\b是这个游戏里最好的盾牌,防御值可以增加120点,而你只要出500个金币就可以买下。"));
+        dialogues.add(new Dialogue("businessman", "\b怎么样?你有500个金币吗?"));
         npc = new NPC("npc03_2_1", "商人", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
@@ -177,8 +180,8 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "我有500个金币。"));
-        dialogues.add(new Dialogue("businessman", "好,成交!"));
+        dialogues.add(new Dialogue("player", "\b我有500个金币。"));
+        dialogues.add(new Dialogue("businessman", "\b好,成交!"));
         npc = new NPC("npc03_2_2", "商人", false, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
@@ -186,18 +189,18 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "你已经得救了!"));
-        dialogues.add(new Dialogue("thief", "啊,那真是太好了,我又可以在这里面寻宝了!"));
-        dialogues.add(new Dialogue("thief", "哦,还没有自我介绍,我叫杰克,是这附近有名的小偷,什么金银财宝我样样都偷过。"));
-        dialogues.add(new Dialogue("thief", "不过这次运气可不是太好,刚进来就被抓了。现在你帮我打开了门,那我就帮你做一件事吧。"));
-        dialogues.add(new Dialogue("player", "快走吧,外面还有很多怪物,我可能顾不上你。"));
-        dialogues.add(new Dialogue("thief", "不,不,不会有事的。快说吧,叫我做什么?"));
-        dialogues.add(new Dialogue("player", "......\n你会开门吗?"));
-        dialogues.add(new Dialogue("thief", "那当然。"));
-        dialogues.add(new Dialogue("player", "那就请你帮我打开第二层的门吧!"));
-        dialogues.add(new Dialogue("thief", "那个简单,不过,如果你能帮我找到一把嵌了红宝石的铁锒头的话,我还能帮你打通第18层的路。"));
-        dialogues.add(new Dialogue("player", "嵌了红宝石的铁锒头?好吧,我帮你找找。"));
-        dialogues.add(new Dialogue("thief", "非常的感谢。一会儿我便会将第二层的门打开。如果你找到那个铁锒头的话,还是来这里找我!"));
+        dialogues.add(new Dialogue("player", "\b你已经得救了!"));
+        dialogues.add(new Dialogue("thief", "\b啊,那真是太好了,我又可以在这里面寻宝了!"));
+        dialogues.add(new Dialogue("thief", "\b哦,还没有自我介绍,我叫杰克,是这附近有名的小偷,什么金银财宝我样样都偷过。"));
+        dialogues.add(new Dialogue("thief", "\b不过这次运气可不是太好,刚进来就被抓了。现在你帮我打开了门,那我就帮你做一件事吧。"));
+        dialogues.add(new Dialogue("player", "\b快走吧,外面还有很多怪物,我可能顾不上你。"));
+        dialogues.add(new Dialogue("thief", "\b不,不,不会有事的。快说吧,叫我做什么?"));
+        dialogues.add(new Dialogue("player", "\b......你会开门吗?"));
+        dialogues.add(new Dialogue("thief", "\b那当然。"));
+        dialogues.add(new Dialogue("player", "\b那就请你帮我打开第二层的门吧!"));
+        dialogues.add(new Dialogue("thief", "\b那个简单,不过,如果你能帮我找到嵌了红宝石的铁锒头的话,我还能帮你打通第18层的路。"));
+        dialogues.add(new Dialogue("player", "\b嵌了红宝石的铁锒头?好吧,我帮你找找。"));
+        dialogues.add(new Dialogue("thief", "\b非常的感谢。一会儿我便会将第二层的门打开。如果你找到那个铁锒头的话,还是来这里找我!"));
 
         npc = new NPC("npc04_1", "小偷", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc04_1.png")),
@@ -206,8 +209,8 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "哈,快看,我找到了什么!"));
-        dialogues.add(new Dialogue("thief", "太好了,这东西果然是在这里。\n好吧,我这就帮你去修好第18层的路面。"));
+        dialogues.add(new Dialogue("player", "\b哈,快看,我找到了什么!"));
+        dialogues.add(new Dialogue("thief", "\b太好了,这东西果然在这里。\n\b好吧,我这就帮你去修好第18层的路面。"));
         npc = new NPC("npc04_2", "小偷", false, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc04_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc04_2.png")),
@@ -215,18 +218,18 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue("player", "公主!你得救了!"));
-        dialogues.add(new Dialogue("princess", "啊,你是来救我的吗?"));
-        dialogues.add(new Dialogue("player", "是的,我奉国王的命令来救你的。请你快随我出去吧!"));
-        dialogues.add(new Dialogue("princess", "不,我还不想走。"));
-        dialogues.add(new Dialogue("player", "为什么?这里面到处都是恶魔。"));
-        dialogues.add(new Dialogue("princess", "正是因为这里面到处都是恶魔,所以才不可以就这样出去,我要看着那个恶魔被杀死!"));
-        dialogues.add(new Dialogue("princess", "英雄的勇士,如果你能将那个大恶魔杀死,我就和你一起出去!"));
-        dialogues.add(new Dialogue("player", "大恶魔?我已经杀死了一个魔王!"));
-        dialogues.add(new Dialogue("princess", "大恶魔就是这座塔的最顶层,你杀死的可能是一个小队长之类的恶魔。"));
-        dialogues.add(new Dialogue("player", "好,那你等着,等我杀了那个恶魔再来这里找你!"));
-        dialogues.add(new Dialogue("princess", "大恶魔比你刚才杀死的那个厉害多了。而且他还会变身,变身后的魔王的攻击力和防御力都会提升至少一半以上,你得小心!请一定要杀死大魔王!"));
-        dialogues.add(new Dialogue("princess", "升至少一半以上,你得小心!请一定要杀死大魔王!"));
+        dialogues.add(new Dialogue("player", "\b公主!你得救了!"));
+        dialogues.add(new Dialogue("princess", "\b啊,你是来救我的吗?"));
+        dialogues.add(new Dialogue("player", "\b是的,我奉国王的命令来救你的。请你快随我出去吧!"));
+        dialogues.add(new Dialogue("princess", "\b不,我还不想走。"));
+        dialogues.add(new Dialogue("player", "\b为什么?这里面到处都是恶魔。"));
+        dialogues.add(new Dialogue("princess", "\b正是因为这里面到处都是恶魔,所以才不可以就这样出去,我要看着那个恶魔被杀死!"));
+        dialogues.add(new Dialogue("princess", "\b英雄的勇士,如果你能将那个大恶魔杀死,我就和你一起出去!"));
+        dialogues.add(new Dialogue("player", "\b大恶魔?我已经杀死了一个魔王!"));
+        dialogues.add(new Dialogue("princess", "\b大恶魔就是这座塔的最顶层,你杀死的可能是一个小队长之类的恶魔。"));
+        dialogues.add(new Dialogue("player", "\b好,那你等着,等我杀了那个恶魔再来这里找你!"));
+        dialogues.add(new Dialogue("princess", "\b大恶魔比你刚才杀死的那个厉害多了。而且他还会变身,变身后的魔王的攻击力和防御力都会"));
+        dialogues.add(new Dialogue("princess", "提升至少一半以上,你得小心!请一定要杀死大魔王!"));
         npc = new NPC("npc05_1", "公主", true, false,
                 new ImageIcon(getClass().getResource("/image/npc/npc05_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc05_2.png")),

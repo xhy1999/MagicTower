@@ -70,7 +70,7 @@ public class TowerPanel extends JPanel implements Runnable {
     JDialog dialogBox;
     JLabel showMesLabel = new JLabel("魔塔(测试版)");
 
-    public static int floor = 0;
+    public static int floor = 23;
     /**
      * 帧数(每秒8帧)
      */
@@ -90,8 +90,8 @@ public class TowerPanel extends JPanel implements Runnable {
         this.tower = tower;
         tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
         tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
-        tower.getPlayer().maxFloor = floor;
-        tower.getPlayer().minFloor = floor;
+        tower.getPlayer().maxFloor = 23;
+        tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
         DIRECTION = DIRECTION_UP;
@@ -661,6 +661,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         return;
                     }
                     npc.script_start(tower);
+                    //重新获取一边,以防npc改变而这里没变
+                    npc = tower.getNpcMap().get(layer1[y][x]);
                     if (!npc.canMeet) {
                         canMove = true;
                         return;
@@ -896,8 +898,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         flag = true;
                         break;
                     case "item04_5":
-                        showMesLabel.setText("获得圣神剑,攻击+200");
-                        tower.getPlayer().attack += 200;
+                        showMesLabel.setText("获得圣神剑,攻击+190");
+                        tower.getPlayer().attack += 190;
                         flag = true;
                         break;
                 }
@@ -924,8 +926,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         flag = true;
                         break;
                     case "item05_5":
-                        showMesLabel.setText("获得圣神盾,防御+200");
-                        tower.getPlayer().defense += 200;
+                        showMesLabel.setText("获得圣神盾,防御+190");
+                        tower.getPlayer().defense += 190;
                         flag = true;
                         break;
                 }
@@ -1501,7 +1503,7 @@ public class TowerPanel extends JPanel implements Runnable {
                     case KeyEvent.VK_ENTER:
                         closeFlag = true;
                         break;
-                    case KeyEvent.VK_L:
+                    case KeyEvent.VK_D:
                         closeFlag = true;
                         break;
                     case KeyEvent.VK_LEFT:
