@@ -182,12 +182,12 @@ public class LoadMonster {
                 new ImageIcon(getClass().getResource("/image/monster/monster03_10_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster03_11", "骷髅大臣", 9999, 981, 981, 999, 999,
+        monster = new Monster("monster03_11", "骷髅大臣", 9999, 9999, 9999, 999, 999,
                 new ImageIcon(getClass().getResource("/image/monster/monster03_11_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster03_11_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster03_12", "骷髅法王", 9999, 980, 980, 9999, 9999,
+        monster = new Monster("monster03_12", "骷髅法王", 9999, 9999, 9999, 999, 999,
                 new ImageIcon(getClass().getResource("/image/monster/monster03_12_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster03_12_2.png")));
         monsterMap.put(monster.getId(), monster);

@@ -8,11 +8,14 @@ public class MusicPlayer {
 
     Audio audio;
 
-    private Thread openDoor, openSpecialDoor, upAndDown, dialogueSpace, getItem, getSpecialItem, fight, walk, floorTransferSelect, shopSelect, shopBuySuc, shopExpBuySuc, shopBuyFail, underground;
+    private Thread openDoor, openSpecialDoor, upAndDown, specialStair, fall, dialogueSpace, getItem, getSpecialItem,
+                    fight, walk, floorTransferSelect, shopSelect, shopBuySuc, shopExpBuySuc, shopBuyFail, underground;
 
     private String openDoorSoundURL = "/audio/OpenDoor.mp3";
     private String openSpecialDoorSoundURL = "/audio/OpenSpecialDoor.mp3";
     private String upAndDownSoundURL = "/audio/UpAndDown.mp3";
+    private String specialStairSoundURL = "/audio/SpecialStair.mp3";
+    private String fallSoundURL = "/audio/Fall.mp3";
     private String dialogueSpaceSoundURL = "/audio/DialogueSpace.mp3";
     private String getItemSoundURL = "/audio/GetItem.mp3";
     private String getSpecialItemSoundURL = "/audio/GetSpecialItem.mp3";
@@ -28,11 +31,15 @@ public class MusicPlayer {
     private String undergroundSound1URL = "/audio/Underground1.mp3";
     private String undergroundSound2URL = "/audio/Underground2.mp3";
     private String undergroundSound3URL = "/audio/Underground3.mp3";
+    private String undergroundSound4URL = "/audio/Underground4.mp3";
+    private String undergroundSound5URL = "/audio/Underground5.mp3";
 
     public MusicPlayer() {
         openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL), false);
         openSpecialDoor = creatSoundThread(getClass().getResource(openSpecialDoorSoundURL), false);
         upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL), false);
+        specialStair = creatSoundThread(getClass().getResource(specialStairSoundURL), false);
+        fall = creatSoundThread(getClass().getResource(fallSoundURL), false);
         dialogueSpace = creatSoundThread(getClass().getResource(dialogueSpaceSoundURL), false);
         getItem = creatSoundThread(getClass().getResource(getItemSoundURL), false);
         getSpecialItem = creatSoundThread(getClass().getResource(getSpecialItemSoundURL), false);
@@ -65,6 +72,16 @@ public class MusicPlayer {
     public void upAndDown() {
         upAndDown.start();
         upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL), false);
+    }
+
+    public void specialStair() {
+        specialStair.start();
+        specialStair = creatSoundThread(getClass().getResource(specialStairSoundURL), false);
+    }
+
+    public void fall() {
+        fall.start();
+        fall = creatSoundThread(getClass().getResource(fallSoundURL), false);
     }
 
     public void dialogueSpace() {
@@ -120,16 +137,25 @@ public class MusicPlayer {
     private int musicNo = -1, newMusicNo = 0;
 
     public void playBackgroundMusic(int floor) {
-        if (floor < 2) {
-            newMusicNo = 1;
-        }
-        else if (floor == 2) {
+//        if (floor < 2) {
+//            newMusicNo = 0;
+//        }
+        if (floor == -1) {
             newMusicNo = 0;
         }
-        else if (floor < 10) {
+        else if (floor == 0) {
+            newMusicNo = 1;
+        }
+        else if (floor < 8) {
             newMusicNo = 2;
-        } else {
+        }
+        else if (floor < 16) {
             newMusicNo = 3;
+        }
+        else if (floor < 22) {
+            newMusicNo = 4;
+        } else {
+            newMusicNo = 5;
         }
         if (musicNo != newMusicNo) {
             //注意! 这里只能使用stop(),不能使用interrupt()
@@ -149,6 +175,14 @@ public class MusicPlayer {
                     break;
                 case 3:
                     underground = creatSoundThread(getClass().getResource(undergroundSound3URL), true);
+                    underground.start();
+                    break;
+                case 4:
+                    underground = creatSoundThread(getClass().getResource(undergroundSound4URL), true);
+                    underground.start();
+                    break;
+                case 5:
+                    underground = creatSoundThread(getClass().getResource(undergroundSound5URL), true);
                     underground.start();
                     break;
             }

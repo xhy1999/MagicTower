@@ -34,14 +34,8 @@ public class TowerPanel extends JPanel implements Runnable {
     /**
      * 窗体的宽和高
      */
-    private static final int WINDOW_WIDTH = 18 * 32;
-    private static final int WINDOW_HEIGHT = 13 * 32;
-
-    /**
-     * 游戏窗体的宽和高
-     */
-    private static final int GAME_WIDTH = 11 * 32;
-    private static final int GAME_HEIGHT = 11 * 32;
+    private static final int WINDOW_WIDTH = 18 * 32 - 10;
+    private static final int WINDOW_HEIGHT = 13 * 32 - 10;
 
     /**
      * 人物方向
@@ -70,7 +64,8 @@ public class TowerPanel extends JPanel implements Runnable {
     JDialog dialogBox;
     JLabel showMesLabel = new JLabel("魔塔(测试版)");
 
-    public static int floor = 23;
+    public static int floor = 0;
+
     /**
      * 帧数(每秒8帧)
      */
@@ -80,6 +75,9 @@ public class TowerPanel extends JPanel implements Runnable {
     public boolean canMove = true;
     private KeyInputHandler input;
     public MusicPlayer musicPlayer;
+    public String specialGameMapNo;
+    public boolean canUseFloorTransfer = true;
+    public boolean canUseMonsterManual = true;
 
     JFrame mainframe = new JFrame("MagicTower  (作者:Vip、疯子)");
     Container contentPane;
@@ -90,7 +88,7 @@ public class TowerPanel extends JPanel implements Runnable {
         this.tower = tower;
         tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
         tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
-        tower.getPlayer().maxFloor = 23;
+        tower.getPlayer().maxFloor = 21;
         tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
@@ -317,7 +315,12 @@ public class TowerPanel extends JPanel implements Runnable {
     private void drawMap(Graphics g) {
         //System.out.println("构造地图中..." + frames);
         repaint();
-        GameMap gameMap = tower.getGameMapList().get(floor);
+        GameMap gameMap;
+        if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+            gameMap = tower.getGameMapList().get(floor);
+        } else {
+            gameMap = tower.getSpecialMap().get(specialGameMapNo);
+        }
         String[][] layer1 = gameMap.layer1;
         String[][] layer2 = gameMap.layer2;
         String[][] layer3 = gameMap.layer3;
@@ -361,7 +364,7 @@ public class TowerPanel extends JPanel implements Runnable {
                             String stairId = tower.getStairMap().get(layer3[i][j]).getId();
                             g.drawImage(getImageFromIcons(tower.getStairMap().get(stairId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
                         } catch (Exception e) {
-                            System.err.println("layer3 (x=" + i + ",y=" + j + ") wallId(" + layer3[i][j] + ") 不存在!");
+                            System.err.println("layer3 (x=" + i + ",y=" + j + ") stairId(" + layer3[i][j] + ") 不存在!");
                         }
                     }
                     if (layer2[i][j].contains("item")) {
@@ -498,6 +501,45 @@ public class TowerPanel extends JPanel implements Runnable {
             moveNo = 0;
             return;
         }
+        if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+            String stair = tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x];
+            if (stair.equals("stair01")) {
+                musicPlayer.upAndDown();
+                floor--;
+                tower.getPlayer().x = tower.getGameMapList().get(floor).downPositionX;
+                tower.getPlayer().y = tower.getGameMapList().get(floor).downPositionY;
+                showMesLabel.setText("魔塔 第" + floor + "层");
+                DIRECTION = DIRECTION_DOWN;
+                musicPlayer.playBackgroundMusic(floor);
+                nowMonsterManual = 0;
+                if (floor < tower.getPlayer().minFloor) {
+                    tower.getPlayer().minFloor = floor;
+                }
+                return;
+            } else if (stair.equals("stair02")) {
+                musicPlayer.upAndDown();
+                floor++;
+                tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
+                tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
+                showMesLabel.setText("魔塔 第" + floor + "层");
+                DIRECTION = DIRECTION_DOWN;
+                musicPlayer.playBackgroundMusic(floor);
+                nowMonsterManual = 0;
+                if (floor > tower.getPlayer().maxFloor) {
+                    tower.getPlayer().maxFloor = floor;
+                }
+                return;
+            } else if (stair.contains("stair03") || stair.contains("stair04")) {
+                tower.getStairMap().get(stair).script(this, tower, specialGameMapNo);
+                return;
+            }
+        } else {
+            String stair = tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x];
+            if (stair.contains("stair03") || stair.contains("stair04")) {
+                tower.getStairMap().get(stair).script(this, tower, specialGameMapNo);
+                return;
+            }
+        }
         if (input.up.down) {
             this.DIRECTION = DIRECTION_UP;
             moveNo = (byte) ((moveNo + 1) % 4);
@@ -534,13 +576,18 @@ public class TowerPanel extends JPanel implements Runnable {
             moveNo = (byte) ((moveNo + 1) % 4);
             tower.getPlayer().x++;
             lastMove = System.currentTimeMillis();
-        } else if (input.use_rod.down) {
+        } else if (canUseMonsterManual && input.use_rod.down) {
             canMove = false;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     System.out.println("开始计算");
-                    String[][] monsterLayer = tower.getGameMapList().get(floor).layer1;
+                    String[][] monsterLayer;
+                    if (specialGameMapNo != null && !specialGameMapNo.equals("")) {
+                        monsterLayer = tower.getSpecialMap().get(specialGameMapNo).layer1;
+                    } else {
+                        monsterLayer = tower.getGameMapList().get(floor).layer1;
+                    }
                     Map<String, Boolean> monsterIdMap = new HashMap<>();
                     //y
                     for (int i = 0; i < monsterLayer.length; i++) {
@@ -601,7 +648,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 }
             }).start();
         }
-        else if (input.use_floor_transfer.down) {
+        else if (canUseFloorTransfer && input.use_floor_transfer.down) {
             canMove = false;
             new Thread(new Runnable() {
                 @Override
@@ -614,13 +661,18 @@ public class TowerPanel extends JPanel implements Runnable {
         if (System.currentTimeMillis() - lastMove > stopTime) {
             moveNo = 0;
         }
-        GameMap gameMap = tower.getGameMapList().get(floor);
-        String[][] layer1 = gameMap.layer1;
-        String[][] layer2 = gameMap.layer2;
-        String[][] layer3 = gameMap.layer3;
-        if (layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
-            tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
-            return;
+        GameMap gameMap;
+        if (specialGameMapNo != null && !specialGameMapNo.equals("")) {
+            if (tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
+                tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
+                return;
+            }
+        } else {
+            gameMap = tower.getGameMapList().get(floor);
+            if (tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
+                tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
+                return;
+            }
         }
     }
 
@@ -641,7 +693,12 @@ public class TowerPanel extends JPanel implements Runnable {
      * @return
      */
     private boolean canMove(byte x, byte y) {
-        GameMap gameMap = tower.getGameMapList().get(floor);
+        GameMap gameMap;
+        if (specialGameMapNo != null && !specialGameMapNo.equals("")) {
+            gameMap = tower.getSpecialMap().get(specialGameMapNo);
+        } else {
+            gameMap = tower.getGameMapList().get(floor);
+        }
         String[][] layer1 = gameMap.layer1;
         String[][] layer2 = gameMap.layer2;
         String[][] layer3 = gameMap.layer3;
@@ -682,7 +739,11 @@ public class TowerPanel extends JPanel implements Runnable {
                         escapeDown = false;
                     }
                     if (npc.canRemove) {
-                        tower.getGameMapList().get(floor).layer1[y][x] = "";
+                        if (specialGameMapNo != null && !specialGameMapNo.equals("")) {
+                            tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
+                        } else {
+                            tower.getGameMapList().get(floor).layer1[y][x] = "";
+                        }
                     }
                     npc.script_end(tower);
                     canMove = true;
@@ -755,59 +816,61 @@ public class TowerPanel extends JPanel implements Runnable {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (tower.getGameMapList().get(floor).layer3[y][x].equals("") || tower.getGameMapList().get(floor).layer3[y][x].contains("open")) {
-                            return;
-                        }
-                        byte f = (byte) floor;
-                        for (int i = 1; i < 5; i++) {
-                            if (i == 1) {
-                                tower.getGameMapList().get(f).layer3[y][x] += "open1";
-                            } else if (i == 4) {
-                                tower.getGameMapList().get(f).layer3[y][x] = "";
-                            } else {
-                                String str = tower.getGameMapList().get(f).layer3[y][x];
-                                try {
-                                    tower.getGameMapList().get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
-                                } catch (IndexOutOfBoundsException e) {
-                                    e.printStackTrace();
+                        if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+                            if (tower.getGameMapList().get(floor).layer3[y][x].equals("") || tower.getGameMapList().get(floor).layer3[y][x].contains("open")) {
+                                return;
+                            }
+                            byte f = (byte) floor;
+                            for (int i = 1; i < 5; i++) {
+                                if (i == 1) {
+                                    tower.getGameMapList().get(f).layer3[y][x] += "open1";
+                                } else if (i == 4) {
                                     tower.getGameMapList().get(f).layer3[y][x] = "";
+                                } else {
+                                    String str = tower.getGameMapList().get(f).layer3[y][x];
+                                    try {
+                                        tower.getGameMapList().get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
+                                    } catch (IndexOutOfBoundsException e) {
+                                        e.printStackTrace();
+                                        tower.getGameMapList().get(f).layer3[y][x] = "";
+                                    }
+                                }
+                                try {
+                                    Thread.sleep(DOOR_OPEN_TIME);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
                                 }
                             }
-                            try {
-                                Thread.sleep(DOOR_OPEN_TIME);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                            tower.getGameMapList().get(f).layer3[y][x] = "";
+                        } else {
+                            if (tower.getSpecialMap().get(specialGameMapNo).layer3[y][x].equals("") || tower.getSpecialMap().get(specialGameMapNo).layer3[y][x].contains("open")) {
+                                return;
                             }
+                            String f = specialGameMapNo;
+                            for (int i = 1; i < 5; i++) {
+                                if (i == 1) {
+                                    tower.getSpecialMap().get(f).layer3[y][x] += "open1";
+                                } else if (i == 4) {
+                                    tower.getSpecialMap().get(f).layer3[y][x] = "";
+                                } else {
+                                    String str = tower.getSpecialMap().get(f).layer3[y][x];
+                                    try {
+                                        tower.getSpecialMap().get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
+                                    } catch (IndexOutOfBoundsException e) {
+                                        e.printStackTrace();
+                                        tower.getSpecialMap().get(f).layer3[y][x] = "";
+                                    }
+                                }
+                                try {
+                                    Thread.sleep(DOOR_OPEN_TIME);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            tower.getSpecialMap().get(f).layer3[y][x] = "";
                         }
-                        tower.getGameMapList().get(f).layer3[y][x] = "";
                     }
                 }).start();
-            }
-            return false;
-        } else if (layer3[y][x].equals("stair01")) {
-            musicPlayer.upAndDown();
-            floor--;
-            tower.getPlayer().x = tower.getGameMapList().get(floor).downPositionX;
-            tower.getPlayer().y = tower.getGameMapList().get(floor).downPositionY;
-            showMesLabel.setText("魔塔 第" + floor + "层");
-            DIRECTION = DIRECTION_DOWN;
-            musicPlayer.playBackgroundMusic(floor);
-            nowMonsterManual = 0;
-            if (floor < tower.getPlayer().minFloor) {
-                tower.getPlayer().minFloor = floor;
-            }
-            return false;
-        } else if (layer3[y][x].equals("stair02")) {
-            musicPlayer.upAndDown();
-            floor++;
-            tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
-            tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
-            showMesLabel.setText("魔塔 第" + floor + "层");
-            DIRECTION = DIRECTION_DOWN;
-            musicPlayer.playBackgroundMusic(floor);
-            nowMonsterManual = 0;
-            if (floor > tower.getPlayer().maxFloor) {
-                tower.getPlayer().maxFloor = floor;
             }
             return false;
         }
@@ -942,8 +1005,8 @@ public class TowerPanel extends JPanel implements Runnable {
             } else if (layer2[y][x].contains("item07")) {
                 switch (layer2[y][x]) {
                     case "item07_1":
-                        showMesLabel.setText("获得神秘法杖,可以使用楼层传送");
-                        flag = true;
+                        //showMesLabel.setText("获得神秘法杖");
+                        //flag = true;
                         break;
                 }
             } else if (layer2[y][x].contains("item08")) {
@@ -965,7 +1028,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         flag = true;
                         break;
                     case "item09_4":
-                        showMesLabel.setText("获得风之罗盘");
+                        showMesLabel.setText("获得风之罗盘,可以使用楼层传送");
+                        canUseFloorTransfer = true;
                         flag = true;
                         break;
                     case "item09_5":
@@ -974,7 +1038,8 @@ public class TowerPanel extends JPanel implements Runnable {
                         flag = true;
                         break;
                     case "item09_6":
-                        showMesLabel.setText("获得圣光徽");
+                        showMesLabel.setText("获得圣光徽,可以查看怪物信息");
+                        canUseMonsterManual = true;
                         flag = true;
                         break;
                     case "item09_8":
@@ -1005,7 +1070,11 @@ public class TowerPanel extends JPanel implements Runnable {
                     System.err.println("layer2 (x=" + x + ",y=" + y + ") itemId(" + layer2[y][x] + ") 不存在!");
                 }
             }
-            tower.getGameMapList().get(floor).layer2[y][x] = "";
+            if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+                tower.getGameMapList().get(floor).layer2[y][x] = "";
+            } else {
+                tower.getSpecialMap().get(specialGameMapNo).layer2[y][x] = "";
+            }
             return false;
         }
         if (layer1[y][x].contains("monster")) {
@@ -1025,7 +1094,11 @@ public class TowerPanel extends JPanel implements Runnable {
             if (pHP > 0) {
                 musicPlayer.fight();
                 showMesLabel.setText("击杀:" + monster.getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
-                tower.getGameMapList().get(floor).layer1[y][x] = "";
+                if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+                    tower.getGameMapList().get(floor).layer1[y][x] = "";
+                } else {
+                    tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
+                }
                 tower.getPlayer().hp = pHP;
                 tower.getPlayer().money += monster.getMoney();
                 tower.getPlayer().exp += monster.getExp();
@@ -1038,6 +1111,8 @@ public class TowerPanel extends JPanel implements Runnable {
         }
         return true;
     }
+
+    private String secretScript = "";
 
     /**
      * 与NPC对话
@@ -1084,12 +1159,44 @@ public class TowerPanel extends JPanel implements Runnable {
             }
 
             public void keyPressed(KeyEvent arg0) {
+                boolean close = false;
                 switch (arg0.getKeyCode()) {
                     case KeyEvent.VK_SPACE:
+                        close = true;
                         musicPlayer.dialogueSpace();
-                        escapeDown = true;
-                        dialogBox.dispose();
                         break;
+                }
+                if (npc.getName().equals("奇怪的人")) {
+                    switch (arg0.getKeyCode()) {
+                        case KeyEvent.VK_UP:
+                            secretScript += "8";
+                            break;
+                        case KeyEvent.VK_DOWN:
+                            secretScript += "2";
+                            break;
+                        case KeyEvent.VK_LEFT:
+                            secretScript += "4";
+                            break;
+                        case KeyEvent.VK_RIGHT:
+                            secretScript += "6";
+                            break;
+                        case KeyEvent.VK_A:
+                            secretScript += "A";
+                            break;
+                        case KeyEvent.VK_B:
+                            secretScript += "B";
+                            break;
+                    }
+                    if (secretScript.equals("88224646BABA")) {
+                        close = true;
+                        tower.getGameMapList().get(0).layer3[10][5] = "stair03_1";
+                        tower.getGameMapList().get(1).layer1[9][6] = "";
+                    }
+                }
+                if (close) {
+                    secretScript = "";
+                    escapeDown = true;
+                    dialogBox.dispose();
                 }
             }
         });
@@ -1550,7 +1657,9 @@ public class TowerPanel extends JPanel implements Runnable {
     int nowSelectFloor = 0;
 
     public void showFloorTransfer() {
-        nowSelectFloor = floor;
+        if ((nowSelectFloor = floor) < 0) {
+            nowSelectFloor = 0;
+        }
         dialogBox = new JDialog(mainframe, null, true);
         JPanel dialogp = new JPanel(null);
         JLabel pict = new JLabel();
@@ -1564,7 +1673,7 @@ public class TowerPanel extends JPanel implements Runnable {
         mainLabel.setForeground(Color.white);
         mainLabel.setBorder(BorderFactory.createLineBorder(new Color(0, 153, 204), 3));
 
-        JLabel floorNoLabel = new JLabel(String.valueOf(floor), JLabel.CENTER);
+        JLabel floorNoLabel = new JLabel(String.valueOf(nowSelectFloor), JLabel.CENTER);
         floorNoLabel.setBounds(75, 0, 100, 80);
         floorNoLabel.setForeground(Color.white);
         floorNoLabel.setFont(new Font("微软雅黑", Font.PLAIN, 38));

@@ -189,6 +189,14 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("businessman", "\b又是挑战者吗?\n\b希望你能够活着回去。\n\b嘻嘻嘻嘻..."));
+        npc = new NPC("npc03_3", "奇怪的人", true, false,
+                new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
         dialogues.add(new Dialogue("player", "\b你已经得救了!"));
         dialogues.add(new Dialogue("thief", "\b啊,那真是太好了,我又可以在这里面寻宝了!"));
         dialogues.add(new Dialogue("thief", "\b哦,还没有自我介绍,我叫杰克,是这附近有名的小偷,什么金银财宝我样样都偷过。"));

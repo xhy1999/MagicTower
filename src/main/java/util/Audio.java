@@ -87,9 +87,9 @@ public class Audio extends Thread {
      * @date 2020年6月21日 14:14:48
      */
     public String getInfo() {
-        if (!new File(path.toString()).exists()) {
+        /*if (!new File(path.toString()).exists()) {
             throw new RuntimeException("文件不存在");
-        }
+        }*/
         AudioInputStream ais;
         String result = "";
         try {

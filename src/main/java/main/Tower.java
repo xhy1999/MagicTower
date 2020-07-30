@@ -35,6 +35,7 @@ public class Tower {
     private Image[] wallImage = new Image[8];
 
     private List<GameMap> gameMapList;
+    private Map<String, GameMap> specialMap;
 
 //    public AudioPlayer audioPlayer;
 
@@ -42,6 +43,7 @@ public class Tower {
         player = new Player();
         loadIcon();
         gameMapList = new LoadMap().initMap();
+        specialMap = new LoadSpecialMap().initSpecialMap();
 
         monsterMap = new LoadMonster().initMonster();
         wallMap = new LoadWall().initWall();
@@ -126,6 +128,10 @@ public class Tower {
 
     public List<GameMap> getGameMapList() {
         return gameMapList;
+    }
+
+    public Map<String, GameMap> getSpecialMap() {
+        return specialMap;
     }
 
 }

@@ -57,14 +57,14 @@ public class NPC extends Entity {
         if (this.id.equals("npc01_1_2")) {
             if (tower.getPlayer().inventory.containsKey("item09_5") && tower.getPlayer().inventory.get("item09_5").equals(1)) {
                 if (tower.getPlayer().inventory.containsKey("MysteryTreasure") && !tower.getPlayer().inventory.get("MysteryTreasure").equals(1)) {
-                    tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_1_4";
+                    tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_4";
                     return;
                 }
                 this.canMeet = true;
                 return;
             }
             if (tower.getPlayer().inventory.containsKey("MysteryTreasure") && tower.getPlayer().inventory.get("MysteryTreasure").equals(1)) {
-                tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_1_3";
+                tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_3";
                 return;
             }
         }
@@ -87,49 +87,54 @@ public class NPC extends Entity {
             tower.getPlayer().yKey++;
             tower.getPlayer().bKey++;
             tower.getPlayer().rKey++;
-            tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_1_2";
+            tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_2";
         }
         else if (this.id.equals("npc01_1_2")) {
             tower.getPlayer().attack = tower.getPlayer().attack * 4/3;
             tower.getPlayer().defense = tower.getPlayer().defense * 4/3;
-            tower.getGameMapList().get(20 + 2).layer3[7][5] = "stair02";
+            tower.getGameMapList().get(20).layer3[7][5] = "stair02";
         }
         else if (this.id.equals("npc01_1_3")) {
-            tower.getGameMapList().get(0 + 2).layer1[8][4] = "npc01_1_2";
+            tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_2";
             tower.getPlayer().inventory.put("MysteryTreasure", 0);
         }
+        else if (this.id.equals("npc01_1_4")) {
+            tower.getPlayer().attack = tower.getPlayer().attack * 4/3;
+            tower.getPlayer().defense = tower.getPlayer().defense * 4/3;
+            tower.getGameMapList().get(20).layer3[7][5] = "stair02";
+        }
         else if (this.id.equals("npc02_1")) {
-            tower.getGameMapList().get(2 + 2).layer2[10][7] = "item04_2";
+            tower.getGameMapList().get(2).layer2[10][7] = "item04_2";
         }
         else if (this.id.equals("npc02_2_1")) {
-            tower.getGameMapList().get(15 + 2).layer1[3][4] = "npc02_2_2";
+            tower.getGameMapList().get(15).layer1[3][4] = "npc02_2_2";
         }
         else if (this.id.equals("npc02_2_2")) {
-            tower.getGameMapList().get(15 + 2).layer2[3][4] = "item04_4";
+            tower.getGameMapList().get(15).layer2[3][4] = "item04_4";
         }
         else if (this.id.equals("npc03_1")) {
-            tower.getGameMapList().get(2 + 2).layer2[10][9] = "item05_2";
+            tower.getGameMapList().get(2).layer2[10][9] = "item05_2";
         }
         else if (this.id.equals("npc03_2_1")) {
-            tower.getGameMapList().get(15 + 2).layer1[3][6] = "npc03_2_2";
+            tower.getGameMapList().get(15).layer1[3][6] = "npc03_2_2";
         }
         else if (this.id.equals("npc03_2_2")) {
-            tower.getGameMapList().get(15 + 2).layer2[3][6] = "item05_4";
+            tower.getGameMapList().get(15).layer2[3][6] = "item05_4";
         }
         else if (this.id.equals("npc02_3")) {
             tower.getPlayer().inventory.put("MysteryTreasure", 1);
         }
         else if (this.id.equals("npc04_1")) {
             tower.getDoorMap().get("door04_1").openable = true;
-            tower.getGameMapList().get(4 + 2).layer1[0][5] = "npc04_2";
+            tower.getGameMapList().get(4).layer1[0][5] = "npc04_2";
         }
         else if (this.id.equals("npc04_2")) {
-            tower.getGameMapList().get(18 + 2).layer3[8][5] = "";
-            tower.getGameMapList().get(18 + 2).layer3[9][5] = "";
+            tower.getGameMapList().get(18).layer3[8][5] = "";
+            tower.getGameMapList().get(18).layer3[9][5] = "";
         }
         else if (this.id.equals("npc05_1")) {
             this.canMeet = false;
-            tower.getGameMapList().get(18 + 2).layer3[10][10] = "stair02";
+            tower.getGameMapList().get(18).layer3[10][10] = "stair02";
         }
     }
 
