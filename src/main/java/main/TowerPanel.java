@@ -40,11 +40,11 @@ public class TowerPanel extends JPanel implements Runnable {
     /**
      * 人物方向
      */
-    public int DIRECTION;
-    private static final int DIRECTION_UP = 0;
-    private static final int DIRECTION_DOWN = 1;
-    private static final int DIRECTION_LEFT = 2;
-    private static final int DIRECTION_RIGHT = 3;
+    public static int DIRECTION;
+    public static final int DIRECTION_UP = 0;
+    public static final int DIRECTION_DOWN = 1;
+    public static final int DIRECTION_LEFT = 2;
+    public static final int DIRECTION_RIGHT = 3;
 
     /**
      * 设定显示图像对象
@@ -64,8 +64,6 @@ public class TowerPanel extends JPanel implements Runnable {
     JDialog dialogBox;
     JLabel showMesLabel = new JLabel("魔塔(测试版)");
 
-    public static int floor = 0;
-
     /**
      * 帧数(每秒8帧)
      */
@@ -74,10 +72,11 @@ public class TowerPanel extends JPanel implements Runnable {
     private boolean running = false;
     public boolean canMove = true;
     private KeyInputHandler input;
-    public MusicPlayer musicPlayer;
-    public String specialGameMapNo;
-    public boolean canUseFloorTransfer = true;
-    public boolean canUseMonsterManual = true;
+    public static MusicPlayer musicPlayer;
+    public static boolean canUseFloorTransfer = true;
+    public static boolean canUseMonsterManual = true;
+    public static int floor = 0;
+    public static String specialGameMapNo;
 
     JFrame mainframe = new JFrame("MagicTower  (作者:Vip、疯子)");
     Container contentPane;
@@ -316,7 +315,7 @@ public class TowerPanel extends JPanel implements Runnable {
         //System.out.println("构造地图中..." + frames);
         repaint();
         GameMap gameMap;
-        if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+        if (isNormalFloor()) {
             gameMap = tower.getGameMapList().get(floor);
         } else {
             gameMap = tower.getSpecialMap().get(specialGameMapNo);
@@ -501,7 +500,7 @@ public class TowerPanel extends JPanel implements Runnable {
             moveNo = 0;
             return;
         }
-        if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+        if (isNormalFloor()) {
             String stair = tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x];
             if (stair.equals("stair01")) {
                 musicPlayer.upAndDown();
@@ -583,10 +582,10 @@ public class TowerPanel extends JPanel implements Runnable {
                 public void run() {
                     System.out.println("开始计算");
                     String[][] monsterLayer;
-                    if (specialGameMapNo != null && !specialGameMapNo.equals("")) {
-                        monsterLayer = tower.getSpecialMap().get(specialGameMapNo).layer1;
-                    } else {
+                    if (isNormalFloor()) {
                         monsterLayer = tower.getGameMapList().get(floor).layer1;
+                    } else {
+                        monsterLayer = tower.getSpecialMap().get(specialGameMapNo).layer1;
                     }
                     Map<String, Boolean> monsterIdMap = new HashMap<>();
                     //y
@@ -661,16 +660,14 @@ public class TowerPanel extends JPanel implements Runnable {
         if (System.currentTimeMillis() - lastMove > stopTime) {
             moveNo = 0;
         }
-        GameMap gameMap;
-        if (specialGameMapNo != null && !specialGameMapNo.equals("")) {
-            if (tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
-                tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
+        if (isNormalFloor()) {
+            if (tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
+                tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
                 return;
             }
         } else {
-            gameMap = tower.getGameMapList().get(floor);
-            if (tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
-                tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
+            if (tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
+                tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
                 return;
             }
         }
@@ -694,10 +691,10 @@ public class TowerPanel extends JPanel implements Runnable {
      */
     private boolean canMove(byte x, byte y) {
         GameMap gameMap;
-        if (specialGameMapNo != null && !specialGameMapNo.equals("")) {
-            gameMap = tower.getSpecialMap().get(specialGameMapNo);
-        } else {
+        if (isNormalFloor()) {
             gameMap = tower.getGameMapList().get(floor);
+        } else {
+            gameMap = tower.getSpecialMap().get(specialGameMapNo);
         }
         String[][] layer1 = gameMap.layer1;
         String[][] layer2 = gameMap.layer2;
@@ -739,10 +736,10 @@ public class TowerPanel extends JPanel implements Runnable {
                         escapeDown = false;
                     }
                     if (npc.canRemove) {
-                        if (specialGameMapNo != null && !specialGameMapNo.equals("")) {
-                            tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
-                        } else {
+                        if (isNormalFloor()) {
                             tower.getGameMapList().get(floor).layer1[y][x] = "";
+                        } else {
+                            tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
                         }
                     }
                     npc.script_end(tower);
@@ -816,7 +813,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+                        if (isNormalFloor()) {
                             if (tower.getGameMapList().get(floor).layer3[y][x].equals("") || tower.getGameMapList().get(floor).layer3[y][x].contains("open")) {
                                 return;
                             }
@@ -1029,7 +1026,9 @@ public class TowerPanel extends JPanel implements Runnable {
                         break;
                     case "item09_4":
                         showMesLabel.setText("获得风之罗盘,可以使用楼层传送");
-                        canUseFloorTransfer = true;
+                        if (isNormalFloor()) {
+                            canUseFloorTransfer = true;
+                        }
                         flag = true;
                         break;
                     case "item09_5":
@@ -1070,7 +1069,7 @@ public class TowerPanel extends JPanel implements Runnable {
                     System.err.println("layer2 (x=" + x + ",y=" + y + ") itemId(" + layer2[y][x] + ") 不存在!");
                 }
             }
-            if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+            if (isNormalFloor()) {
                 tower.getGameMapList().get(floor).layer2[y][x] = "";
             } else {
                 tower.getSpecialMap().get(specialGameMapNo).layer2[y][x] = "";
@@ -1094,7 +1093,7 @@ public class TowerPanel extends JPanel implements Runnable {
             if (pHP > 0) {
                 musicPlayer.fight();
                 showMesLabel.setText("击杀:" + monster.getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
-                if (specialGameMapNo == null || specialGameMapNo.equals("")) {
+                if (isNormalFloor()) {
                     tower.getGameMapList().get(floor).layer1[y][x] = "";
                 } else {
                     tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
@@ -1110,6 +1109,14 @@ public class TowerPanel extends JPanel implements Runnable {
             }
         }
         return true;
+    }
+
+    /**
+     * 判断是否在普通法楼层
+     * @return  如果在普通楼层,则返回true;反之,则返回false
+     */
+    public boolean isNormalFloor() {
+        return specialGameMapNo == null || specialGameMapNo.equals("");
     }
 
     private String secretScript = "";
@@ -1139,7 +1146,7 @@ public class TowerPanel extends JPanel implements Runnable {
         } else {
             pict.setBounds(13, 8, 32, 32);
             name = new JLabel(npc.getName());
-            name.setBounds(48, 16, 60, 16);
+            name.setBounds(48, 16, 80, 16);
             photo = new ImageIcon(tower.getNpcMap().get(npcId).getIcon()[0].getImage());
         }
         pict.setIcon(photo);

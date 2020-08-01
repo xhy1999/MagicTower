@@ -1,6 +1,7 @@
 package entity;
 
 import main.Tower;
+import main.TowerPanel;
 
 import javax.swing.*;
 import java.util.List;
@@ -120,6 +121,18 @@ public class NPC extends Entity {
         }
         else if (this.id.equals("npc03_2_2")) {
             tower.getGameMapList().get(15).layer2[3][6] = "item05_4";
+        }
+        else if (this.id.equals("npc03_4_1")) {
+            tower.getSpecialMap().get("1_1").layer1[10][0] = "npc03_4_2";
+        }
+        else if (this.id.equals("npc03_4_2")) {
+            TowerPanel.specialGameMapNo = null;
+            TowerPanel.canUseFloorTransfer = true;
+            TowerPanel.floor = 1;
+            TowerPanel.musicPlayer.playBackgroundMusic(1);
+            TowerPanel.DIRECTION = TowerPanel.DIRECTION_DOWN;
+            tower.getPlayer().x = 5;
+            tower.getPlayer().y = 9;
         }
         else if (this.id.equals("npc02_3")) {
             tower.getPlayer().inventory.put("MysteryTreasure", 1);

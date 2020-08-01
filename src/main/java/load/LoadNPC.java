@@ -197,6 +197,25 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("businessman", "\b挑战者,你好!我是这座塔的复刻者Vip、疯子,在这里你可以看到这座塔的所有道具与怪物。"));
+        dialogues.add(new Dialogue("businessman", "\b如果你准备回去继续挑战,就来找我吧!"));
+        dialogues.add(new Dialogue("player", "\b好的!"));
+        npc = new NPC("npc03_4_1", "Vip、疯子", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "\b我想继续挑战,请把我送回去吧!"));
+        dialogues.add(new Dialogue("businessman", "\b好的,坐稳喽!"));
+        npc = new NPC("npc03_4_2", "Vip、疯子", true, false,
+                new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
         dialogues.add(new Dialogue("player", "\b你已经得救了!"));
         dialogues.add(new Dialogue("thief", "\b啊,那真是太好了,我又可以在这里面寻宝了!"));
         dialogues.add(new Dialogue("thief", "\b哦,还没有自我介绍,我叫杰克,是这附近有名的小偷,什么金银财宝我样样都偷过。"));

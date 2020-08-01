@@ -152,7 +152,7 @@ public class MusicPlayer {
         else if (floor < 16) {
             newMusicNo = 3;
         }
-        else if (floor < 22) {
+        else if (floor < 21) {
             newMusicNo = 4;
         } else {
             newMusicNo = 5;
