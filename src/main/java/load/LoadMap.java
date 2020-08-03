@@ -1026,8 +1026,101 @@ public class LoadMap {
                 {"wall05", "wall05", "wall05", "wall05", "wall05", "wall05", "wall05", "wall05", "wall05", "wall05", "wall05"}};
 
         gameMap = new GameMap(21, layer1, layer2, layer3);
+
         gameMap.upPositionX = 5;
         gameMap.upPositionY = 5;
+        gameMap.downPositionX = 5;
+        gameMap.downPositionY = 2;
+        mapList.add(gameMap);
+
+        layer1 = new String[][]{
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "npc01_1_5", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "monster07_4", "", "", "", "", "", "monster07_4", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "monster07_4", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""}};
+
+        layer2 = new String[][]{
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"item02_1", "item02_1", "", "", "", "item09_1", "", "", "", "item02_2", "item02_2"},
+                {"", "item02_1", "", "", "item09_1", "", "item09_1", "", "", "item02_2", ""},
+                {"item02_1", "item02_1", "", "", "", "item09_1", "", "", "", "item02_2", "item02_2"},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "item03_2", "item03_2", "item03_2", "", "", "", ""},
+                {"", "", "", "", "item03_2", "", "item03_2", "", "", "", ""}};
+
+        layer3 = new String[][]{
+                {"wall05", "wall05", "wall05", "wall05", "wall05", "stair01", "wall05", "wall05", "wall05", "wall05", "wall05"},
+                {"wall05", "wall05", "wall05", "wall05", "wall05", "", "wall05", "wall05", "wall05", "wall05", "wall05"},
+                {"wall05", "wall05", "wall05", "wall05", "", "", "", "wall05", "wall05", "wall05", "wall05"},
+                {"door05_1", "door05_1", "door05_1", "wall05", "wall05", "door03", "wall05", "wall05", "door05_1", "door05_1", "door05_1"},
+                {"", "", "door05_1", "wall05", "wall05", "", "wall05", "wall05", "door05_1", "", ""},
+                {"stair04_2_1", "", "", "door03", "", "", "", "door03", "", "", "stair04_3_1"},
+                {"", "", "door05_1", "wall05", "wall05", "", "wall05", "wall05", "door05_1", "", ""},
+                {"door05_1", "door05_1", "door05_1", "wall05", "wall05", "door03", "wall05", "wall05", "door05_1", "door05_1", "door05_1"},
+                {"wall05", "wall05", "wall05", "door05_1", "door05_1", "", "door05_1", "door05_1", "wall05", "wall05", "wall05"},
+                {"wall05", "wall05", "wall05", "door05_1", "", "", "", "door05_1", "wall05", "wall05", "wall05"},
+                {"wall05", "wall05", "wall05", "door05_1", "", "stair02", "", "door05_1", "wall05", "wall05", "wall05"}};
+
+        gameMap = new GameMap(22, layer1, layer2, layer3);
+        gameMap.upPositionX = 5;
+        gameMap.upPositionY = 1;
+        gameMap.downPositionX = 5;
+        gameMap.downPositionY = 5;
+        mapList.add(gameMap);
+
+        layer1 = new String[][]{
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "monster07_4", "", "", "", "", "", "monster07_4", "", ""},
+                {"", "", "monster07_4", "", "", "", "", "", "monster07_4", "", ""},
+                {"", "", "monster07_4", "", "", "", "", "", "monster07_4", "", ""},
+                {"", "", "monster04_13", "", "", "", "", "", "monster04_13", "", ""},
+                {"", "", "", "", "", "monster10_15", "", "", "", "", ""},
+                {"", "", "", "", "monster04_13", "", "monster04_13", "", "", "", ""},
+                {"monster07_4", "", "", "", "", "", "", "", "", "", "monster07_4"}};
+
+        layer2 = new String[][]{
+                {"item03_2", "", "", "", "", "", "", "", "", "", "item03_2"},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "item01_5", "", "item01_5", "", "", "", ""},
+                {"", "", "", "", "", "item01_5", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"item03_1", "", "", "", "", "", "", "", "", "", "item03_1"},
+                {"item03_1", "", "", "item08_1", "", "", "", "item08_1", "", "", "item03_1"},
+                {"item03_1", "", "", "", "", "", "", "", "", "", "item03_1"},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"", "", "item03_2", "item03_2", "", "", "", "item03_2", "item03_2", "", ""}};
+
+        layer3 = new String[][]{
+                {"", "wall05", "wall05", "wall05", "wall05", "stair01", "wall05", "wall05", "wall05", "wall05", ""},
+                {"", "", "", "", "", "", "", "", "", "", ""},
+                {"wall05", "door02", "wall05", "wall05", "", "door02", "", "wall05", "wall05", "door02", "wall05"},
+                {"", "", "", "wall05", "wall05", "", "wall05", "wall05", "", "", ""},
+                {"", "wall05", "", "wall05", "wall05", "wall05", "wall05", "wall05", "", "wall05", ""},
+                {"", "wall05", "", "wall05", "wall05", "stair04_4", "wall05", "wall05", "", "wall05", ""},
+                {"", "wall05", "", "wall05", "wall05", "door04_2", "wall05", "wall05", "", "wall05", ""},
+                {"", "wall05", "", "", "wall05", "door05", "wall05", "", "", "wall05", ""},
+                {"", "wall05", "wall05", "wall05", "wall05", "", "wall05", "wall05", "wall05", "wall05", ""},
+                {"", "wall05", "wall05", "wall05", "", "door03", "", "wall05", "wall05", "wall05", ""},
+                {"", "", "", "", "", "wall05", "", "", "", "", ""}};
+
+        gameMap = new GameMap(23, layer1, layer2, layer3);
+        gameMap.upPositionX = 5;
+        gameMap.upPositionY = 1;
         gameMap.downPositionX = 5;
         gameMap.downPositionY = 1;
         mapList.add(gameMap);

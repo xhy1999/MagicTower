@@ -149,24 +149,32 @@ public class LoadItem {
                 new ImageIcon(getClass().getResource("/image/item/item06_6.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item07_1", "神秘法杖", null,
+        item = new Item("item07_1", "心之灵杖", null,
                 new ImageIcon(getClass().getResource("/image/item/item07_1.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item07_2", "红色法杖", null,
+        item = new Item("item07_2", "冰之灵杖", null,
                 new ImageIcon(getClass().getResource("/image/item/item07_2.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item07_3", "金色法杖", null,
+        item = new Item("item07_3", "炎之灵杖", null,
                 new ImageIcon(getClass().getResource("/image/item/item07_3.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item07_4", "蓝色法杖", null,
+        item = new Item("item07_4", "红色法杖", null,
                 new ImageIcon(getClass().getResource("/image/item/item07_4.png")));
         itemMap.put(item.getId(), item);
 
-        item = new Item("item07_5", "紫色法杖", null,
+        item = new Item("item07_5", "黄金法杖", null,
                 new ImageIcon(getClass().getResource("/image/item/item07_5.png")));
+        itemMap.put(item.getId(), item);
+
+        item = new Item("item07_6", "蓝色法杖", null,
+                new ImageIcon(getClass().getResource("/image/item/item07_6.png")));
+        itemMap.put(item.getId(), item);
+
+        item = new Item("item07_7", "紫色法杖", null,
+                new ImageIcon(getClass().getResource("/image/item/item07_7.png")));
         itemMap.put(item.getId(), item);
 
         item = new Item("item08_1", "小飞羽", null,

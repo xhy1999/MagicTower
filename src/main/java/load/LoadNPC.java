@@ -97,6 +97,31 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("elf", "\b做得很好。现在你已经将那个可恶的冥灵魔王给消灭了,快去找另外两个'灵杖'吧,找齐了之"));
+        dialogues.add(new Dialogue("elf", "后再来找我!"));
+        dialogues.add(new Dialogue("elf", "\b要记住,如果我不把封印解开的话,最底层的怪物你是杀不了的!"));
+        npc = new NPC("npc01_1_5", "仙子", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc01_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc01_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "\b快看,我全部都找到了,我找齐左右灵杖了!"));
+        dialogues.add(new Dialogue("elf", "\b嗯,不错,现在我们可以解除这里面的封印了!\n\b那就让我们开始吧!"));
+        dialogues.add(new Dialogue("elf", "\b神之灵杖呀,放射出你们的魔力吧!\n\b哈哩咪哆唏咪啦~~~~~"));
+        dialogues.add(new Dialogue("player", "\b...(又来了)"));
+        dialogues.add(new Dialogue("elf", "\b...好了,我已经将他们三个灵之杖的魔力都开放出来了!"));
+        dialogues.add(new Dialogue("elf", "\b公主就由我来就出去,你快去最底层杀了那个大魔头吧!要记住,如果没有万分的把握,一定不"));
+        dialogues.add(new Dialogue("elf", "要去进入最后的传送门,一旦进去了,在杀死大魔头之前你将不能再回来!"));
+        dialogues.add(new Dialogue("player", "\b好的,我明白了!"));
+        npc = new NPC("npc01_1_6", "仙子", false, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc01_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc01_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
         npc = new NPC("npc02_0", "老者", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),

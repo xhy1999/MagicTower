@@ -5,13 +5,7 @@ public class GameMap implements Cloneable {
     /**
      * 楼层
      */
-    private int floor;
-
-    /**
-     * 地图大小
-     */
-    public int width = 11;
-    public int height = 11;
+    public String floor;
 
     /**
      * 玩家上到这层，人物出现的位置，X为宽，Y为高
@@ -39,14 +33,17 @@ public class GameMap implements Cloneable {
     public String[][] layer3;
 
     public GameMap(int floor, String[][] layer1, String[][] layer2, String[][] layer3) {
-        this.floor = floor;
+        this.floor = floor + "";
         this.layer1 = layer1;
         this.layer2 = layer2;
         this.layer3 = layer3;
     }
 
-    public int getFloor() {
-        return floor;
+    public GameMap(String floor, String[][] layer1, String[][] layer2, String[][] layer3) {
+        this.floor = floor;
+        this.layer1 = layer1;
+        this.layer2 = layer2;
+        this.layer3 = layer3;
     }
 
 }

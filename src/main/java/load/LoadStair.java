@@ -22,10 +22,34 @@ public class LoadStair {
         stair = new Stair("stair03_1", new ImageIcon(getClass().getResource("/image/stair/stair03.png")));
         stairMap.put(stair.getId(), stair);
 
-        stair = new Stair("stair04_1", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+        stair = new Stair("stair04_1_1", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
                 new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
         stairMap.put(stair.getId(), stair);
-        stair = new Stair("stair04_2", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+        stair = new Stair("stair04_1_2", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+                new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
+        stairMap.put(stair.getId(), stair);
+        stair = new Stair("stair04_1_3", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+                new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
+        stairMap.put(stair.getId(), stair);
+        stair = new Stair("stair04_1_4", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+                new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
+        stairMap.put(stair.getId(), stair);
+
+        stair = new Stair("stair04_2_1", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+                new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
+        stairMap.put(stair.getId(), stair);
+        stair = new Stair("stair04_2_2", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+                new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
+        stairMap.put(stair.getId(), stair);
+
+        stair = new Stair("stair04_3_1", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+                new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
+        stairMap.put(stair.getId(), stair);
+        stair = new Stair("stair04_3_2", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
+                new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
+        stairMap.put(stair.getId(), stair);
+
+        stair = new Stair("stair04_4", new ImageIcon(getClass().getResource("/image/stair/stair04_1.png")),
                 new ImageIcon(getClass().getResource("/image/stair/stair04_2.png")));
         stairMap.put(stair.getId(), stair);
 

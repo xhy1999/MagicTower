@@ -52,8 +52,16 @@ public class LoadDoor {
                 new ImageIcon(getClass().getResource("/image/door/door04_4.png")));
         doorMap.put(door.getId(), door);
         //不能直接打开
-        //第二层的门
+        //第2层的门
         door = new Door("door04_1", false,
+                new ImageIcon(getClass().getResource("/image/door/door04_1.png")),
+                new ImageIcon(getClass().getResource("/image/door/door04_2.png")),
+                new ImageIcon(getClass().getResource("/image/door/door04_3.png")),
+                new ImageIcon(getClass().getResource("/image/door/door04_4.png")));
+        doorMap.put(door.getId(), door);
+        //不能直接打开
+        //第23层的门
+        door = new Door("door04_2", false,
                 new ImageIcon(getClass().getResource("/image/door/door04_1.png")),
                 new ImageIcon(getClass().getResource("/image/door/door04_2.png")),
                 new ImageIcon(getClass().getResource("/image/door/door04_3.png")),

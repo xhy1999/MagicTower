@@ -57,16 +57,23 @@ public class NPC extends Entity {
     public void script_start(Tower tower) {
         if (this.id.equals("npc01_1_2")) {
             if (tower.getPlayer().inventory.containsKey("item09_5") && tower.getPlayer().inventory.get("item09_5").equals(1)) {
-                if (tower.getPlayer().inventory.containsKey("MysteryTreasure") && !tower.getPlayer().inventory.get("MysteryTreasure").equals(1)) {
+                if (tower.getPlayer().inventory.containsKey("IceStick") && !tower.getPlayer().inventory.get("IceStick").equals(1)) {
                     tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_4";
                     return;
                 }
                 this.canMeet = true;
                 return;
             }
-            if (tower.getPlayer().inventory.containsKey("MysteryTreasure") && tower.getPlayer().inventory.get("MysteryTreasure").equals(1)) {
+            if (tower.getPlayer().inventory.containsKey("IceStick") && tower.getPlayer().inventory.get("IceStick").equals(1)) {
                 tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_3";
                 return;
+            }
+        }
+        else if (this.id.equals("npc01_1_6")) {
+            if (tower.getPlayer().inventory.containsKey("SpiritStick") && tower.getPlayer().inventory.containsKey("SunStick")) {
+                if (tower.getPlayer().inventory.get("SpiritStick").equals(1) && tower.getPlayer().inventory.get("SunStick").equals(1)) {
+                    this.canMeet = true;
+                }
             }
         }
         else if (this.id.equals("npc02_2_2")) {
@@ -78,6 +85,11 @@ public class NPC extends Entity {
         else if (this.id.equals("npc03_2_2")) {
             if (tower.getPlayer().money >= 500) {
                 tower.getPlayer().money -= 500;
+                this.canMeet = true;
+            }
+        }
+        else if (this.id.equals("npc04_2")) {
+            if (tower.getPlayer().inventory.containsKey("LumpHammer") && tower.getPlayer().inventory.get("LumpHammer").equals(1)) {
                 this.canMeet = true;
             }
         }
@@ -97,12 +109,28 @@ public class NPC extends Entity {
         }
         else if (this.id.equals("npc01_1_3")) {
             tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_2";
-            tower.getPlayer().inventory.put("MysteryTreasure", 0);
+            tower.getPlayer().inventory.put("IceStick", 0);
         }
         else if (this.id.equals("npc01_1_4")) {
             tower.getPlayer().attack = tower.getPlayer().attack * 4/3;
             tower.getPlayer().defense = tower.getPlayer().defense * 4/3;
             tower.getGameMapList().get(20).layer3[7][5] = "stair02";
+        }
+        else if (this.id.equals("npc01_1_5")) {
+            tower.getGameMapList().get(22).layer1[2][6] = "npc01_1_6";
+            tower.getSpecialMap().get("23_R").layer3[5][7] = "door05";
+            tower.getSpecialMap().get("23_L").layer3[5][3] = "door05";
+        }
+        else if (this.id.equals("npc01_1_6")) {
+            tower.getSpecialMap().get("hell").layer1[1][4] = "monster11_1";
+            tower.getSpecialMap().get("hell").layer1[1][5] = "monster11_2";
+            tower.getSpecialMap().get("hell").layer1[1][6] = "monster11_3";
+            tower.getSpecialMap().get("hell").layer1[2][4] = "monster11_4";
+            tower.getSpecialMap().get("hell").layer1[2][5] = "monster11_5";
+            tower.getSpecialMap().get("hell").layer1[2][6] = "monster11_6";
+            tower.getSpecialMap().get("hell").layer1[3][4] = "monster11_7";
+            tower.getSpecialMap().get("hell").layer1[3][5] = "monster11_8";
+            tower.getSpecialMap().get("hell").layer1[3][6] = "monster11_9";
         }
         else if (this.id.equals("npc02_1")) {
             tower.getGameMapList().get(2).layer2[10][7] = "item04_2";
@@ -135,7 +163,7 @@ public class NPC extends Entity {
             tower.getPlayer().y = 9;
         }
         else if (this.id.equals("npc02_3")) {
-            tower.getPlayer().inventory.put("MysteryTreasure", 1);
+            tower.getPlayer().inventory.put("IceStick", 1);
         }
         else if (this.id.equals("npc04_1")) {
             tower.getDoorMap().get("door04_1").openable = true;
