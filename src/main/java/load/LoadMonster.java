@@ -210,12 +210,12 @@ public class LoadMonster {
                 new ImageIcon(getClass().getResource("/image/monster/monster04_3_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster04_4", "麻衣大法师", 250, 120, 70, 17, 20,
+        monster = new Monster("monster04_4", "麻衣大法师", 250, 100, 70, 17, 20,
                 new ImageIcon(getClass().getResource("/image/monster/monster04_4_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster04_4_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster04_5", "红衣大法师", 500, 400, 260, 45, 47,
+        monster = new Monster("monster04_5", "红衣大法师", 500, 300, 260, 45, 47,
                 new ImageIcon(getClass().getResource("/image/monster/monster04_5_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster04_5_2.png")));
         monsterMap.put(monster.getId(), monster);
@@ -431,7 +431,7 @@ public class LoadMonster {
 
         //(15000, 1000, 1000, 100, 100, "红衣魔王")
         //(20000, 1333, 1333, 133, 133, "红衣魔王")(杀完16层魔王)
-        //(30000, 2666, 2666, 166, 166, "红衣魔王")(???)
+        //(30000, 2666, 2666, 166, 166, "红衣魔王")(杀完21层魔王)
         monster = new Monster("monster10_4", "红衣大魔王", 15000, 1000, 1000, 100, 100,
                 new ImageIcon(getClass().getResource("/image/monster/monster10_4_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster10_4_2.png")));
@@ -492,7 +492,8 @@ public class LoadMonster {
         //(60000, 3400, 3000, 390, 343, "冥灵魔王")(杀完21层魔王)
         monster = new Monster("monster10_15", "大魔王·格勒第", 30000, 1700, 1500, 120, 150,
                 new ImageIcon(getClass().getResource("/image/monster/monster10_15_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster10_15_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster10_15_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster10_16", "烈焰大魔王", 9999, 9999, 9999, 999, 999,
@@ -507,92 +508,110 @@ public class LoadMonster {
 
         monster = new Monster("monster11_1", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_1_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_1_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_1_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster11_2", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_2_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_2_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_2_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster11_3", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_3_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_3_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_3_2.png")),
+        true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster11_4", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_4_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_4_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_4_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster11_5", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_5_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_5_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_5_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster11_6", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_6_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_6_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_6_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster11_7", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_7_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_7_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_7_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster11_8", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_8_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_8_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_8_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster11_9", "血影", 9999, 5000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster11_9_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster11_9_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster11_9_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_1", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_1_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_1_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_1_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_2", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_2_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_2_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_2_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_3", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_3_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_3_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_3_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_4", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_4_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_4_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_4_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_5", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_5_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_5_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_5_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_6", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_6_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_6_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_6_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_7", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_7_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_7_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_7_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_8", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_8_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_8_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_8_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster12_9", "魔龙", 9999, 9999, 5000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster12_9_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster12_9_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster12_9_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         return monsterMap;

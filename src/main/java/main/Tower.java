@@ -36,6 +36,8 @@ public class Tower {
 
     private List<GameMap> gameMapList;
     private Map<String, GameMap> specialMap;
+    //TODO 正式版需要修改为 false
+    public static boolean specialFloor = true;
 
 //    public AudioPlayer audioPlayer;
 

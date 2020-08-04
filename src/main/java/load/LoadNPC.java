@@ -17,6 +17,7 @@ public class LoadNPC {
     //03-businessman:商人
     //04-thief:小偷
     //05-princess:公主
+    //06-monster:怪物
 
     public Map<String, NPC> initNPC() {
         Map<String, NPC> npcMap = new HashMap<>();
@@ -172,6 +173,19 @@ public class LoadNPC {
         npcMap.put(npc.getId(), npc);
 
         dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("elder", "\b看到那个疯子了吗,据说他有不可告人的秘密!"));
+        dialogues.add(new Dialogue("player", "\b...???\n\b您还是快走吧,这里危险!"));
+        dialogues.add(new Dialogue("elder", "\b等等,你胸前这个是圣光徽吗?"));
+        dialogues.add(new Dialogue("player", "\b是这个吗?"));
+        dialogues.add(new Dialogue("elder", "\b对对对,我肯定不会看错。你可以按下\bD\b来用它查看怪物信息!"));
+        dialogues.add(new Dialogue("player", "\b明白了,谢谢!"));
+        npc = new NPC("npc02_4", "老者", true, true,
+                new ImageIcon(getClass().getResource("/image/npc/npc02_1.png")),
+                new ImageIcon(getClass().getResource("/image/npc/npc02_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
         npc = new NPC("npc03_0", "商人", true, true,
                 new ImageIcon(getClass().getResource("/image/npc/npc03_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc03_2.png")),
@@ -285,6 +299,75 @@ public class LoadNPC {
         npc = new NPC("npc05_1", "公主", true, false,
                 new ImageIcon(getClass().getResource("/image/npc/npc05_1.png")),
                 new ImageIcon(getClass().getResource("/image/npc/npc05_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("monster", "\b放弃吧!愚蠢的人类!"));
+        dialogues.add(new Dialogue("player", "\b该放弃的是你!魔王。快说,公主关在哪里?"));
+        dialogues.add(new Dialogue("monster", "\b等你打赢我再说吧!"));
+        npc = new NPC("npc06_1_1", "红衣魔王", true, true,
+                new ImageIcon(getClass().getResource("/image/monster/monster10_4_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster10_4_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("player", "\b大魔头,你的死期到了!"));
+        dialogues.add(new Dialogue("monster", "\b哈哈哈...你也真是有意思,别以为蝶仙给了你力量你就可以打败我,想打败我你还早着呢!"));
+        dialogues.add(new Dialogue("player", "\b废话少说,去死吧!"));
+        npc = new NPC("npc06_2_1", "大魔王·格勒第", true, true,
+                new ImageIcon(getClass().getResource("/image/monster/monster10_15_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster10_15_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("monster", "\b看不出你还有两下子,有本事的话来21楼。在那里,你就可以见识到我真正的实力了!"));
+        npc = new NPC("npc06_2_2", "大魔王·格勒第", true, true,
+                new ImageIcon(getClass().getResource("/image/monster/monster10_15_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster10_15_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("monster", "\b啊...怎么可能,我怎么可能会被你打败呢!\n\b主人,救...救救我!"));
+        dialogues.add(new Dialogue("monster", "\b不,不要这样...(随后,一团黑色迷雾吞噬了他)"));
+        npc = new NPC("npc06_2_3", "大魔王·格勒第", true, true,
+                new ImageIcon(getClass().getResource("/image/monster/monster10_15_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster10_15_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("monster", "\b哈哈哈,就凭你还想打败我?\n\b看我影分身之术!"));
+        npc = new NPC("npc07_1_1", "血影", true, true,
+                new ImageIcon(getClass().getResource("/image/monster/monster11_8_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster11_8_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("monster", "\b不!!!我怎么会被区区一个勇士消灭!!!!!!!!!"));
+        npc = new NPC("npc07_1_2", "血影", true, true,
+                new ImageIcon(getClass().getResource("/image/monster/monster11_8_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster11_8_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("monster", "\b哈哈哈,就凭你还想打败我?\n\b看我影分身之术!"));
+        npc = new NPC("npc07_2_1", "魔龙", true, true,
+                new ImageIcon(getClass().getResource("/image/monster/monster12_8_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster12_8_2.png")),
+                dialogues);
+        npcMap.put(npc.getId(), npc);
+
+        dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue("monster", "\b不!!!我怎么会被区区一个勇士消灭!!!!!!!!!"));
+        npc = new NPC("npc07_2_2", "魔龙", true, true,
+                new ImageIcon(getClass().getResource("/image/monster/monster12_8_1.png")),
+                new ImageIcon(getClass().getResource("/image/monster/monster12_8_2.png")),
                 dialogues);
         npcMap.put(npc.getId(), npc);
 

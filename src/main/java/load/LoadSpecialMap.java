@@ -276,7 +276,7 @@ public class LoadSpecialMap {
                 {"wall06", "wall06", "wall06", "door05_1", "", "", "", "door05_1", "wall06", "wall06", "wall06"},
                 {"wall06", "wall06", "wall06", "door05_1", "", "", "", "door05_1", "wall06", "wall06", "wall06"},
                 {"wall06", "wall06", "wall06", "door05_1", "", "", "", "door05_1", "wall06", "wall06", "wall06"},
-                {"wall06", "wall06", "wall06", "door05_1", "door05_1", "", "door05_1", "door05_1", "wall06", "wall06", "wall06"},
+                {"wall06", "wall06", "wall06", "door05_1", "", "", "", "door05_1", "wall06", "wall06", "wall06"},
                 {"wall06", "", "", "", "", "", "", "", "", "", "wall06"},
                 {"wall06", "wall06", "wall06", "wall06", "wall06", "", "wall06", "wall06", "wall06", "wall06", "wall06"},
                 {"wall06", "wall06", "wall06", "", "", "", "", "", "wall06", "wall06", "wall06"},

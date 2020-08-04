@@ -22,7 +22,7 @@ public class FightCalc {
         int pHP = player.hp;
         int mDamage;
         //魔法师系的怪物攻击玩家为真实伤害
-        if (monster.getId().contains("monster04")) {
+        if (monster.getId().contains("monster04") && (monster.getId().equals("monster04_4") || monster.getId().equals("monster04_5"))) {
             mDamage = monster.getAttack();
         } else {
             mDamage = monster.getAttack() - player.defense;
@@ -64,7 +64,14 @@ public class FightCalc {
         }
         //System.out.println("玩家攻击次数:" + pAttackNo);
         //System.out.println("怪物攻击次数:" + (attackNo - pAttackNo));
-        this.mDamageTotal = mDamageTotal;
+        if (monster.getId().equals("monster04_13") && (mDamageTotal == 0 || mDamage == 1)) {
+            this.mDamageTotal = (int) Math.round(player.hp / 3.0);
+        }
+        else if (monster.getId().equals("monster10_1") && mDamageTotal == 0 || mDamage == 1) {
+            this.mDamageTotal = (int) Math.round(player.hp / 4.0);
+        } else {
+            this.mDamageTotal = mDamageTotal;
+        }
         if (mDamageTotal < player.hp) {
             canAttack = true;
         }

@@ -37,8 +37,8 @@ public class Player {
     public Player() {
         this.name = "Hero";
         this.hp = 2000;
-        this.attack = 2000;
-        this.defense = 2000;
+        this.attack = 10000;
+        this.defense = 10000;
         this.exp = 1000;
         this.money = 1000;
         this.level = 1;

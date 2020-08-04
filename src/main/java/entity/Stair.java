@@ -26,7 +26,6 @@ public class Stair extends Entity {
             towerPanel.musicPlayer.fall();
             towerPanel.musicPlayer.playBackgroundMusic(-1);
             towerPanel.specialGameMapNo = "1_1";
-            towerPanel.canUseFloorTransfer = false;
             towerPanel.floor = -1;
             tower.getPlayer().x = 5;
             tower.getPlayer().y = 10;
@@ -35,7 +34,6 @@ public class Stair extends Entity {
             towerPanel.musicPlayer.specialStair();
             towerPanel.musicPlayer.playBackgroundMusic(-1);
             towerPanel.specialGameMapNo = "1_2";
-            towerPanel.canUseFloorTransfer = false;
             towerPanel.floor = -1;
             tower.getPlayer().x = tower.getSpecialMap().get(towerPanel.specialGameMapNo).upPositionX;
             tower.getPlayer().y = tower.getSpecialMap().get(towerPanel.specialGameMapNo).upPositionY;
@@ -44,7 +42,6 @@ public class Stair extends Entity {
             towerPanel.musicPlayer.specialStair();
             towerPanel.musicPlayer.playBackgroundMusic(-1);
             towerPanel.specialGameMapNo = "1_1";
-            towerPanel.canUseFloorTransfer = false;
             towerPanel.floor = -1;
             tower.getPlayer().x = tower.getSpecialMap().get(towerPanel.specialGameMapNo).downPositionX;
             tower.getPlayer().y = tower.getSpecialMap().get(towerPanel.specialGameMapNo).downPositionY;
@@ -53,7 +50,6 @@ public class Stair extends Entity {
             towerPanel.musicPlayer.specialStair();
             towerPanel.musicPlayer.playBackgroundMusic(-1);
             towerPanel.specialGameMapNo = "1_3";
-            towerPanel.canUseFloorTransfer = false;
             towerPanel.floor = -1;
             tower.getPlayer().x = tower.getSpecialMap().get(towerPanel.specialGameMapNo).upPositionX;
             tower.getPlayer().y = tower.getSpecialMap().get(towerPanel.specialGameMapNo).upPositionY;
@@ -62,7 +58,6 @@ public class Stair extends Entity {
             towerPanel.musicPlayer.specialStair();
             towerPanel.musicPlayer.playBackgroundMusic(-1);
             towerPanel.specialGameMapNo = "1_2";
-            towerPanel.canUseFloorTransfer = false;
             towerPanel.floor = -1;
             tower.getPlayer().x = tower.getSpecialMap().get(towerPanel.specialGameMapNo).downPositionX;
             tower.getPlayer().y = tower.getSpecialMap().get(towerPanel.specialGameMapNo).downPositionY;

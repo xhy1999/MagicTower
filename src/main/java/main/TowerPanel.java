@@ -55,7 +55,8 @@ public class TowerPanel extends JPanel implements Runnable {
     JLabel atkPicLabel, atkLabel;
     JLabel defPicLabel, defLabel;
     JLabel expPicLabel, expLabel;
-    /*乘号*/ JLabel symbol1, symbol2, symbol3, symbol4;
+    /*乘号*/
+    JLabel symbol1, symbol2, symbol3, symbol4;
     JLabel yKeyPicLabel, yKeyLabel;
     JLabel bKeyPicLabel, bKeyLabel;
     JLabel rKeyPicLabel, rKeyLabel;
@@ -70,15 +71,16 @@ public class TowerPanel extends JPanel implements Runnable {
     byte frames = 0;
 
     private boolean running = false;
-    public boolean canMove = true;
-    private KeyInputHandler input;
+    public static boolean canMove = true;
+    public static KeyInputHandler input;
     public static MusicPlayer musicPlayer;
+    //TODO 正式版这里要改为 false
     public static boolean canUseFloorTransfer = true;
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     public static int floor = 22;
 
-    JFrame mainframe = new JFrame("MagicTower  (作者:Vip、疯子)");
+    JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
     Container contentPane;
 
     Tower tower;
@@ -590,7 +592,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 for (int i = 0; i < monsterLayer.length; i++) {
                     //x
                     for (int j = 0; j < monsterLayer[i].length; j++) {
-                        if (monsterLayer[j][i] != null && !monsterLayer[j][i].equals("") && monsterLayer[j][i].contains("monster")) {
+                        if (monsterLayer[j][i] != null && monsterLayer[j][i].contains("monster")) {
                             monsterIdMap.put(monsterLayer[j][i], true);
                         }
                     }
@@ -599,15 +601,25 @@ public class TowerPanel extends JPanel implements Runnable {
                 int monsterNo = 0;
                 List<FightCalc> fightCalcList = new ArrayList<>();
                 List<FightCalc> dieAttackList = new ArrayList<>();
+                boolean monster11 = false, monster12 = false;
                 while (iter.hasNext()) {
                     Map.Entry entry = (Map.Entry) iter.next();
                     Object key = entry.getKey();
                     Object val = entry.getValue();
                     Monster monster = tower.getMonsterMap().get(key);
-                    if (monster.getName().equals("血影") || monster.getName().equals("魔龙")) {
-                        if (!monster.getId().equals("monster11_8") && !monster.getId().equals("monster12_8")) {
+                    if (monster.getId().contains("monster11")) {
+                        if (monster11) {
                             continue;
                         }
+                        monster = tower.getMonsterMap().get("monster11_8");
+                        monster11 = true;
+                    }
+                    else if (monster.getId().contains("monster12")) {
+                        if (monster12) {
+                            continue;
+                        }
+                        monster = tower.getMonsterMap().get("monster12_8");
+                        monster12 = true;
                     }
                     FightCalc fightCalc = new FightCalc(tower.getPlayer(), monster);
                     if (fightCalc.canAttack) {
@@ -650,6 +662,10 @@ public class TowerPanel extends JPanel implements Runnable {
             }).start();
         }
         else if (canUseFloorTransfer && input.use_floor_transfer.down) {
+            if (!isNormalFloor()) {
+                musicPlayer.fail();
+                return;
+            }
             canMove = false;
             new Thread(new Runnable() {
                 @Override
@@ -706,48 +722,32 @@ public class TowerPanel extends JPanel implements Runnable {
         }
         if (layer1[y][x].contains("npc")) {
             canMove = false;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    NPC npc;
-                    try {
-                        npc = tower.getNpcMap().get(layer1[y][x]);
-                    } catch (Exception e) {
-                        System.err.println("layer1 (x=" + y + ",y=" + x + ") npcId(" + layer1[y][x] + ") 不存在!");
-                        return;
-                    }
-                    npc.script_start(tower);
-                    //重新获取一边,以防npc改变而这里没变
+            new Thread(() -> {
+                NPC npc;
+                try {
                     npc = tower.getNpcMap().get(layer1[y][x]);
-                    if (!npc.canMeet) {
-                        canMove = true;
-                        return;
-                    }
-                    List<Dialogue> dialogues = npc.dialogues;
-                    for (int i = 0; i < dialogues.size(); i++) {
-                        Dialogue dialogue = dialogues.get(i);
-                        System.out.println(dialogue.name + ":" + dialogue.text);
-                        meetNpc(layer1[y][x], dialogue);
-                        while (!escapeDown) {
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        escapeDown = false;
-                    }
-                    if (npc.canRemove) {
-                        if (isNormalFloor()) {
-                            tower.getGameMapList().get(floor).layer1[y][x] = "";
-                        } else {
-                            tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
-                        }
-                    }
-                    npc.script_end(tower);
-                    canMove = true;
-                    input.clear();
+                } catch (Exception e) {
+                    System.err.println("layer1 (x=" + y + ",y=" + x + ") npcId(" + layer1[y][x] + ") 不存在!");
+                    return;
                 }
+                npc.script_start(tower);
+                //重新获取一边,以防npc改变而这里没变
+                npc = tower.getNpcMap().get(layer1[y][x]);
+                if (!npc.canMeet) {
+                    canMove = true;
+                    return;
+                }
+                meetNpc(layer1[y][x]);
+                if (npc.canRemove) {
+                    if (isNormalFloor()) {
+                        tower.getGameMapList().get(floor).layer1[y][x] = "";
+                    } else {
+                        tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
+                    }
+                }
+                npc.script_end(tower);
+                canMove = true;
+                input.clear();
             }).start();
             return false;
         } else if (layer1[y][x].contains("shop")) {
@@ -1041,9 +1041,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         break;
                     case "item09_4":
                         showMesLabel.setText("获得风之罗盘,可以使用楼层传送");
-                        if (isNormalFloor()) {
-                            canUseFloorTransfer = true;
-                        }
+                        canUseFloorTransfer = true;
                         flag = true;
                         break;
                     case "item09_5":
@@ -1098,6 +1096,7 @@ public class TowerPanel extends JPanel implements Runnable {
             } catch (Exception e) {
                 System.err.println("layer1 (x=" + x + ",y=" + y + ") monsterId(" + layer1[y][x] + ") 不存在!");
             }
+            monster.script_start(tower);
             FightCalc fightCalc = new FightCalc(tower.getPlayer(), monster);
             if (!fightCalc.canAttack) {
                 showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
@@ -1116,6 +1115,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 tower.getPlayer().hp = pHP;
                 tower.getPlayer().money += monster.getMoney();
                 tower.getPlayer().exp += monster.getExp();
+                monster.script_end(this, tower);
                 return true;
             } else {
                 showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
@@ -1140,108 +1140,120 @@ public class TowerPanel extends JPanel implements Runnable {
      * 与NPC对话
      *
      * @param npcId
-     * @param dialogue
      */
-    public void meetNpc(String npcId, Dialogue dialogue) {
+    public void meetNpc(String npcId) {
         NPC npc = tower.getNpcMap().get(npcId);
-        dialogBox = new JDialog(mainframe, null, true);
-        String s;
-        ImageIcon photo;
-        JPanel dialogp = new JPanel(null);
-        JLabel pict = new JLabel();
-        JLabel name;
-        JTextArea content = new JTextArea();
-        content.setBorder(BorderFactory.createLineBorder(Color.white));
-        JLabel tip = new JLabel("Space...");
-        if (dialogue.name.contains("player")) {
-            pict.setBounds(208, 8, 32, 32);
-            name = new JLabel("勇士");
-            name.setBounds(176, 16, 32, 16);
-            photo = new ImageIcon(tower.getPlayer().getPlayerIcon()[1][0].getImage());
-        } else {
-            pict.setBounds(13, 8, 32, 32);
-            name = new JLabel(npc.getName());
-            name.setBounds(48, 16, 80, 16);
-            photo = new ImageIcon(tower.getNpcMap().get(npcId).getIcon()[0].getImage());
-        }
-        pict.setIcon(photo);
-        name.setFont(new Font("宋体", Font.BOLD, 13));
-        name.setBackground(Color.white);
-        name.setForeground(Color.white);
-        s = dialogue.text;
-        dialogBox.setSize(256, 128);
-        dialogBox.setUndecorated(true);
-        content.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent arg0) {
-
+        List<Dialogue> dialogues = npc.dialogues;
+        for (int i = 0; i < dialogues.size(); i++) {
+            Dialogue dialogue = dialogues.get(i);
+            System.out.println(dialogue.name + ":" + dialogue.text);
+            dialogBox = new JDialog(mainframe, null, true);
+            String s;
+            ImageIcon photo;
+            JPanel dialogp = new JPanel(null);
+            JLabel pict = new JLabel();
+            JLabel name;
+            JTextArea content = new JTextArea();
+            content.setBorder(BorderFactory.createLineBorder(Color.white));
+            JLabel tip = new JLabel("Space...");
+            if (dialogue.name.contains("player")) {
+                pict.setBounds(208, 8, 32, 32);
+                name = new JLabel("勇士");
+                name.setBounds(176, 16, 32, 16);
+                photo = new ImageIcon(tower.getPlayer().getPlayerIcon()[1][0].getImage());
+            } else {
+                pict.setBounds(13, 8, 32, 32);
+                name = new JLabel(npc.getName());
+                name.setBounds(48, 16, 120, 16);
+                photo = new ImageIcon(tower.getNpcMap().get(npcId).getIcon()[0].getImage());
             }
+            pict.setIcon(photo);
+            name.setFont(new Font("宋体", Font.BOLD, 13));
+            name.setBackground(Color.white);
+            name.setForeground(Color.white);
+            s = dialogue.text;
+            dialogBox.setSize(256, 128);
+            dialogBox.setUndecorated(true);
+            content.addKeyListener(new KeyListener() {
+                public void keyTyped(KeyEvent arg0) {
 
-            public void keyReleased(KeyEvent arg0) {
-
-            }
-
-            public void keyPressed(KeyEvent arg0) {
-                boolean close = false;
-                switch (arg0.getKeyCode()) {
-                    case KeyEvent.VK_SPACE:
-                        close = true;
-                        musicPlayer.dialogueSpace();
-                        break;
                 }
-                if (npc.getName().equals("奇怪的人")) {
+
+                public void keyReleased(KeyEvent arg0) {
+
+                }
+
+                public void keyPressed(KeyEvent arg0) {
+                    boolean close = false;
                     switch (arg0.getKeyCode()) {
-                        case KeyEvent.VK_UP:
-                            secretScript += "8";
-                            break;
-                        case KeyEvent.VK_DOWN:
-                            secretScript += "2";
-                            break;
-                        case KeyEvent.VK_LEFT:
-                            secretScript += "4";
-                            break;
-                        case KeyEvent.VK_RIGHT:
-                            secretScript += "6";
-                            break;
-                        case KeyEvent.VK_A:
-                            secretScript += "A";
-                            break;
-                        case KeyEvent.VK_B:
-                            secretScript += "B";
+                        case KeyEvent.VK_SPACE:
+                            close = true;
+                            musicPlayer.dialogueSpace();
                             break;
                     }
-                    if (secretScript.equals("88224646BABA")) {
-                        close = true;
-                        tower.getGameMapList().get(0).layer3[10][5] = "stair03_1";
-                        tower.getGameMapList().get(1).layer1[9][6] = "";
+                    if (npc.getName().equals("奇怪的人")) {
+                        switch (arg0.getKeyCode()) {
+                            case KeyEvent.VK_UP:
+                                secretScript += "8";
+                                break;
+                            case KeyEvent.VK_DOWN:
+                                secretScript += "2";
+                                break;
+                            case KeyEvent.VK_LEFT:
+                                secretScript += "4";
+                                break;
+                            case KeyEvent.VK_RIGHT:
+                                secretScript += "6";
+                                break;
+                            case KeyEvent.VK_A:
+                                secretScript += "A";
+                                break;
+                            case KeyEvent.VK_B:
+                                secretScript += "B";
+                                break;
+                        }
+                        if (secretScript.equals("88224646BABA")) {
+                            close = true;
+                            tower.getGameMapList().get(0).layer3[10][5] = "stair03_1";
+                            tower.getGameMapList().get(1).layer1[9][6] = "";
+                        }
+                    }
+                    if (close) {
+                        secretScript = "";
+                        escapeDown = true;
+                        dialogBox.dispose();
                     }
                 }
-                if (close) {
-                    secretScript = "";
-                    escapeDown = true;
-                    dialogBox.dispose();
+            });
+            dialogp.setSize(256, 128);
+            dialogp.setBackground(Color.black);
+            content.setText(s);
+            content.setLineWrap(true);
+            content.setEditable(false);
+            content.setBounds(4, 48, 248, 58);
+            content.setFont(new Font("宋体", Font.BOLD, 16));
+            content.setBackground(Color.black);
+            content.setForeground(Color.WHITE);
+            tip.setBounds(212, 105, 50, 25);
+            tip.setFont(new Font("微软雅黑", Font.BOLD, 11));
+            tip.setForeground(Color.white);
+            tip.setBackground(Color.white);
+            dialogp.add(pict);
+            dialogp.add(name);
+            dialogp.add(content);
+            dialogp.add(tip);
+            dialogBox.setLocation(mainframe.getLocation().x + 242, mainframe.getLocation().y + 125);
+            dialogBox.add(dialogp);
+            dialogBox.setVisible(true);
+            while (!escapeDown) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        });
-        dialogp.setSize(256, 128);
-        dialogp.setBackground(Color.black);
-        content.setText(s);
-        content.setLineWrap(true);
-        content.setEditable(false);
-        content.setBounds(4, 48, 248, 58);
-        content.setFont(new Font("宋体", Font.BOLD, 16));
-        content.setBackground(Color.black);
-        content.setForeground(Color.WHITE);
-        tip.setBounds(212, 105, 50, 25);
-        tip.setFont(new Font("微软雅黑", Font.BOLD, 11));
-        tip.setForeground(Color.white);
-        tip.setBackground(Color.white);
-        dialogp.add(pict);
-        dialogp.add(name);
-        dialogp.add(content);
-        dialogp.add(tip);
-        dialogBox.setLocation(mainframe.getLocation().x + 242, mainframe.getLocation().y + 125);
-        dialogBox.add(dialogp);
-        dialogBox.setVisible(true);
+            escapeDown = false;
+        }
     }
 
     byte nowSelected = 0;

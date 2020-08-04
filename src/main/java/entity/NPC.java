@@ -110,6 +110,7 @@ public class NPC extends Entity {
         else if (this.id.equals("npc01_1_3")) {
             tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_2";
             tower.getPlayer().inventory.put("IceStick", 0);
+            tower.specialFloor = true;
         }
         else if (this.id.equals("npc01_1_4")) {
             tower.getPlayer().attack = tower.getPlayer().attack * 4/3;
@@ -155,7 +156,6 @@ public class NPC extends Entity {
         }
         else if (this.id.equals("npc03_4_2")) {
             TowerPanel.specialGameMapNo = null;
-            TowerPanel.canUseFloorTransfer = true;
             TowerPanel.floor = 1;
             TowerPanel.musicPlayer.playBackgroundMusic(1);
             TowerPanel.DIRECTION = TowerPanel.DIRECTION_DOWN;
@@ -176,6 +176,18 @@ public class NPC extends Entity {
         else if (this.id.equals("npc05_1")) {
             this.canMeet = false;
             tower.getGameMapList().get(18).layer3[10][10] = "stair02";
+        }
+        else if (this.id.equals("npc05_1")) {
+            this.canMeet = false;
+            tower.getGameMapList().get(18).layer3[10][10] = "stair02";
+        }
+        else if (this.id.equals("npc06_1_1")) {
+            this.canMeet = false;
+            tower.getGameMapList().get(16).layer1[5][5] = "monster10_4";
+        }
+        else if (this.id.equals("npc06_2_1")) {
+            this.canMeet = false;
+            tower.getGameMapList().get(19).layer1[6][5] = "monster10_15";
         }
     }
 
