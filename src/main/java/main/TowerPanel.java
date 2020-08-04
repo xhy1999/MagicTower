@@ -75,10 +75,11 @@ public class TowerPanel extends JPanel implements Runnable {
     public static KeyInputHandler input;
     public static MusicPlayer musicPlayer;
     //TODO 正式版这里要改为 false
-    public static boolean canUseFloorTransfer = true;
+    public static boolean canUseFloorTransfer = false;
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
-    public static int floor = 22;
+    //TODO 正式版这里要改为 0
+    public static int floor = 0;
 
     JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
     Container contentPane;
@@ -89,7 +90,8 @@ public class TowerPanel extends JPanel implements Runnable {
         this.tower = tower;
         tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
         tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
-        tower.getPlayer().maxFloor = 21;
+        //TODO 正式版这里要改为 0
+        tower.getPlayer().maxFloor = 0;
         tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);

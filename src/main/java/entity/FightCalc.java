@@ -67,7 +67,7 @@ public class FightCalc {
         if (monster.getId().equals("monster04_13") && (mDamageTotal == 0 || mDamage == 1)) {
             this.mDamageTotal = (int) Math.round(player.hp / 3.0);
         }
-        else if (monster.getId().equals("monster10_1") && mDamageTotal == 0 || mDamage == 1) {
+        else if (monster.getId().equals("monster10_1") && (mDamageTotal == 0 || mDamage == 1)) {
             this.mDamageTotal = (int) Math.round(player.hp / 4.0);
         } else {
             this.mDamageTotal = mDamageTotal;

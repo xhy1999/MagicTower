@@ -37,14 +37,22 @@ public class Player {
     public Player() {
         this.name = "Hero";
         this.hp = 2000;
-        this.attack = 10000;
-        this.defense = 10000;
-        this.exp = 1000;
-        this.money = 1000;
-        this.level = 1;
-        this.yKey = 10;
-        this.bKey = 10;
-        this.rKey = 10;
+        //TODO 正式版这里要改为 10
+        this.attack = 10;
+        //TODO 正式版这里要改为 10
+        this.defense = 10;
+        //TODO 正式版这里要改为 0
+        this.exp = 0;
+        //TODO 正式版这里要改为 0
+        this.money = 0;
+        //TODO 正式版这里要改为 0
+        this.level = 0;
+        //TODO 正式版这里要改为 0
+        this.yKey = 0;
+        //TODO 正式版这里要改为 0
+        this.bKey = 0;
+        //TODO 正式版这里要改为 0
+        this.rKey = 0;
         this.maxFloor = 0;
         this.minFloor = 0;
         this.x = 0;
