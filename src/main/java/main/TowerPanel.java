@@ -75,7 +75,7 @@ public class TowerPanel extends JPanel implements Runnable {
     public static KeyInputHandler input;
     public static MusicPlayer musicPlayer;
     //TODO 正式版这里要改为 false
-    public static boolean canUseFloorTransfer = false;
+    public static boolean canUseFloorTransfer = true;
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     //TODO 正式版这里要改为 0

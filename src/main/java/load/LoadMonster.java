@@ -250,7 +250,7 @@ public class LoadMonster {
                 new ImageIcon(getClass().getResource("/image/monster/monster04_11_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster04_12", "地狱使者", 9999, 9999, 9999, 999, 999,
+        monster = new Monster("monster04_12", "地狱使者", 5000, 1000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster04_12_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster04_12_2.png")));
         monsterMap.put(monster.getId(), monster);
@@ -355,7 +355,7 @@ public class LoadMonster {
                 new ImageIcon(getClass().getResource("/image/monster/monster07_7_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster07_8", "烈焰武士", 9999, 9999, 9999, 999, 999,
+        monster = new Monster("monster07_8", "烈焰武士", 3600, 4500, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster07_8_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster07_8_2.png")));
         monsterMap.put(monster.getId(), monster);
@@ -434,7 +434,8 @@ public class LoadMonster {
         //(30000, 2666, 2666, 166, 166, "红衣魔王")(杀完21层魔王)
         monster = new Monster("monster10_4", "红衣大魔王", 15000, 1000, 1000, 100, 100,
                 new ImageIcon(getClass().getResource("/image/monster/monster10_4_1.png")),
-                new ImageIcon(getClass().getResource("/image/monster/monster10_4_2.png")));
+                new ImageIcon(getClass().getResource("/image/monster/monster10_4_2.png")),
+                true, true);
         monsterMap.put(monster.getId(), monster);
 
         monster = new Monster("monster10_5", "黄金大魔王", 9999, 9999, 9999, 999, 999,
@@ -501,7 +502,7 @@ public class LoadMonster {
                 new ImageIcon(getClass().getResource("/image/monster/monster10_16_2.png")));
         monsterMap.put(monster.getId(), monster);
 
-        monster = new Monster("monster10_17", "烈焰吸血鬼", 9999, 9999, 9999, 999, 999,
+        monster = new Monster("monster10_17", "烈焰吸血鬼", 80000, 4000, 4000, 0, 0,
                 new ImageIcon(getClass().getResource("/image/monster/monster10_17_1.png")),
                 new ImageIcon(getClass().getResource("/image/monster/monster10_17_2.png")));
         monsterMap.put(monster.getId(), monster);

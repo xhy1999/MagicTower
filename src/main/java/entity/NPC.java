@@ -132,6 +132,7 @@ public class NPC extends Entity {
             tower.getSpecialMap().get("hell").layer1[3][4] = "monster11_7";
             tower.getSpecialMap().get("hell").layer1[3][5] = "monster11_8";
             tower.getSpecialMap().get("hell").layer1[3][6] = "monster11_9";
+            tower.getGameMapList().get(18).layer1[4][5] = "";
         }
         else if (this.id.equals("npc02_1")) {
             tower.getGameMapList().get(2).layer2[10][7] = "item04_2";

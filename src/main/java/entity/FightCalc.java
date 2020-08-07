@@ -22,7 +22,7 @@ public class FightCalc {
         int pHP = player.hp;
         int mDamage;
         //魔法师系的怪物攻击玩家为真实伤害
-        if (monster.getId().contains("monster04") && (monster.getId().equals("monster04_4") || monster.getId().equals("monster04_5"))) {
+        if (monster.getId().contains("monster04") && (monster.getId().equals("monster04_4") || monster.getId().equals("monster04_5") || monster.getId().equals("monster04_12"))) {
             mDamage = monster.getAttack();
         } else {
             mDamage = monster.getAttack() - player.defense;

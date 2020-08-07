@@ -39,8 +39,6 @@ public class Tower {
     //TODO 正式版需要修改为 false
     public static boolean specialFloor = true;
 
-//    public AudioPlayer audioPlayer;
-
     public Tower() {
         player = new Player();
         loadIcon();

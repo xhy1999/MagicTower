@@ -36,6 +36,7 @@ public class Player {
 
     public Player() {
         this.name = "Hero";
+        //TODO 正式版这里要改为 2000
         this.hp = 2000;
         //TODO 正式版这里要改为 10
         this.attack = 10;
@@ -45,8 +46,8 @@ public class Player {
         this.exp = 0;
         //TODO 正式版这里要改为 0
         this.money = 0;
-        //TODO 正式版这里要改为 0
-        this.level = 0;
+        //TODO 正式版这里要改为 1
+        this.level = 1;
         //TODO 正式版这里要改为 0
         this.yKey = 0;
         //TODO 正式版这里要改为 0

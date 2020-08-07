@@ -64,11 +64,13 @@ public class Monster extends Entity {
             return;
         }
         if (this.getId().equals("monster10_4")) {
+            System.out.println("monster10_4");
             if (TowerPanel.floor == 16) {
+                System.out.println("16");
                 tower.getMonsterMap().get("monster03_4").updateAttribute(3333, 1200, 1133, 112, 100);
                 tower.getMonsterMap().get("monster04_13").updateAttribute(2000, 1106, 973, 106, 93);
                 tower.getMonsterMap().get("monster07_4").updateAttribute(1600, 1306, 1200, 117, 100);
-                tower.getMonsterMap().get("monster10_4").updateAttribute(20000, 1333, 1333, 133, 133);
+                this.updateAttribute(20000, 1333, 1333, 133, 133);
             }
         }
         else if (this.getId().equals("monster10_15")) {
