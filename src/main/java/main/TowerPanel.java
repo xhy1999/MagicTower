@@ -624,11 +624,6 @@ public class TowerPanel extends JPanel implements Runnable {
                         monster12 = true;
                     }
                     FightCalc fightCalc = new FightCalc(tower.getPlayer(), monster);
-                    if (fightCalc.canAttack) {
-                        //System.out.println("击杀 " + monster.getName() + " 需要损失" + fightCalc.mDamageTotal + "体力");
-                    } else {
-                        //System.out.println("无法击杀 " + monster.getName() + ", 至少需要 " + fightCalc.mDamageTotal + " 体力才能击杀");
-                    }
                     monsterNo++;
                     int no = 0;
                     if (fightCalc.canAttack) {
@@ -1668,6 +1663,7 @@ public class TowerPanel extends JPanel implements Runnable {
                     dialogBox.dispose();
                     input.clear();
                     canMove = true;
+                    nowMonsterManual = 0;
                 }
                 if (changeFlag) {
                     input.clear();
