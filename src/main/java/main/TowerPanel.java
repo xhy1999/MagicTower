@@ -2,12 +2,16 @@ package main;
 
 import entity.*;
 import load.*;
+import util.ImageUtil;
 import util.ScreenUtil;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -79,7 +83,7 @@ public class TowerPanel extends JPanel implements Runnable {
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     //TODO 正式版这里要改为 0
-    public static int floor = 0;
+    public static int floor = 22;
 
     JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
     Container contentPane;
@@ -91,7 +95,7 @@ public class TowerPanel extends JPanel implements Runnable {
         tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
         tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
         //TODO 正式版这里要改为 0
-        tower.getPlayer().maxFloor = 0;
+        tower.getPlayer().maxFloor = 23;
         tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
@@ -437,12 +441,14 @@ public class TowerPanel extends JPanel implements Runnable {
     @Override
     public void paintComponent(Graphics g) {// 描绘窗体，此处在默认JPanel基础上构建底层地图
         super.paintComponent(g);
-        drawAttribute(g);
-        drawMap(g);
-        try {
-            drawPlayer(g);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (running) {
+            drawAttribute(g);
+            drawMap(g);
+            try {
+                drawPlayer(g);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -468,10 +474,8 @@ public class TowerPanel extends JPanel implements Runnable {
                 e.printStackTrace();
             }
             fps++;
-            //render();
             if (System.currentTimeMillis() - fpsTimer > 125) {
                 playerPicLabel.setIcon(tower.getPlayer().getPlayerIcon()[1][frames % 4]);
-                //playerPicLabel.setIcon(getMonsterMap().get("1_12").getIcon()[no % 2]);
                 if (frames == 7) {
                     System.out.printf("%d fps, %d tick%n", fps, tick);
                     frames = 0;
@@ -483,6 +487,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 fpsTimer += 125;
             }
         }
+        System.out.println("end");
     }
 
     /**
@@ -671,6 +676,10 @@ public class TowerPanel extends JPanel implements Runnable {
                     canMove = true;
                 }
             }).start();
+        }
+        //TODO 正式版这里要去掉
+        else if (input.escape.down) {
+            end();
         }
         if (System.currentTimeMillis() - lastMove > stopTime) {
             moveNo = 0;
@@ -1844,5 +1853,184 @@ public class TowerPanel extends JPanel implements Runnable {
         dialogBox.setVisible(true);
     }
 
+    public void end() {
+        ///System.out.println("drawEnd");
+        running = false;
+        musicPlayer.playEndBackgroundMusic();
+        this.remove(playerPicLabel);
+        this.remove(lvLabel);
+        this.remove(hpPicLabel);
+        this.remove(hpLabel);
+        this.remove(atkPicLabel);
+        this.remove(atkLabel);
+        this.remove(defPicLabel);
+        this.remove(defLabel);
+        this.remove(expPicLabel);
+        this.remove(expLabel);
+        this.remove(yKeyPicLabel);
+        this.remove(yKeyLabel);
+        this.remove(bKeyPicLabel);
+        this.remove(bKeyLabel);
+        this.remove(rKeyPicLabel);
+        this.remove(rKeyLabel);
+        this.remove(monPicLabel);
+        this.remove(monLabel);
+        this.remove(showMesLabel);
+
+        for (int i = 0; i <= 0xFF; i++) {
+            this.setBackground(new Color(0, 0, 0, i));
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        JLabel label = new JLabel();
+        label.setForeground(Color.white);
+        //label.setIcon(new ImageIcon(changeAlpha(100)));
+        label.setBounds(50, 100, 300, 288);
+        label.setVisible(true);
+
+        int x = 230, y = 440;
+
+        JLabel textLabel1 = new JLabel("这位勇士终于成功将公主救了出来...", JLabel.LEFT);
+        textLabel1.setForeground(Color.white);
+        textLabel1.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel1.setBounds(x, y, 400, 20);
+        textLabel1.setVisible(true);
+        JLabel textLabel2 = new JLabel("魔塔也被毁灭了...", JLabel.LEFT);
+        textLabel2.setForeground(Color.white);
+        textLabel2.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel2.setBounds(x, y + 20, 400, 20);
+        textLabel2.setVisible(true);
+        JLabel textLabel3 = new JLabel("剩下的只是一堆石头而已...", JLabel.LEFT);
+        textLabel3.setForeground(Color.white);
+        textLabel3.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel3.setBounds(x, y + 40, 400, 20);
+        textLabel3.setVisible(true);
+
+        JLabel textLabel4 = new JLabel("随后,勇士离开了这个国家", JLabel.LEFT);
+        textLabel4.setForeground(Color.white);
+        textLabel4.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel4.setBounds(x, y + 80, 400, 20);
+        textLabel4.setVisible(true);
+        JLabel textLabel5 = new JLabel("自此之后,再也没有人见过他的身影...", JLabel.LEFT);
+        textLabel5.setForeground(Color.white);
+        textLabel5.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel5.setBounds(x, y + 100, 400, 20);
+        textLabel5.setVisible(true);
+
+        JLabel textLabel6 = new JLabel("究竟他是谁?", JLabel.LEFT);
+        textLabel6.setForeground(Color.white);
+        textLabel6.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel6.setBounds(x, y + 140, 400, 20);
+        textLabel6.setVisible(true);
+        JLabel textLabel7 = new JLabel("究竟为何而来?", JLabel.LEFT);
+        textLabel7.setForeground(Color.white);
+        textLabel7.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel7.setBounds(x, y + 160, 400, 20);
+        textLabel7.setVisible(true);
+        JLabel textLabel8 = new JLabel("至今依然是个谜...", JLabel.LEFT);
+        textLabel8.setForeground(Color.white);
+        textLabel8.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel8.setBounds(x, y + 180, 400, 20);
+        textLabel8.setVisible(true);
+
+        JLabel textLabel9 = new JLabel("总之,任务完成了", JLabel.LEFT);
+        textLabel9.setForeground(Color.white);
+        textLabel9.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel9.setBounds(x, y + 220, 400, 20);
+        textLabel9.setVisible(true);
+        JLabel textLabel10 = new JLabel("这个国家也恢复了往日的和平景象...", JLabel.LEFT);
+        textLabel10.setForeground(Color.white);
+        textLabel10.setFont(new Font("微软雅黑", Font.BOLD, 18));
+        textLabel10.setBounds(x, y + 240, 400, 20);
+        textLabel10.setVisible(true);
+
+        JLabel endLabel = new JLabel("~END~", JLabel.CENTER);
+        endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, 0x00));
+        endLabel.setFont(new Font("微软雅黑", Font.PLAIN, 100));
+        endLabel.setBounds(0, 0, 576, 380);
+        endLabel.setVisible(true);
+        //endLabel.setBorder(BorderFactory.createLineBorder(Color.red));
+
+        this.add(textLabel1);
+        this.add(textLabel2);
+        this.add(textLabel3);
+        this.add(textLabel4);
+        this.add(textLabel5);
+        this.add(textLabel6);
+        this.add(textLabel7);
+        this.add(textLabel8);
+        this.add(textLabel9);
+        this.add(textLabel10);
+        this.add(label);
+        this.add(endLabel);
+
+        ImageUtil imageUtil = new ImageUtil();
+        new Thread(() -> {
+            for (int i = 0; i <= 120; i++) {
+//                label.setIcon(new ImageIcon(changeAlpha((int) (80 - Math.abs(1.6 * i - 80)))));
+//                try {
+//                    Thread.sleep(15);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                if (i <= 50) {
+                    label.setIcon(new ImageIcon(imageUtil.changeAlpha(2 * i)));
+                } else {
+                    label.setIcon(new ImageIcon(imageUtil.changeAlpha((int) (120 - 0.4 * i))));
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int i = 0; i <= y + 240 + 40; i++) {
+                textLabel1.setBounds(x, y - i, 400, 20);
+                textLabel2.setBounds(x, y + 20 - i, 400, 20);
+                textLabel3.setBounds(x, y + 40 - i, 400, 20);
+                textLabel4.setBounds(x, y + 80 - i, 400, 20);
+                textLabel5.setBounds(x, y + 100 - i, 400, 20);
+                textLabel6.setBounds(x, y + 140 - i, 400, 20);
+                textLabel7.setBounds(x, y + 160 - i, 400, 20);
+                textLabel8.setBounds(x, y + 180 - i, 400, 20);
+                textLabel9.setBounds(x, y + 220 - i, 400, 20);
+                textLabel10.setBounds(x, y + 240 - i, 400, 20);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int i = 0; i <= 72; i++) {
+                label.setIcon(new ImageIcon(imageUtil.changeAlpha(72 - i)));
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int i = 0; i <= 0xFF; i++) {
+                endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int i = 0; i <= 300; i++) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.exit(0);
+        }).run();
+
+    }
 
 }

@@ -125,8 +125,9 @@ public class Monster extends Entity {
                     towerPanel.meetNpc("npc07_1_2");
                     towerPanel.canMove = true;
                     towerPanel.input.clear();
+                    //TODO towerPanel.over();    结局2
+                    towerPanel.end();
                 }).start();
-                //TODO towerPanel.over();    结局2
             }
             else if (tower.getNpcMap().get("npc07_1_1").canMeet) {
                 towerPanel.canMove = false;
@@ -155,8 +156,9 @@ public class Monster extends Entity {
                     towerPanel.meetNpc("npc07_2_2");
                     towerPanel.canMove = true;
                     towerPanel.input.clear();
+                    //TODO towerPanel.over();    结局3
+                    towerPanel.end();
                 }).start();
-                //TODO towerPanel.over();    结局3
             }
             else if (tower.getNpcMap().get("npc07_2_1").canMeet) {
                 towerPanel.canMove = false;

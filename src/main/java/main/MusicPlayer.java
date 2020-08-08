@@ -9,7 +9,7 @@ public class MusicPlayer {
     Audio audio;
 
     private Thread openDoor, openSpecialDoor, upAndDown, specialStair, fall, dialogueSpace, getItem, getSpecialItem,
-                    fight, walk, floorTransferSelect, shopSelect, shopBuySuc, shopExpBuySuc, shopBuyFail, fail, underground;
+                    fight, walk, floorTransferSelect, shopSelect, shopBuySuc, shopExpBuySuc, shopBuyFail, fail, underground, undergroundEnd;
 
     private String openDoorSoundURL = "/audio/OpenDoor.mp3";
     private String openSpecialDoorSoundURL = "/audio/OpenSpecialDoor.mp3";
@@ -34,6 +34,7 @@ public class MusicPlayer {
     private String undergroundSound3URL = "/audio/Underground3.mp3";
     private String undergroundSound4URL = "/audio/Underground4.mp3";
     private String undergroundSound5URL = "/audio/Underground5.mp3";
+    private String undergroundSoundEndURL = "/audio/UndergroundEnd.mp3";
 
     public MusicPlayer() {
         openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL), false);
@@ -54,6 +55,7 @@ public class MusicPlayer {
         fail = creatSoundThread(getClass().getResource(failSoundURL), false);
 
         underground = creatSoundThread(getClass().getResource(undergroundSound0URL), true);
+        undergroundEnd = creatSoundThread(getClass().getResource(undergroundSoundEndURL), true);
     }
 
     private Thread creatSoundThread(URL path, boolean isLoop) {
@@ -139,6 +141,11 @@ public class MusicPlayer {
     public void fail() {
         fail.start();
         fail = creatSoundThread(getClass().getResource(failSoundURL), false);
+    }
+
+    public void playEndBackgroundMusic() {
+        underground.stop();
+        undergroundEnd.start();
     }
 
     private int musicNo = -1, newMusicNo = 0;
