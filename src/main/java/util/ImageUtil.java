@@ -10,7 +10,7 @@ public class ImageUtil {
     /**
      * @param alpha    透明度   （0不透明---10全透明）
      */
-    public Image changeAlpha(int alpha) {
+    public Image changeAlpha(String path, int alpha) {
         //检查透明度是否越界
         if (alpha < 0) {
             alpha = 0;
@@ -18,7 +18,7 @@ public class ImageUtil {
             alpha = 100;
         }
         try {
-            BufferedImage image = ImageIO.read(getClass().getResource("/image/icon/image_sword.jpg"));
+            BufferedImage image = ImageIO.read(getClass().getResource(path));
             int weight = image.getWidth();
             int height = image.getHeight();
 
