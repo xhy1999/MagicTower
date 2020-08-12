@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class LoadWall {
 
-    public Map<String, Wall> initWall() {
-        Map<String, Wall> wallMap = new HashMap<>(8);
+    public HashMap<String, Wall> initWall() {
+        HashMap<String, Wall> wallMap = new HashMap<>(8);
 
         Wall wall = new Wall("wall01",
                 new ImageIcon(getClass().getResource("/image/wall/wall01_1.png")));

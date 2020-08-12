@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class LoadSpecialMap {
 
-    public Map<String, GameMap> initSpecialMap() {
-        Map<String, GameMap> specialMap = new HashMap<>();
+    public HashMap<String, GameMap> initSpecialMap() {
+        HashMap<String, GameMap> specialMap = new HashMap<>();
 
         String[][] layer1;
         String[][] layer2;

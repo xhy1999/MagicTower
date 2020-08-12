@@ -1,8 +1,9 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Sell {
+public class Sell implements Serializable {
 
     public List<String> name;
     public List<String> attribute;

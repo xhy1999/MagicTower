@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class LoadShop {
 
-    public Map<String, Shop> initShop() {
-        Map<String, Shop> shopMap = new HashMap<>();
+    public HashMap<String, Shop> initShop() {
+        HashMap<String, Shop> shopMap = new HashMap<>();
 
         Shop shop = new Shop("shop01_1", "贪婪之神", "money", 25, false,
                 new ImageIcon(getClass().getResource("/image/shop/shop01_1_1.png")));

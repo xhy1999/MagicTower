@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class LoadDoor {
 
-    public Map<String, Door> initDoor() {
-        Map<String, Door> doorMap = new HashMap<>(9);
+    public HashMap<String, Door> initDoor() {
+        HashMap<String, Door> doorMap = new HashMap<>(9);
 
         /**
          * 黄门

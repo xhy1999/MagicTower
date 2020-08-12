@@ -4,11 +4,12 @@ import main.Tower;
 import main.TowerPanel;
 
 import javax.swing.*;
+import java.io.Serializable;
 
 /**
  * @author Xhy
  */
-public class Monster extends Entity {
+public class Monster extends Entity implements Serializable {
 
     public boolean scriptStart;
     public boolean scriptEnd;

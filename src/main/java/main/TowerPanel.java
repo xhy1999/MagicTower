@@ -59,8 +59,7 @@ public class TowerPanel extends JPanel implements Runnable {
     JLabel atkPicLabel, atkLabel;
     JLabel defPicLabel, defLabel;
     JLabel expPicLabel, expLabel;
-    /*乘号*/
-    JLabel symbol1, symbol2, symbol3, symbol4;
+    /*乘号*/ JLabel symbol1, symbol2, symbol3, symbol4;
     JLabel yKeyPicLabel, yKeyLabel;
     JLabel bKeyPicLabel, bKeyLabel;
     JLabel rKeyPicLabel, rKeyLabel;
@@ -87,11 +86,13 @@ public class TowerPanel extends JPanel implements Runnable {
 
     JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
     Container contentPane;
+    private List<Tower> gameSave;
 
     Tower tower;
 
     public TowerPanel(Tower tower) {
         this.tower = tower;
+        this.gameSave = new LinkedList<>();
         tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
         tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
         //TODO 正式版这里要改为 0
@@ -131,6 +132,41 @@ public class TowerPanel extends JPanel implements Runnable {
         new Thread(this).start();
         //audioPlayer = new AudioPlayer();
         //audioPlayer.startBackgroundMusic(tower.getPlayer().floor);
+    }
+
+    /**
+     * 保存游戏
+     */
+    private void save() {
+        tower.canUseFloorTransfer = canUseFloorTransfer;
+        tower.canUseMonsterManual = canUseMonsterManual;
+        tower.specialGameMapNo = specialGameMapNo;
+        tower.floor = floor;
+        try {
+            gameSave.add(0, tower.clone());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        showMesLabel.setText("数据保存成功");
+    }
+
+    /**
+     * 读取游戏
+     */
+    private void load() {
+        if (gameSave.size() == 0 || gameSave.get(0) == null) {
+            return;
+        }
+        try {
+            tower = gameSave.get(0).clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        canUseFloorTransfer = tower.canUseFloorTransfer;
+        canUseMonsterManual = tower.canUseMonsterManual;
+        specialGameMapNo = tower.specialGameMapNo;
+        floor = tower.floor;
+        showMesLabel.setText("数据读取成功");
     }
 
     /**
@@ -621,8 +657,7 @@ public class TowerPanel extends JPanel implements Runnable {
                         }
                         monster = tower.getMonsterMap().get("monster11_8");
                         monster11 = true;
-                    }
-                    else if (monster.getId().contains("monster12")) {
+                    } else if (monster.getId().contains("monster12")) {
                         if (monster12) {
                             continue;
                         }
@@ -663,8 +698,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 showMonsterManual(fightCalcList);
                 canMove = true;
             }).start();
-        }
-        else if (canUseFloorTransfer && input.use_floor_transfer.down) {
+        } else if (canUseFloorTransfer && input.use_floor_transfer.down) {
             if (!isNormalFloor()) {
                 musicPlayer.fail();
                 return;
@@ -681,6 +715,10 @@ public class TowerPanel extends JPanel implements Runnable {
         //TODO 正式版这里要去掉
         else if (input.escape.down) {
             end();
+        } else if (input.save.down) {
+            save();
+        } else if (input.load.down) {
+            load();
         }
         if (System.currentTimeMillis() - lastMove > stopTime) {
             moveNo = 0;
@@ -1135,7 +1173,8 @@ public class TowerPanel extends JPanel implements Runnable {
 
     /**
      * 判断是否在普通法楼层
-     * @return  如果在普通楼层,则返回true;反之,则返回false
+     *
+     * @return 如果在普通楼层, 则返回true;反之,则返回false
      */
     public boolean isNormalFloor() {
         return specialGameMapNo == null || specialGameMapNo.equals("");
@@ -1367,8 +1406,7 @@ public class TowerPanel extends JPanel implements Runnable {
                             } else {
                                 musicPlayer.shopBuyFail();
                             }
-                        }
-                        else if (shop.need.equals("exp")) {
+                        } else if (shop.need.equals("exp")) {
                             if (tower.getPlayer().exp >= price) {
                                 musicPlayer.shopExpBuySuc();
                                 tower.getPlayer().exp -= price;
@@ -1390,8 +1428,7 @@ public class TowerPanel extends JPanel implements Runnable {
                             } else {
                                 musicPlayer.shopBuyFail();
                             }
-                        }
-                        else if (shop.need.equals("item")) {
+                        } else if (shop.need.equals("item")) {
                             boolean sell = false;
                             List<String> attributeList = shop.sell.attribute;
                             if (attributeList.get(nowSelected).contains("yKey")) {
@@ -1400,15 +1437,13 @@ public class TowerPanel extends JPanel implements Runnable {
                                     tower.getPlayer().money += shop.sell.price.get(nowSelected);
                                     sell = true;
                                 }
-                            }
-                            else if (attributeList.get(nowSelected).contains("bKey")) {
+                            } else if (attributeList.get(nowSelected).contains("bKey")) {
                                 if (tower.getPlayer().bKey >= shop.sell.val.get(nowSelected)) {
                                     tower.getPlayer().bKey -= shop.sell.val.get(nowSelected);
                                     tower.getPlayer().money += shop.sell.price.get(nowSelected);
                                     sell = true;
                                 }
-                            }
-                            else if (attributeList.get(nowSelected).contains("rKey")) {
+                            } else if (attributeList.get(nowSelected).contains("rKey")) {
                                 if (tower.getPlayer().rKey >= shop.sell.val.get(nowSelected)) {
                                     tower.getPlayer().rKey -= shop.sell.val.get(nowSelected);
                                     tower.getPlayer().money += shop.sell.price.get(nowSelected);
@@ -1803,8 +1838,7 @@ public class TowerPanel extends JPanel implements Runnable {
                             DIRECTION = DIRECTION_DOWN;
                             musicPlayer.playBackgroundMusic(nowSelectFloor);
                             nowMonsterManual = 0;
-                        }
-                        else if (floor > nowSelectFloor) {
+                        } else if (floor > nowSelectFloor) {
                             tower.getPlayer().x = tower.getGameMapList().get(nowSelectFloor).downPositionX;
                             tower.getPlayer().y = tower.getGameMapList().get(nowSelectFloor).downPositionY;
                             showMesLabel.setText("魔塔 第" + nowSelectFloor + "层");
@@ -1971,12 +2005,12 @@ public class TowerPanel extends JPanel implements Runnable {
         ImageUtil imageUtil = new ImageUtil();
         new Thread(() -> {
             for (int i = 0; i <= 120; i++) {
-//                label.setIcon(new ImageIcon(changeAlpha((int) (80 - Math.abs(1.6 * i - 80)))));
-//                try {
-//                    Thread.sleep(15);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
+                //                label.setIcon(new ImageIcon(changeAlpha((int) (80 - Math.abs(1.6 * i - 80)))));
+                //                try {
+                //                    Thread.sleep(15);
+                //                } catch (InterruptedException e) {
+                //                    e.printStackTrace();
+                //                }
                 if (i <= 50) {
                     label.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 2 * i)));
                 } else {
