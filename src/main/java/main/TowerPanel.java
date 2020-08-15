@@ -115,7 +115,7 @@ public class TowerPanel extends JPanel implements Runnable {
         mainframe.setLocation(screenUtil.getScreenWidth() / 3, screenUtil.getScreenWidth() / 6);
         //得到一个Toolkit对象
         Toolkit tool = this.getToolkit();
-        Image image = tool.getImage(this.getClass().getResource("/image/icon/MT.png"));
+        Image image = tool.getImage(this.getClass().getResource("/image/icon/mt.png"));
         mainframe.setIconImage(image);
         contentPane = mainframe.getContentPane();
         contentPane.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -2060,7 +2060,7 @@ public class TowerPanel extends JPanel implements Runnable {
     //线程中调用
     private void imageScript() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -97,15 +97,15 @@ public class Monster extends Entity {
                     towerPanel.canMove = true;
                     towerPanel.input.clear();
                     tower.getNpcMap().get("npc06_2_3").canMeet = false;
+                    if (tower.specialFloor) {
+                        tower.getGameMapList().get(21).layer3[1][5] = "stair02";
+                        tower.getGameMapList().get(21).layer3[6][5] = "";
+                        tower.getGameMapList().get(21).upPositionX = 5;
+                        tower.getGameMapList().get(21).upPositionY = 6;
+                    } else {
+                        //TODO towerPanel.over();   结局1
+                    }
                 }).start();
-                if (tower.specialFloor) {
-                    tower.getGameMapList().get(21).layer3[1][5] = "stair02";
-                    tower.getGameMapList().get(21).layer3[6][5] = "";
-                    tower.getGameMapList().get(21).upPositionX = 5;
-                    tower.getGameMapList().get(21).upPositionY = 6;
-                } else {
-                    //TODO towerPanel.over();   结局1
-                }
             }
         }
         else if (this.getId().contains("monster11")) {
