@@ -5,39 +5,83 @@ import load.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Xhy
  */
-public class Tower {
+public class Tower implements Cloneable {
 
-    /**
-     * 主角
-     */
     private Player player;
 
+    private HashMap<String, Wall> wallMap;
+    private HashMap<String, Door> doorMap;
+    private HashMap<String, Stair> stairMap;
+    private HashMap<String, Item> itemMap;
 
-    /**
-     * 怪物
-     */
-    private Map<String, Monster> monsterMap;
-    private Map<String, Wall> wallMap;
-    private Map<String, Door> doorMap;
-    private Map<String, Stair> stairMap;
-    private Map<String, Item> itemMap;
-    private Map<String, NPC> npcMap;
-    private Map<String, Shop> shopMap;
+    private HashMap<String, Monster> monsterMap;
+    private HashMap<String, Shop> shopMap;
+    private HashMap<String, NPC> npcMap;
 
     private Image[] floorImage = new Image[3];
     private Image[] wallImage = new Image[8];
 
+    //需要保存的东西
+    public boolean canUseFloorTransfer;
+    public boolean canUseMonsterManual;
+    public String specialGameMapNo;
+    public int floor;
+
     private List<GameMap> gameMapList;
-    private Map<String, GameMap> specialMap;
+    private HashMap<String, GameMap> specialMap;
     //TODO 正式版需要修改为 false
     public static boolean specialFloor = true;
+
+    private static <T> List<T> deepCopy(List<T> src) throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(byteOut);
+        out.writeObject(src);
+        ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(byteIn);
+        List<T> copy_list = (List<T>) in.readObject();
+        return copy_list;
+    }
+
+    private static <T extends Serializable> T deepCopyMap(T obj) throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(obj);
+        oos.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        T clonedObj = (T) ois.readObject();
+        ois.close();
+        return clonedObj;
+    }
+
+    public Tower clone() throws CloneNotSupportedException {
+        Tower cloneTower = (Tower) super.clone();
+        cloneTower.setPlayer(this.player.clone());
+        try {
+            cloneTower.gameMapList = deepCopy(this.gameMapList);
+            cloneTower.specialMap = deepCopyMap(this.specialMap);
+            cloneTower.monsterMap = new HashMap<>();
+            cloneTower.shopMap = new HashMap<>();
+            cloneTower.npcMap = new HashMap<>();
+            cloneTower.monsterMap.putAll(this.monsterMap);
+            cloneTower.shopMap.putAll(this.shopMap);
+            cloneTower.npcMap.putAll(this.npcMap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return cloneTower;
+    }
 
     public Tower() {
         player = new Player();
@@ -82,16 +126,12 @@ public class Tower {
         return floorImage;
     }
 
-    public void setFloorImage(Image[] floorImage) {
-        this.floorImage = floorImage;
-    }
-
     public Image[] getWallImage() {
         return wallImage;
     }
 
-    public void setWallImage(Image[] wallImage) {
-        this.wallImage = wallImage;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public Player getPlayer() {
@@ -124,6 +164,14 @@ public class Tower {
 
     public Map<String, Shop> getShopMap() {
         return shopMap;
+    }
+
+    public void setGameMapList(List<GameMap> gameMapList) {
+        this.gameMapList = gameMapList;
+    }
+
+    public void setSpecialMap(HashMap<String, GameMap> specialMap) {
+        this.specialMap = specialMap;
     }
 
     public List<GameMap> getGameMapList() {

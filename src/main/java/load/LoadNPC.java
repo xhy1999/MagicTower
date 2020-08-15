@@ -19,8 +19,8 @@ public class LoadNPC {
     //05-princess:公主
     //06-monster:怪物
 
-    public Map<String, NPC> initNPC() {
-        Map<String, NPC> npcMap = new HashMap<>();
+    public HashMap<String, NPC> initNPC() {
+        HashMap<String, NPC> npcMap = new HashMap<>();
 
         List<Dialogue> dialogues = new ArrayList<>();
         dialogues.add(new Dialogue("player", "\b......"));

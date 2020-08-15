@@ -12,8 +12,8 @@ import java.util.Map;
 public class LoadMonster {
 
 
-    public Map<String, Monster> initMonster() {
-        Map<String, Monster> monsterMap = new HashMap<>();
+    public HashMap<String, Monster> initMonster() {
+        HashMap<String, Monster> monsterMap = new HashMap<>();
 
         /**
          * 史莱姆系

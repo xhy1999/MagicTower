@@ -1,6 +1,8 @@
 package entity;
 
-public class Dialogue {
+import java.io.Serializable;
+
+public class Dialogue implements Cloneable, Serializable {
 
     public String name;
     public String text;

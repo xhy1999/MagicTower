@@ -1,15 +1,14 @@
 package entity;
 
 import javax.swing.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Xhy
  */
-public class Player {
-
-    public static final int DIRECTION_UP = 0, DIRECTION_DOWN = 1, DIRECTION_LEFT = 2, DIRECTION_RIGHT = 3;
+public class Player implements Cloneable {
 
     public String name;
     public int hp;
@@ -70,4 +69,12 @@ public class Player {
         this.playerIcon = playerIcon;
     }
 
+    public Player clone() throws CloneNotSupportedException {
+        return (Player) super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" + "name='" + name + '\'' + ", hp=" + hp + ", attack=" + attack + ", defense=" + defense + ", exp=" + exp + ", money=" + money + ", level=" + level + ", yKey=" + yKey + ", bKey=" + bKey + ", rKey=" + rKey + ", maxFloor=" + maxFloor + ", minFloor=" + minFloor + ", x=" + x + ", y=" + y + ", inventory=" + inventory + ", playerIcon=" + Arrays.toString(playerIcon) + '}';
+    }
 }

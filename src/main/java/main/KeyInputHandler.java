@@ -43,6 +43,8 @@ public class KeyInputHandler implements KeyListener {
     public Key escape = new Key();
     public Key use_rod = new Key();
     public Key use_floor_transfer = new Key();
+    public Key save = new Key();
+    public Key load = new Key();
 
     public KeyInputHandler(TowerPanel game) {
         game.addKeyListener(this);
@@ -62,7 +64,7 @@ public class KeyInputHandler implements KeyListener {
 
     public void toggle(KeyEvent ke, boolean pressed) {
         int k = ke.getKeyCode();
-        //System.out.println("按下了:" + k);
+        System.out.println("按下了:" + k);
         if(k == KeyEvent.VK_UP) up.toggle(pressed);
         if(k == KeyEvent.VK_DOWN) down.toggle(pressed);
         if(k == KeyEvent.VK_LEFT) left.toggle(pressed);
@@ -81,6 +83,9 @@ public class KeyInputHandler implements KeyListener {
 
         if(k == KeyEvent.VK_D) use_rod.toggle(pressed);
         if(k == KeyEvent.VK_F) use_floor_transfer.toggle(pressed);
+
+        if(k == KeyEvent.VK_OPEN_BRACKET) save.toggle(pressed);
+        if(k == KeyEvent.VK_CLOSE_BRACKET) load.toggle(pressed);
     }
 
     public void clear() {
@@ -90,6 +95,8 @@ public class KeyInputHandler implements KeyListener {
         right.toggle(false);
         use_rod.toggle(false);
         use_floor_transfer.toggle(false);
+        save.toggle(false);
+        load.toggle(false);
     }
 
 }

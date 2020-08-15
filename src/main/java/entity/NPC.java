@@ -4,9 +4,10 @@ import main.Tower;
 import main.TowerPanel;
 
 import javax.swing.*;
+import java.io.Serializable;
 import java.util.List;
 
-public class NPC extends Entity {
+public class NPC extends Entity implements Cloneable, Serializable {
 
     public List<Dialogue> dialogues;
     //是否可以开始对话

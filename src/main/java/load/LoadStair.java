@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class LoadStair {
 
-    public Map<String, Stair> initStair() {
-        Map<String, Stair> stairMap = new HashMap<>(2);
+    public HashMap<String, Stair> initStair() {
+        HashMap<String, Stair> stairMap = new HashMap<>(2);
 
         Stair stair = new Stair("stair01", new ImageIcon(getClass().getResource("/image/stair/stair01.png")));
         stairMap.put(stair.getId(), stair);

@@ -1,6 +1,8 @@
 package entity;
 
-public class GameMap implements Cloneable {
+import java.io.Serializable;
+
+public class GameMap implements Cloneable, Serializable {
 
     /**
      * 楼层

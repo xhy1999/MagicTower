@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class LoadItem {
 
-    public Map<String, Item> initItem() {
-        Map<String, Item> itemMap = new HashMap<>(10);
+    public HashMap<String, Item> initItem() {
+        HashMap<String, Item> itemMap = new HashMap<>(10);
 
         Item item = new Item("item01_1", "黄钥匙", null,
                 new ImageIcon(getClass().getResource("/image/item/item01_1.png")));
