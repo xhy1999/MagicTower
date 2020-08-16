@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * @author Xhy
  */
-public class Monster extends Entity implements Serializable {
+public class Monster extends Entity implements Cloneable,Serializable {
 
     public boolean scriptStart;
     public boolean scriptEnd;

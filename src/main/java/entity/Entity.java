@@ -1,11 +1,12 @@
 package entity;
 
 import javax.swing.*;
+import java.io.Serializable;
 
 /**
  * @author Xhy
  */
-public class Entity implements Cloneable {
+public class Entity implements Cloneable, Serializable {
 
     String id;
     int hp, attack, defense, exp, money;

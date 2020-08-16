@@ -44,7 +44,7 @@ public class Player implements Cloneable {
         //TODO 正式版这里要改为 0
         this.exp = 0;
         //TODO 正式版这里要改为 0
-        this.money = 0;
+        this.money = 10000;
         //TODO 正式版这里要改为 1
         this.level = 1;
         //TODO 正式版这里要改为 0

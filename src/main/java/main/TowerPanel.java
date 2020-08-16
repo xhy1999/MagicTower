@@ -39,7 +39,7 @@ public class TowerPanel extends JPanel implements Runnable {
      * 窗体的宽和高
      */
     private static final int WINDOW_WIDTH = 18 * 32 - 10;
-    private static final int WINDOW_HEIGHT = 13 * 32 - 10;
+    private static final int WINDOW_HEIGHT = 14 * 32 - 10 + 16;
 
     /**
      * 人物方向
@@ -67,6 +67,7 @@ public class TowerPanel extends JPanel implements Runnable {
 
     JDialog dialogBox;
     JLabel showMesLabel = new JLabel("魔塔(测试版)");
+    JLabel fpsLabel, showFpsLabel;
 
     /**
      * 帧数(每秒8帧)
@@ -82,7 +83,7 @@ public class TowerPanel extends JPanel implements Runnable {
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     //TODO 正式版这里要改为 0
-    public static int floor = 0;
+    public static int floor = 11;
 
     JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
     Container contentPane;
@@ -294,6 +295,16 @@ public class TowerPanel extends JPanel implements Runnable {
         showMesLabel.setFont(new Font(null, Font.BOLD, 22));
         showMesLabel.setBounds(125 + 32, -2, 350, 35);
 
+        fpsLabel = new JLabel("FPS:", JLabel.RIGHT);
+        fpsLabel.setBounds(512, 420, 32, 20);
+        fpsLabel.setForeground(Color.white);
+        fpsLabel.setFont(new Font("微软雅黑", Font.BOLD, 12));
+
+        showFpsLabel = new JLabel("???", JLabel.CENTER);
+        showFpsLabel.setBounds(544, 420, 25, 20);
+        showFpsLabel.setForeground(Color.white);
+        showFpsLabel.setFont(new Font("方正桃体", Font.BOLD, 12));
+
         this.add(playerPicLabel);
         this.add(lvLabel);
         this.add(hpPicLabel);
@@ -313,15 +324,21 @@ public class TowerPanel extends JPanel implements Runnable {
         this.add(monPicLabel);
         this.add(monLabel);
         this.add(showMesLabel);
+        this.add(fpsLabel);
+        this.add(showFpsLabel);
     }
 
     private void drawAttribute(Graphics g) {
         //构造背景
         //System.out.println("开始构造背景...");
-        for (int i = 0; i <= 12; i++) {
+        for (int i = 0; i <= 14; i++) {
             for (int j = 0; j <= 17; j++) {
                 if (i == 7 && (j == 1 || j == 2 || j == 3 || j == 4)) {
                     g.drawImage(tower.getWallImage()[1], j * CS, i * CS, this);
+                    continue;
+                }
+                if (i == 13 || i == 14) {
+                    g.drawImage(tower.getFloorImage()[0], j * CS, i * CS, this);
                     continue;
                 }
                 if (i == 0 || i == 12 || j == 0 || j == 5 || j == 17) {
@@ -513,8 +530,9 @@ public class TowerPanel extends JPanel implements Runnable {
             if (System.currentTimeMillis() - fpsTimer > 125) {
                 playerPicLabel.setIcon(tower.getPlayer().getPlayerIcon()[1][frames % 4]);
                 if (frames == 7) {
-                    System.out.printf("FPS:%d %n", fps);
+                    //System.out.printf("FPS:%d %n", fps);
                     //System.out.printf("FPS:%d tick:%d %n", fps, tick);
+                    showFpsLabel.setText(fps + "");
                     frames = 0;
                     fps = 0;
                     tick = 0;
@@ -1307,7 +1325,6 @@ public class TowerPanel extends JPanel implements Runnable {
     public void meetShop(String shopId) {
         Shop shop = tower.getShopMap().get(shopId);
         dialogBox = new JDialog(mainframe, null, true);
-        String s;
         ImageIcon photo;
         JPanel dialogp = new JPanel(null);
         JLabel shopImg = new JLabel();
@@ -1451,6 +1468,7 @@ public class TowerPanel extends JPanel implements Runnable {
                                 }
                             }
                             if (sell) {
+                                shop.buyNum++;
                                 musicPlayer.shopBuySuc();
                             } else {
                                 musicPlayer.shopBuyFail();
@@ -1911,6 +1929,8 @@ public class TowerPanel extends JPanel implements Runnable {
         this.remove(monPicLabel);
         this.remove(monLabel);
         this.remove(showMesLabel);
+        this.remove(fpsLabel);
+        this.remove(showFpsLabel);
 
         for (int i = 0; i <= 0xFF; i++) {
             this.setBackground(new Color(0, 0, 0, i));
@@ -1921,12 +1941,12 @@ public class TowerPanel extends JPanel implements Runnable {
             }
         }
 
-        JLabel label = new JLabel();
-        label.setForeground(Color.white);
-        label.setBounds(50, 100, 300, 288);
-        label.setVisible(true);
+        JLabel imgLabel = new JLabel();
+        imgLabel.setForeground(Color.white);
+        imgLabel.setBounds(40, 140, 300, 288);
+        imgLabel.setVisible(true);
 
-        int x = 230, y = 440;
+        int x = 240, y = 490;
 
         JLabel textLabel1 = new JLabel("这位勇士终于成功将公主救了出来...", JLabel.LEFT);
         textLabel1.setForeground(Color.white);
@@ -1985,7 +2005,7 @@ public class TowerPanel extends JPanel implements Runnable {
         JLabel endLabel = new JLabel("~END~", JLabel.CENTER);
         endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, 0x00));
         endLabel.setFont(new Font("微软雅黑", Font.PLAIN, 100));
-        endLabel.setBounds(0, 0, 576, 380);
+        endLabel.setBounds(0, 0, 576, 450);
         endLabel.setVisible(true);
         //endLabel.setBorder(BorderFactory.createLineBorder(Color.red));
 
@@ -1999,7 +2019,7 @@ public class TowerPanel extends JPanel implements Runnable {
         this.add(textLabel8);
         this.add(textLabel9);
         this.add(textLabel10);
-        this.add(label);
+        this.add(imgLabel);
         this.add(endLabel);
 
         ImageUtil imageUtil = new ImageUtil();
@@ -2012,9 +2032,9 @@ public class TowerPanel extends JPanel implements Runnable {
                 //                    e.printStackTrace();
                 //                }
                 if (i <= 50) {
-                    label.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 2 * i)));
+                    imgLabel.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 2 * i)));
                 } else {
-                    label.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", (int) (120 - 0.4 * i))));
+                    imgLabel.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", (int) (120 - 0.4 * i))));
                 }
                 try {
                     Thread.sleep(10);
@@ -2022,7 +2042,7 @@ public class TowerPanel extends JPanel implements Runnable {
                     e.printStackTrace();
                 }
             }
-            for (int i = 0; i <= y + 240 + 40; i++) {
+            for (int i = 0; i <= y + 240 + 50; i++) {
                 textLabel1.setBounds(x, y - i, 400, 20);
                 textLabel2.setBounds(x, y + 20 - i, 400, 20);
                 textLabel3.setBounds(x, y + 40 - i, 400, 20);
@@ -2040,7 +2060,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 }
             }
             for (int i = 0; i <= 72; i++) {
-                label.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 72 - i)));
+                imgLabel.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 72 - i)));
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException e) {
@@ -2081,7 +2101,7 @@ public class TowerPanel extends JPanel implements Runnable {
             this.remove(textLabel8);
             this.remove(textLabel9);
             this.remove(textLabel10);
-            this.remove(label);
+            this.remove(imgLabel);
             this.remove(endLabel);
             //System.exit(0);
             new Thread(() -> {
@@ -2094,14 +2114,14 @@ public class TowerPanel extends JPanel implements Runnable {
     //线程中调用
     private void imageScript() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(3500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         ImageUtil imageUtil = new ImageUtil();
         JLabel label = new JLabel();
         label.setForeground(Color.white);
-        label.setBounds(10, 120, 226, 162);
+        label.setBounds(10, 140, 226, 162);
         label.setVisible(true);
         this.add(label);
         for (int i = 1; i <= 9; i++) {
@@ -2128,10 +2148,18 @@ public class TowerPanel extends JPanel implements Runnable {
                     e.printStackTrace();
                 }
             }
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    //线程中调用
+    /**
+     * 字幕
+     * 需要在线程中调用
+     */
     private void postScript() {
         try {
             Thread.sleep(500);
@@ -2139,7 +2167,7 @@ public class TowerPanel extends JPanel implements Runnable {
             e.printStackTrace();
         }
         musicPlayer.playPostScriptBackgroundMusic();
-        int x = 250, y = 440;
+        int x = 250, y = 490;
         //标题
         JLabel titleLabel = new JLabel("魔塔", JLabel.CENTER);
         titleLabel.setForeground(Color.white);
@@ -2274,36 +2302,36 @@ public class TowerPanel extends JPanel implements Runnable {
         this.add(thanksValLabel2);
         this.add(thanksValLabel3);
 
-        for (int i = 0; i <= y + 820 + 40; i++) {
+        for (int i = 0; i <= y + 840 + 40; i++) {
             titleLabel.setBounds(x, y - i, 300, 50);
             titleEnglishLabel.setBounds(x, y + 50 - i, 300, 30);
 
-            programLabel.setBounds(x, y + 120 - i, 300, 30);
-            programValLabel.setBounds(x + 40, y + 150 - i, 300, 30);
+            programLabel.setBounds(x, y + 140 - i, 300, 30);
+            programValLabel.setBounds(x + 40, y + 170 - i, 300, 30);
 
-            characterModelLabel.setBounds(x, y + 200 - i, 300, 30);
-            characterModelValLabel.setBounds(x + 40, y + 230 - i, 300, 30);
+            characterModelLabel.setBounds(x, y + 220 - i, 300, 30);
+            characterModelValLabel.setBounds(x + 40, y + 250 - i, 300, 30);
 
-            soundEffectLabel.setBounds(x, y + 280 - i, 300, 30);
-            soundEffectValLabel1.setBounds(x + 40, y + 310 - i, 300, 30);
-            soundEffectValLabel2.setBounds(x + 40, y + 340 - i, 300, 30);
+            soundEffectLabel.setBounds(x, y + 300 - i, 300, 30);
+            soundEffectValLabel1.setBounds(x + 40, y + 330 - i, 300, 30);
+            soundEffectValLabel2.setBounds(x + 40, y + 360 - i, 300, 30);
 
-            musicLabel.setBounds(x, y + 390 - i, 300, 30);
-            musicValLabel1.setBounds(x + 40, y + 420 - i, 300, 30);
-            musicValLabel2.setBounds(x + 40, y + 450 - i, 300, 30);
-            musicValLabel3.setBounds(x + 40, y + 480 - i, 300, 30);
-            musicValLabel4.setBounds(x + 40, y + 510 - i, 300, 30);
-            musicValLabel5.setBounds(x + 40, y + 540 - i, 300, 30);
-            musicValLabel6.setBounds(x + 40, y + 570 - i, 300, 30);
-            musicValLabel7.setBounds(x + 40, y + 600 - i, 300, 30);
+            musicLabel.setBounds(x, y + 410 - i, 300, 30);
+            musicValLabel1.setBounds(x + 40, y + 440 - i, 300, 30);
+            musicValLabel2.setBounds(x + 40, y + 470 - i, 300, 30);
+            musicValLabel3.setBounds(x + 40, y + 500 - i, 300, 30);
+            musicValLabel4.setBounds(x + 40, y + 530 - i, 300, 30);
+            musicValLabel5.setBounds(x + 40, y + 560 - i, 300, 30);
+            musicValLabel6.setBounds(x + 40, y + 590 - i, 300, 30);
+            musicValLabel7.setBounds(x + 40, y + 620 - i, 300, 30);
 
-            testLabel.setBounds(x, y + 650 - i, 300, 30);
-            testValLabel.setBounds(x + 40, y + 680 - i, 300, 30);
+            testLabel.setBounds(x, y + 670 - i, 300, 30);
+            testValLabel.setBounds(x + 40, y + 700 - i, 300, 30);
 
-            thanksLabel.setBounds(x, y + 730 - i, 300, 30);
-            thanksValLabel1.setBounds(x + 40, y + 760 - i, 300, 30);
-            thanksValLabel2.setBounds(x + 40, y + 790 - i, 300, 30);
-            thanksValLabel3.setBounds(x + 40, y + 820 - i, 300, 30);
+            thanksLabel.setBounds(x, y + 750 - i, 300, 30);
+            thanksValLabel1.setBounds(x + 40, y + 780 - i, 300, 30);
+            thanksValLabel2.setBounds(x + 40, y + 810 - i, 300, 30);
+            thanksValLabel3.setBounds(x + 40, y + 840 - i, 300, 30);
 
             try {
                 Thread.sleep(50);
@@ -2317,12 +2345,12 @@ public class TowerPanel extends JPanel implements Runnable {
         emailLabel.setForeground(Color.white);
         emailLabel.setFont(new Font("微软雅黑", Font.BOLD, 30));
         emailLabel.setVisible(true);
-        emailLabel.setBounds(155, 130, 300, 50);
+        emailLabel.setBounds(155, 160, 300, 50);
         JLabel emailValLabel = new JLabel("xuehy1999@qq.com", JLabel.LEFT);
         emailValLabel.setForeground(Color.white);
         emailValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 30));
         emailValLabel.setVisible(true);
-        emailValLabel.setBounds(155, 180, 300, 50);
+        emailValLabel.setBounds(155, 210, 300, 50);
         this.add(emailLabel);
         this.add(emailValLabel);
         for (int i = 0; i <= 0xFE; i++) {
@@ -2356,7 +2384,7 @@ public class TowerPanel extends JPanel implements Runnable {
         endLabel.setForeground(Color.white);
         endLabel.setFont(new Font("微软雅黑", Font.BOLD, 30));
         endLabel.setVisible(true);
-        endLabel.setBounds(0, 0, 576, 380);
+        endLabel.setBounds(0, 0, 576, 430);
         this.add(endLabel);
         for (int i = 0; i <= 0xFE; i++) {
             endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
@@ -2387,7 +2415,7 @@ public class TowerPanel extends JPanel implements Runnable {
         thankPlayLabel.setForeground(Color.white);
         thankPlayLabel.setFont(new Font("微软雅黑", Font.BOLD, 30));
         thankPlayLabel.setVisible(true);
-        thankPlayLabel.setBounds(0, 0, 576, 380);
+        thankPlayLabel.setBounds(0, 0, 576, 430);
         this.add(thankPlayLabel);
         for (int i = 0; i <= 0xFE; i++) {
             thankPlayLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));

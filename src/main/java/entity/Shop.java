@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shop extends Entity implements Serializable {
+public class Shop extends Entity implements Cloneable, Serializable {
 
     public String need;
     public int price;

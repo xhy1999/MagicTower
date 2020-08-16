@@ -3,7 +3,7 @@ package entity;
 import java.io.Serializable;
 import java.util.List;
 
-public class Sell implements Serializable {
+public class Sell implements Cloneable, Serializable {
 
     public List<String> name;
     public List<String> attribute;

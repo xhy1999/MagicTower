@@ -69,12 +69,9 @@ public class Tower implements Cloneable {
         try {
             cloneTower.gameMapList = deepCopy(this.gameMapList);
             cloneTower.specialMap = deepCopyMap(this.specialMap);
-            cloneTower.monsterMap = new HashMap<>();
-            cloneTower.shopMap = new HashMap<>();
-            cloneTower.npcMap = new HashMap<>();
-            cloneTower.monsterMap.putAll(this.monsterMap);
-            cloneTower.shopMap.putAll(this.shopMap);
-            cloneTower.npcMap.putAll(this.npcMap);
+            cloneTower.monsterMap = deepCopyMap(this.monsterMap);
+            cloneTower.shopMap = deepCopyMap(this.shopMap);
+            cloneTower.npcMap = deepCopyMap(this.npcMap);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
