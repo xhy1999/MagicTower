@@ -54,19 +54,23 @@ public class TowerPanel extends JPanel implements Runnable {
      * 设定显示图像对象
      */
     JLabel playerPicLabel;
+    static JLabel floorNumLabel;
+    JLabel floorLabel;
+    JLabel playerWindow, infoWindow, mapWindow;
     JLabel lvLabel;
     JLabel hpPicLabel, hpLabel;
     JLabel atkPicLabel, atkLabel;
     JLabel defPicLabel, defLabel;
     JLabel expPicLabel, expLabel;
-    /*乘号*/ JLabel symbol1, symbol2, symbol3, symbol4;
+    //乘号
+    JLabel symbol1, symbol2, symbol3, symbol4;
     JLabel yKeyPicLabel, yKeyLabel;
     JLabel bKeyPicLabel, bKeyLabel;
     JLabel rKeyPicLabel, rKeyLabel;
     JLabel monPicLabel, monLabel;
 
     JDialog dialogBox;
-    JLabel showMesLabel = new JLabel("魔塔(测试版)");
+    JLabel showMesLabel;
     JLabel fpsLabel, showFpsLabel;
 
     /**
@@ -167,6 +171,8 @@ public class TowerPanel extends JPanel implements Runnable {
         canUseMonsterManual = tower.canUseMonsterManual;
         specialGameMapNo = tower.specialGameMapNo;
         floor = tower.floor;
+        DIRECTION = DIRECTION_DOWN;
+        updateFloorNum();
         showMesLabel.setText("数据读取成功");
     }
 
@@ -178,6 +184,28 @@ public class TowerPanel extends JPanel implements Runnable {
         playerPicLabel = new JLabel();
         playerPicLabel.setBounds(32 + 14, 32 + 12, 36, 38);
         //playerPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/role.png")));
+
+        playerWindow = new JLabel();
+        playerWindow.setBounds(32 - 3, 32 - 3, 32 * 4 + 6, 32 * 6 + 6);
+        playerWindow.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
+
+        infoWindow = new JLabel();
+        infoWindow.setBounds(32 - 3, 32 * 8 - 3, 32 * 4 + 6, 32 * 4 + 6);
+        infoWindow.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
+
+        mapWindow = new JLabel();
+        mapWindow.setBounds(32 * 6 - 3, 32 - 3, 32 * 11 + 6, 32 * 11 + 6);
+        mapWindow.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
+
+        floorLabel = new JLabel("魔塔", JLabel.CENTER);
+        floorLabel.setBounds(320 + 10, 0, 32, 32 - 3);
+        floorLabel.setForeground(Color.white);
+        floorLabel.setFont(new Font("宋体", Font.BOLD, 14));
+
+        floorNumLabel = new JLabel(floor + "F", JLabel.CENTER);
+        floorNumLabel.setBounds(358, 0, 32 + 24, 32 - 3);
+        floorNumLabel.setForeground(Color.white);
+        floorNumLabel.setFont(new Font("微软雅黑", Font.BOLD, 14));
 
 
         lvLabel = new JLabel("Lv." + tower.getPlayer().level, JLabel.CENTER);
@@ -291,9 +319,10 @@ public class TowerPanel extends JPanel implements Runnable {
         monLabel.setForeground(Color.white);
         monLabel.setFont(new Font("微软雅黑", Font.BOLD, 22));
 
+        showMesLabel = new JLabel("魔塔(v1.13)", JLabel.LEFT);
         showMesLabel.setForeground(Color.white);
         showMesLabel.setFont(new Font(null, Font.BOLD, 22));
-        showMesLabel.setBounds(125 + 32, -2, 350, 35);
+        showMesLabel.setBounds(16, 13 * 32 + 8 - 1, 478, 32);
 
         fpsLabel = new JLabel("FPS:", JLabel.RIGHT);
         fpsLabel.setBounds(512, 420, 32, 20);
@@ -306,6 +335,11 @@ public class TowerPanel extends JPanel implements Runnable {
         showFpsLabel.setFont(new Font("方正桃体", Font.BOLD, 12));
 
         this.add(playerPicLabel);
+        this.add(playerWindow);
+        this.add(infoWindow);
+        this.add(mapWindow);
+        this.add(floorLabel);
+        this.add(floorNumLabel);
         this.add(lvLabel);
         this.add(hpPicLabel);
         this.add(hpLabel);
@@ -342,7 +376,11 @@ public class TowerPanel extends JPanel implements Runnable {
                     continue;
                 }
                 if (i == 0 || i == 12 || j == 0 || j == 5 || j == 17) {
-                    g.drawImage(tower.getWallImage()[1], j * CS, i * CS, this);
+                    if (i == 0 && (j == 10 || j == 11 || j == 12)) {
+                        g.drawImage(tower.getFloorImage()[0], j * CS, i * CS, this);
+                    } else {
+                        g.drawImage(tower.getWallImage()[1], j * CS, i * CS, this);
+                    }
                 } else {
                     g.drawImage(tower.getFloorImage()[0], j * CS, i * CS, this);
                 }
@@ -571,7 +609,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 floor--;
                 tower.getPlayer().x = tower.getGameMapList().get(floor).downPositionX;
                 tower.getPlayer().y = tower.getGameMapList().get(floor).downPositionY;
-                showMesLabel.setText("魔塔 第" + floor + "层");
+                updateFloorNum();
                 DIRECTION = DIRECTION_DOWN;
                 musicPlayer.playBackgroundMusic(floor);
                 nowMonsterManual = 0;
@@ -584,7 +622,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 floor++;
                 tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
                 tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
-                showMesLabel.setText("魔塔 第" + floor + "层");
+                updateFloorNum();
                 DIRECTION = DIRECTION_DOWN;
                 musicPlayer.playBackgroundMusic(floor);
                 nowMonsterManual = 0;
@@ -594,12 +632,14 @@ public class TowerPanel extends JPanel implements Runnable {
                 return;
             } else if (stair.contains("stair03") || stair.contains("stair04")) {
                 tower.getStairMap().get(stair).script(this, tower, specialGameMapNo);
+                updateFloorNum();
                 return;
             }
         } else {
             String stair = tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x];
             if (stair.contains("stair03") || stair.contains("stair04")) {
                 tower.getStairMap().get(stair).script(this, tower, specialGameMapNo);
+                updateFloorNum();
                 return;
             }
         }
@@ -1198,6 +1238,18 @@ public class TowerPanel extends JPanel implements Runnable {
         return specialGameMapNo == null || specialGameMapNo.equals("");
     }
 
+    static public void updateFloorNum() {
+        if (floor == -1) {
+            if (specialGameMapNo.equals("hell")) {
+                floorNumLabel.setText("地下层");
+            } else {
+                floorNumLabel.setText("神秘层");
+            }
+        } else {
+            floorNumLabel.setText(floor + "F");
+        }
+    }
+
     private String secretScript = "";
 
     /**
@@ -1210,7 +1262,6 @@ public class TowerPanel extends JPanel implements Runnable {
         List<Dialogue> dialogues = npc.dialogues;
         for (int i = 0; i < dialogues.size(); i++) {
             Dialogue dialogue = dialogues.get(i);
-            System.out.println(dialogue.name + ":" + dialogue.text);
             dialogBox = new JDialog(mainframe, null, true);
             String s;
             ImageIcon photo;
@@ -1225,11 +1276,13 @@ public class TowerPanel extends JPanel implements Runnable {
                 name = new JLabel("勇士");
                 name.setBounds(176, 16, 32, 16);
                 photo = new ImageIcon(tower.getPlayer().getPlayerIcon()[1][0].getImage());
+                System.out.println("勇士:\n" + dialogue.text);
             } else {
                 pict.setBounds(13, 8, 32, 32);
                 name = new JLabel(npc.getName());
                 name.setBounds(48, 16, 120, 16);
                 photo = new ImageIcon(tower.getNpcMap().get(npcId).getIcon()[0].getImage());
+                System.out.println(npc.getName() + ":\n" + dialogue.text);
             }
             pict.setIcon(photo);
             name.setFont(new Font("宋体", Font.BOLD, 13));
@@ -1741,7 +1794,7 @@ public class TowerPanel extends JPanel implements Runnable {
         content.setBackground(Color.black);
         dialogp.setSize(352, 352);
         dialogp.setBackground(Color.black);
-        dialogp.setBorder(BorderFactory.createLineBorder(new Color(228, 122, 0), 3));
+        //dialogp.setBorder(BorderFactory.createLineBorder(new Color(228, 122, 0), 3));
         dialogp.add(pict);
         dialogp.add(content);
         dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32);
@@ -1852,19 +1905,18 @@ public class TowerPanel extends JPanel implements Runnable {
                         if (floor < nowSelectFloor) {
                             tower.getPlayer().x = tower.getGameMapList().get(nowSelectFloor).upPositionX;
                             tower.getPlayer().y = tower.getGameMapList().get(nowSelectFloor).upPositionY;
-                            showMesLabel.setText("魔塔 第" + nowSelectFloor + "层");
                             DIRECTION = DIRECTION_DOWN;
                             musicPlayer.playBackgroundMusic(nowSelectFloor);
                             nowMonsterManual = 0;
                         } else if (floor > nowSelectFloor) {
                             tower.getPlayer().x = tower.getGameMapList().get(nowSelectFloor).downPositionX;
                             tower.getPlayer().y = tower.getGameMapList().get(nowSelectFloor).downPositionY;
-                            showMesLabel.setText("魔塔 第" + nowSelectFloor + "层");
                             DIRECTION = DIRECTION_DOWN;
                             musicPlayer.playBackgroundMusic(nowSelectFloor);
                             nowMonsterManual = 0;
                         }
                         floor = nowSelectFloor;
+                        updateFloorNum();
                         break;
                     case KeyEvent.VK_F:
                         closeFlag = true;
@@ -1898,7 +1950,7 @@ public class TowerPanel extends JPanel implements Runnable {
         content.setBackground(Color.black);
         dialogp.setSize(352, 352);
         dialogp.setBackground(Color.black);
-        dialogp.setBorder(BorderFactory.createLineBorder(new Color(0, 153, 204), 2));
+        //dialogp.setBorder(BorderFactory.createLineBorder(new Color(0, 153, 204), 2));
         dialogp.add(pict);
         dialogp.add(content);
         dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32);
@@ -1911,6 +1963,11 @@ public class TowerPanel extends JPanel implements Runnable {
         running = false;
         musicPlayer.playEndBackgroundMusic();
         this.remove(playerPicLabel);
+        this.remove(floorLabel);
+        this.remove(floorNumLabel);
+        this.remove(playerWindow);
+        this.remove(infoWindow);
+        this.remove(mapWindow);
         this.remove(lvLabel);
         this.remove(hpPicLabel);
         this.remove(hpLabel);
