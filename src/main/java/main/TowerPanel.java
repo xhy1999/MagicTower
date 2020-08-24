@@ -56,7 +56,7 @@ public class TowerPanel extends JPanel implements Runnable {
     JLabel playerPicLabel;
     static JLabel floorNumLabel;
     JLabel floorLabel;
-    JLabel playerWindow, infoWindow, mapWindow;
+    JLabel playerWindowLine, infoWindowLine, mapWindowLine;
     JLabel lvLabel;
     JLabel hpPicLabel, hpLabel;
     JLabel atkPicLabel, atkLabel;
@@ -185,17 +185,17 @@ public class TowerPanel extends JPanel implements Runnable {
         playerPicLabel.setBounds(32 + 14, 32 + 12, 36, 38);
         //playerPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/role.png")));
 
-        playerWindow = new JLabel();
-        playerWindow.setBounds(32 - 3, 32 - 3, 32 * 4 + 6, 32 * 6 + 6);
-        playerWindow.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
+        playerWindowLine = new JLabel();
+        playerWindowLine.setBounds(32 - 3, 32 - 3, 32 * 4 + 6, 32 * 6 + 6);
+        playerWindowLine.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
 
-        infoWindow = new JLabel();
-        infoWindow.setBounds(32 - 3, 32 * 8 - 3, 32 * 4 + 6, 32 * 4 + 6);
-        infoWindow.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
+        infoWindowLine = new JLabel();
+        infoWindowLine.setBounds(32 - 3, 32 * 8 - 3, 32 * 4 + 6, 32 * 4 + 6);
+        infoWindowLine.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
 
-        mapWindow = new JLabel();
-        mapWindow.setBounds(32 * 6 - 3, 32 - 3, 32 * 11 + 6, 32 * 11 + 6);
-        mapWindow.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
+        mapWindowLine = new JLabel();
+        mapWindowLine.setBounds(32 * 6 - 3, 32 - 3, 32 * 11 + 6, 32 * 11 + 6);
+        mapWindowLine.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
 
         floorLabel = new JLabel("魔塔", JLabel.CENTER);
         floorLabel.setBounds(320 + 10, 0, 32, 32 - 3);
@@ -335,9 +335,9 @@ public class TowerPanel extends JPanel implements Runnable {
         showFpsLabel.setFont(new Font("方正桃体", Font.BOLD, 12));
 
         this.add(playerPicLabel);
-        this.add(playerWindow);
-        this.add(infoWindow);
-        this.add(mapWindow);
+        this.add(playerWindowLine);
+        this.add(infoWindowLine);
+        this.add(mapWindowLine);
         this.add(floorLabel);
         this.add(floorNumLabel);
         this.add(lvLabel);
@@ -1965,9 +1965,9 @@ public class TowerPanel extends JPanel implements Runnable {
         this.remove(playerPicLabel);
         this.remove(floorLabel);
         this.remove(floorNumLabel);
-        this.remove(playerWindow);
-        this.remove(infoWindow);
-        this.remove(mapWindow);
+        this.remove(playerWindowLine);
+        this.remove(infoWindowLine);
+        this.remove(mapWindowLine);
         this.remove(lvLabel);
         this.remove(hpPicLabel);
         this.remove(hpLabel);
