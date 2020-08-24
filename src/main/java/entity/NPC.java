@@ -161,6 +161,7 @@ public class NPC extends Entity implements Cloneable, Serializable {
             TowerPanel.floor = 1;
             TowerPanel.musicPlayer.playBackgroundMusic(1);
             TowerPanel.DIRECTION = TowerPanel.DIRECTION_DOWN;
+            TowerPanel.updateFloorNum();
             tower.getPlayer().x = 5;
             tower.getPlayer().y = 9;
         }
