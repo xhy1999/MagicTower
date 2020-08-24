@@ -454,7 +454,7 @@ public class TowerPanel extends JPanel implements Runnable {
                             try {
                                 g.drawImage(tower.getDoorMap().get(doorId).getIcon()[no].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             }
                         }
                     } else if (layer3[i][j].contains("stair")) {
@@ -545,7 +545,7 @@ public class TowerPanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        int fps = 0, tick = 0;
+        int fps = 0; //tick = 0
         double fpsTimer = System.currentTimeMillis();
         double nsPerTick = 1000000000.0 / 10;
         double then = System.nanoTime();
@@ -555,7 +555,7 @@ public class TowerPanel extends JPanel implements Runnable {
             unp += (now - then) / nsPerTick;
             then = now;
             while (unp >= 1) {
-                tick++;
+                //tick++;
                 tick();
                 --unp;
             }
@@ -573,7 +573,7 @@ public class TowerPanel extends JPanel implements Runnable {
                     showFpsLabel.setText(fps + "");
                     frames = 0;
                     fps = 0;
-                    tick = 0;
+                    //tick = 0;
                 } else {
                     frames++;
                 }
@@ -762,12 +762,9 @@ public class TowerPanel extends JPanel implements Runnable {
                 return;
             }
             canMove = false;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    showFloorTransfer();
-                    canMove = true;
-                }
+            new Thread(() -> {
+                showFloorTransfer();
+                canMove = true;
             }).start();
         }
         //TODO 正式版这里要去掉
@@ -855,22 +852,19 @@ public class TowerPanel extends JPanel implements Runnable {
             return false;
         } else if (layer1[y][x].contains("shop")) {
             canMove = false;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Shop shop;
-                    try {
-                        shop = tower.getShopMap().get(layer1[y][x]);
-                    } catch (Exception e) {
-                        System.err.println("layer1 (x=" + x + ",y=" + y + ") shopId(" + layer1[y][x] + ") 不存在!");
-                        return;
-                    }
-                    if (!shop.canMeet) {
-                        canMove = true;
-                        return;
-                    }
-                    meetShop(shop.getId());
+            new Thread(() -> {
+                Shop shop;
+                try {
+                    shop = tower.getShopMap().get(layer1[y][x]);
+                } catch (Exception e) {
+                    System.err.println("layer1 (x=" + x + ",y=" + y + ") shopId(" + layer1[y][x] + ") 不存在!");
+                    return;
                 }
+                if (!shop.canMeet) {
+                    canMove = true;
+                    return;
+                }
+                meetShop(shop.getId());
             }).start();
             return false;
         }
@@ -1169,12 +1163,7 @@ public class TowerPanel extends JPanel implements Runnable {
                 if (item.msg != null) {
                     canMove = false;
                     musicPlayer.getSpecialItem();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            getSpecialItem(item);
-                        }
-                    }).start();
+                    new Thread(() -> getSpecialItem(item)).start();
                 } else {
                     musicPlayer.getItem();
                 }
@@ -1203,7 +1192,6 @@ public class TowerPanel extends JPanel implements Runnable {
             FightCalc fightCalc = new FightCalc(tower.getPlayer(), monster);
             if (!fightCalc.canAttack) {
                 showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
-                //System.out.println("无法击杀");
                 return false;
             }
             int pHP = tower.getPlayer().hp - fightCalc.mDamageTotal;
@@ -1222,7 +1210,6 @@ public class TowerPanel extends JPanel implements Runnable {
                 return true;
             } else {
                 showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
-                //System.out.println("无法击杀");
                 return false;
             }
         }
@@ -1250,6 +1237,7 @@ public class TowerPanel extends JPanel implements Runnable {
         }
     }
 
+    //秘籍彩蛋
     private String secretScript = "";
 
     /**
@@ -1265,7 +1253,7 @@ public class TowerPanel extends JPanel implements Runnable {
             dialogBox = new JDialog(mainframe, null, true);
             String s;
             ImageIcon photo;
-            JPanel dialogp = new JPanel(null);
+            JPanel dialog = new JPanel(null);
             JLabel pict = new JLabel();
             JLabel name;
             JTextArea content = new JTextArea();
@@ -1342,8 +1330,8 @@ public class TowerPanel extends JPanel implements Runnable {
                     }
                 }
             });
-            dialogp.setSize(256, 128);
-            dialogp.setBackground(Color.black);
+            dialog.setSize(256, 128);
+            dialog.setBackground(Color.black);
             content.setText(s);
             content.setLineWrap(true);
             content.setEditable(false);
@@ -1355,12 +1343,12 @@ public class TowerPanel extends JPanel implements Runnable {
             tip.setFont(new Font("微软雅黑", Font.BOLD, 11));
             tip.setForeground(Color.white);
             tip.setBackground(Color.white);
-            dialogp.add(pict);
-            dialogp.add(name);
-            dialogp.add(content);
-            dialogp.add(tip);
+            dialog.add(pict);
+            dialog.add(name);
+            dialog.add(content);
+            dialog.add(tip);
             dialogBox.setLocation(mainframe.getLocation().x + 242, mainframe.getLocation().y + 125);
-            dialogBox.add(dialogp);
+            dialogBox.add(dialog);
             dialogBox.setVisible(true);
             while (!escapeDown) {
                 try {
@@ -1379,10 +1367,9 @@ public class TowerPanel extends JPanel implements Runnable {
         Shop shop = tower.getShopMap().get(shopId);
         dialogBox = new JDialog(mainframe, null, true);
         ImageIcon photo;
-        JPanel dialogp = new JPanel(null);
+        JPanel dialog = new JPanel(null);
         JLabel shopImg = new JLabel();
         JTextArea shopDialogue = new JTextArea();
-        //shopDialogue.setBorder(BorderFactory.createLineBorder(Color.white));
         shopImg.setBounds(10, 8, 32, 32);
         JLabel name = new JLabel(shop.getName());
         name.setBounds(50, 12, 200, 25);
@@ -1395,7 +1382,6 @@ public class TowerPanel extends JPanel implements Runnable {
         selectLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/selected.png")));
         selectLabel.setBounds(10, 100, 30, 30);
         selectLabel.setForeground(Color.white);
-        //selectLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         dialogBox.add(selectLabel);
         List<String> sellNameList = shop.sell.name;
         for (int i = 0; i < sellNameList.size(); i++) {
@@ -1403,8 +1389,6 @@ public class TowerPanel extends JPanel implements Runnable {
             label.setBounds(34, 100 + 30 * i, 200, 30);
             label.setForeground(Color.white);
             label.setFont(new Font("微软雅黑", Font.BOLD, 16));
-            //label.setOpaque(true);
-            //label.setBackground(new Color(255, 255, 255, 100));
             dialogBox.add(label);
         }
         shopDialogue.addKeyListener(new KeyListener() {
@@ -1539,8 +1523,8 @@ public class TowerPanel extends JPanel implements Runnable {
                 }
             }
         });
-        dialogp.setSize(268, 235);
-        dialogp.setBackground(Color.black);
+        dialog.setSize(268, 235);
+        dialog.setBackground(Color.black);
         shopDialogue.setText(shop.dialogue.replaceFirst("%%", String.valueOf(shop.price)));
         shopDialogue.setLineWrap(true);
         shopDialogue.setEditable(false);
@@ -1548,26 +1532,24 @@ public class TowerPanel extends JPanel implements Runnable {
         shopDialogue.setFont(new Font("宋体", Font.BOLD, 16));
         shopDialogue.setBackground(Color.black);
         shopDialogue.setForeground(Color.WHITE);
-        dialogp.add(shopImg);
-        dialogp.add(name);
-        dialogp.add(shopDialogue);
+        dialog.add(shopImg);
+        dialog.add(name);
+        dialog.add(shopDialogue);
         dialogBox.setSize(268, 235);
         dialogBox.setUndecorated(true);
         dialogBox.setLocation(mainframe.getLocation().x + 237, mainframe.getLocation().y + 100);
-        dialogBox.add(dialogp);
+        dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
 
     public void getSpecialItem(Item item) {
         dialogBox = new JDialog(mainframe, null, true);
-        JPanel dialogp = new JPanel(null);
+        JPanel dialog = new JPanel(null);
         JLabel pict = new JLabel();
         JLabel name;
         JTextArea content = new JTextArea();
-        //content.setBorder(BorderFactory.createLineBorder(Color.white));
         JLabel tip = new JLabel("Space...");
         name = new JLabel(item.getName(), JLabel.CENTER);
-        //name.setBorder(BorderFactory.createLineBorder(Color.white));
         name.setBounds(0, 10, 400, 30);
         name.setFont(new Font("微软雅黑", Font.BOLD, 20));
         name.setBackground(Color.white);
@@ -1584,23 +1566,25 @@ public class TowerPanel extends JPanel implements Runnable {
             }
 
             public void keyPressed(KeyEvent arg0) {
+                boolean close = false;
                 switch (arg0.getKeyCode()) {
                     case KeyEvent.VK_SPACE:
-                        dialogBox.dispose();
-                        input.clear();
-                        canMove = true;
+                        close = true;
                         break;
                     case KeyEvent.VK_ESCAPE:
-                        dialogBox.dispose();
-                        input.clear();
-                        canMove = true;
+                        close = true;
                         break;
+                }
+                if (close) {
+                    dialogBox.dispose();
+                    input.clear();
+                    canMove = true;
                 }
             }
         });
-        dialogp.setSize(400, 128);
-        dialogp.setBackground(Color.black);
-        dialogp.setBorder(BorderFactory.createLineBorder(new Color(228, 122, 0), 3));
+        dialog.setSize(400, 128);
+        dialog.setBackground(Color.black);
+        dialog.setBorder(BorderFactory.createLineBorder(new Color(228, 122, 0), 3));
         content.setText(item.msg);
         content.setLineWrap(true);
         content.setEditable(false);
@@ -1612,12 +1596,12 @@ public class TowerPanel extends JPanel implements Runnable {
         tip.setFont(new Font("微软雅黑", Font.BOLD, 11));
         tip.setForeground(Color.white);
         tip.setBackground(Color.white);
-        dialogp.add(pict);
-        dialogp.add(name);
-        dialogp.add(content);
-        dialogp.add(tip);
+        dialog.add(pict);
+        dialog.add(name);
+        dialog.add(content);
+        dialog.add(tip);
         dialogBox.setLocation(mainframe.getLocation().x + 171, mainframe.getLocation().y + 125);
-        dialogBox.add(dialogp);
+        dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
 
@@ -1628,10 +1612,9 @@ public class TowerPanel extends JPanel implements Runnable {
             return;
         }
         dialogBox = new JDialog(mainframe, null, true);
-        JPanel dialogp = new JPanel(null);
+        JPanel dialog = new JPanel(null);
         JLabel pict = new JLabel();
         JTextArea content = new JTextArea();
-        //content.setBorder(BorderFactory.createLineBorder(Color.white));
         dialogBox.setSize(352, 352);
         dialogBox.setUndecorated(true);
         for (int i = 8 * nowMonsterManual; i < fightCalcList.size() && i < 8 * (nowMonsterManual + 1); i++) {
@@ -1656,8 +1639,6 @@ public class TowerPanel extends JPanel implements Runnable {
             nameLabel.setBounds(38, 3, 30, 15);
             nameLabel.setForeground(Color.white);
             nameLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-            //nameLabel.setOpaque(true);
-            //nameLabel.setBackground(new Color(255, 255, 255, 100));
 
             JLabel nameValLabel = new JLabel(monster.getName(), JLabel.CENTER);
             nameValLabel.setBounds(68, 3, 95, 15);
@@ -1792,13 +1773,12 @@ public class TowerPanel extends JPanel implements Runnable {
         content.setEditable(false);
         content.setBounds(0, 0, 1, 1);
         content.setBackground(Color.black);
-        dialogp.setSize(352, 352);
-        dialogp.setBackground(Color.black);
-        //dialogp.setBorder(BorderFactory.createLineBorder(new Color(228, 122, 0), 3));
-        dialogp.add(pict);
-        dialogp.add(content);
+        dialog.setSize(352, 352);
+        dialog.setBackground(Color.black);
+        dialog.add(pict);
+        dialog.add(content);
         dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32);
-        dialogBox.add(dialogp);
+        dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
 
@@ -1809,10 +1789,9 @@ public class TowerPanel extends JPanel implements Runnable {
             nowSelectFloor = 0;
         }
         dialogBox = new JDialog(mainframe, null, true);
-        JPanel dialogp = new JPanel(null);
+        JPanel dialog = new JPanel(null);
         JLabel pict = new JLabel();
         JTextArea content = new JTextArea();
-        //content.setBorder(BorderFactory.createLineBorder(Color.white));
         dialogBox.setSize(352, 352);
         dialogBox.setUndecorated(true);
 
@@ -1948,18 +1927,16 @@ public class TowerPanel extends JPanel implements Runnable {
         content.setEditable(false);
         content.setBounds(0, 0, 1, 1);
         content.setBackground(Color.black);
-        dialogp.setSize(352, 352);
-        dialogp.setBackground(Color.black);
-        //dialogp.setBorder(BorderFactory.createLineBorder(new Color(0, 153, 204), 2));
-        dialogp.add(pict);
-        dialogp.add(content);
+        dialog.setSize(352, 352);
+        dialog.setBackground(Color.black);
+        dialog.add(pict);
+        dialog.add(content);
         dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32);
-        dialogBox.add(dialogp);
+        dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
 
     public void end() {
-        ///System.out.println("drawEnd");
         running = false;
         musicPlayer.playEndBackgroundMusic();
         this.remove(playerPicLabel);
@@ -2064,7 +2041,6 @@ public class TowerPanel extends JPanel implements Runnable {
         endLabel.setFont(new Font("微软雅黑", Font.PLAIN, 100));
         endLabel.setBounds(0, 0, 576, 450);
         endLabel.setVisible(true);
-        //endLabel.setBorder(BorderFactory.createLineBorder(Color.red));
 
         this.add(textLabel1);
         this.add(textLabel2);
@@ -2082,12 +2058,6 @@ public class TowerPanel extends JPanel implements Runnable {
         ImageUtil imageUtil = new ImageUtil();
         new Thread(() -> {
             for (int i = 0; i <= 120; i++) {
-                //                label.setIcon(new ImageIcon(changeAlpha((int) (80 - Math.abs(1.6 * i - 80)))));
-                //                try {
-                //                    Thread.sleep(15);
-                //                } catch (InterruptedException e) {
-                //                    e.printStackTrace();
-                //                }
                 if (i <= 50) {
                     imgLabel.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 2 * i)));
                 } else {
@@ -2160,10 +2130,7 @@ public class TowerPanel extends JPanel implements Runnable {
             this.remove(textLabel10);
             this.remove(imgLabel);
             this.remove(endLabel);
-            //System.exit(0);
-            new Thread(() -> {
-                imageScript();
-            }).start();
+            new Thread(() -> imageScript()).start();
             postScript();
         }).run();
     }
@@ -2229,24 +2196,20 @@ public class TowerPanel extends JPanel implements Runnable {
         JLabel titleLabel = new JLabel("魔塔", JLabel.CENTER);
         titleLabel.setForeground(Color.white);
         titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 50));
-        //titleLabel.setBounds(x, y, 300, 50);
         titleLabel.setVisible(true);
         JLabel titleEnglishLabel = new JLabel("Magic Tower", JLabel.CENTER);
         titleEnglishLabel.setForeground(Color.white);
         titleEnglishLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        //titleEnglishLabel.setBounds(x, y + 50, 300, 50);
         titleEnglishLabel.setVisible(true);
 
         //程序设计
         JLabel programLabel = new JLabel("程序设计(Java):", JLabel.LEFT);
         programLabel.setForeground(Color.white);
         programLabel.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        //programLabel.setBounds(x, y + 200, 300, 30);
         programLabel.setVisible(true);
         JLabel programValLabel = new JLabel("Vip、疯子", JLabel.LEFT);
         programValLabel.setForeground(Color.white);
         programValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        //programNameLabel.setBounds(x + 50, y + 230, 300, 30);
         programValLabel.setVisible(true);
 
         //人物图片
