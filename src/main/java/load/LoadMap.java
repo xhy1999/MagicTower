@@ -9,9 +9,6 @@ import java.util.Map;
 
 public class LoadMap {
 
-    private int width = 11;
-    public int height = 11;
-
     public List<GameMap> initMap() {
         List<GameMap> mapList = new ArrayList<>();
 

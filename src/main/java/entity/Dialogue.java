@@ -11,4 +11,5 @@ public class Dialogue implements Cloneable, Serializable {
         this.name = name;
         this.text = text;
     }
+
 }

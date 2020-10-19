@@ -1,8 +1,7 @@
 package main;
 
 import entity.*;
-import util.ImageUtil;
-import util.ScreenUtil;
+import util.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +23,7 @@ public class TowerPanel extends JPanel implements Runnable {
     private static final int CS = 32;
 
     //标题栏高度
-    private static final int TITLE_HEIGHT = 26;
+    private static int TITLE_HEIGHT = 26;
 
     //行
     private static final int GAME_ROW = 11;
@@ -173,7 +172,7 @@ public class TowerPanel extends JPanel implements Runnable {
     }
 
     /**
-     * 展示属性
+     * 创建属性界面
      */
     public void showAttribute() {
         // 各属性的显示
@@ -398,6 +397,9 @@ public class TowerPanel extends JPanel implements Runnable {
         rKeyLabel.setText("" + tower.getPlayer().rKey);
     }
 
+    /**
+     * 绘制玩家
+     */
     private void drawPlayer(Graphics g) {
         int startX = 6 * 32;
         int startY = 1 * 32;
@@ -406,6 +408,9 @@ public class TowerPanel extends JPanel implements Runnable {
         g.drawImage(tower.getPlayer().getPlayerIcon()[DIRECTION][moveNo].getImage(), startX + x * CS, startY + y * CS, 32, 32, this);
     }
 
+    /**
+     * 绘制地图
+     */
     private void drawMap(Graphics g) {
         //System.out.println("构造地图中..." + frames);
         repaint();
@@ -543,17 +548,19 @@ public class TowerPanel extends JPanel implements Runnable {
     public void run() {
         int fps = 0; //tick = 0
         double fpsTimer = System.currentTimeMillis();
-        double nsPerTick = 1000000000.0 / 10;   //每秒十次按键监听
+        double nsPerTick = 1000000000.0 / 10;
         double then = System.nanoTime();
-        double check = 0;
+        double unp = 0;
+        TITLE_HEIGHT = (int) (mainframe.getBounds().getSize().getHeight() - this.getSize().getHeight());
+        System.out.println(TITLE_HEIGHT);
         while (running) {
             double now = System.nanoTime();
-            check += (now - then) / nsPerTick;
+            unp += (now - then) / nsPerTick;
             then = now;
-            while (check >= 1) {
+            while (unp >= 1) {
                 //tick++;
                 tick();
-                --check;
+                --unp;
             }
             try {
                 Thread.sleep(1);
@@ -765,7 +772,7 @@ public class TowerPanel extends JPanel implements Runnable {
         }
         //TODO 正式版这里要去掉
         else if (input.escape.down) {
-            end();
+            //end();
         } else if (input.save.down) {
             save();
         } else if (input.load.down) {
@@ -911,10 +918,10 @@ public class TowerPanel extends JPanel implements Runnable {
                             return;
                         }
                         byte f = (byte) floor;
-                        for (int i = 1; i <= 5; i++) {
+                        for (int i = 1; i < 5; i++) {
                             if (i == 1) {
                                 tower.getGameMapList().get(f).layer3[y][x] += "open1";
-                            } else if (i == 5) {
+                            } else if (i == 4) {
                                 tower.getGameMapList().get(f).layer3[y][x] = "";
                             } else {
                                 String str = tower.getGameMapList().get(f).layer3[y][x];
@@ -937,10 +944,10 @@ public class TowerPanel extends JPanel implements Runnable {
                             return;
                         }
                         String f = specialGameMapNo;
-                        for (int i = 1; i <= 5; i++) {
+                        for (int i = 1; i < 5; i++) {
                             if (i == 1) {
                                 tower.getSpecialMap().get(f).layer3[y][x] += "open1";
-                            } else if (i == 5) {
+                            } else if (i == 4) {
                                 tower.getSpecialMap().get(f).layer3[y][x] = "";
                             } else {
                                 String str = tower.getSpecialMap().get(f).layer3[y][x];
@@ -1213,7 +1220,7 @@ public class TowerPanel extends JPanel implements Runnable {
     }
 
     /**
-     * 判断是否在普通楼层
+     * 判断是否在普通法楼层
      *
      * @return 如果在普通楼层, 则返回true;反之,则返回false
      */
@@ -1343,7 +1350,7 @@ public class TowerPanel extends JPanel implements Runnable {
             dialog.add(name);
             dialog.add(content);
             dialog.add(tip);
-            dialogBox.setLocation(mainframe.getLocation().x + 242, mainframe.getLocation().y + 125);
+            dialogBox.setLocation(mainframe.getLocation().x + 242, TITLE_HEIGHT + mainframe.getLocation().y + 96);
             dialogBox.add(dialog);
             dialogBox.setVisible(true);
             while (!escapeDown) {
@@ -1533,7 +1540,7 @@ public class TowerPanel extends JPanel implements Runnable {
         dialog.add(shopDialogue);
         dialogBox.setSize(268, 235);
         dialogBox.setUndecorated(true);
-        dialogBox.setLocation(mainframe.getLocation().x + 237, mainframe.getLocation().y + 100);
+        dialogBox.setLocation(mainframe.getLocation().x + 237, TITLE_HEIGHT + mainframe.getLocation().y + 71);
         dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
@@ -1596,7 +1603,7 @@ public class TowerPanel extends JPanel implements Runnable {
         dialog.add(name);
         dialog.add(content);
         dialog.add(tip);
-        dialogBox.setLocation(mainframe.getLocation().x + 171, mainframe.getLocation().y + 125);
+        dialogBox.setLocation(mainframe.getLocation().x + 171, TITLE_HEIGHT + mainframe.getLocation().y + 96);
         dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
@@ -1773,7 +1780,7 @@ public class TowerPanel extends JPanel implements Runnable {
         dialog.setBackground(Color.black);
         dialog.add(pict);
         dialog.add(content);
-        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32);
+        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32 - 3);
         dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
@@ -1927,7 +1934,7 @@ public class TowerPanel extends JPanel implements Runnable {
         dialog.setBackground(Color.black);
         dialog.add(pict);
         dialog.add(content);
-        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32);
+        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32 - 3);
         dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
