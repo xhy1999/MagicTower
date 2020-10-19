@@ -1,17 +1,13 @@
 package main;
 
 import entity.*;
-import load.*;
 import util.ImageUtil;
 import util.ScreenUtil;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -87,7 +83,7 @@ public class TowerPanel extends JPanel implements Runnable {
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     //TODO 正式版这里要改为 0
-    public static int floor = 11;
+    public static int floor = 0;
 
     JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
     Container contentPane;
@@ -547,17 +543,17 @@ public class TowerPanel extends JPanel implements Runnable {
     public void run() {
         int fps = 0; //tick = 0
         double fpsTimer = System.currentTimeMillis();
-        double nsPerTick = 1000000000.0 / 10;
+        double nsPerTick = 1000000000.0 / 10;   //每秒十次按键监听
         double then = System.nanoTime();
-        double unp = 0;
+        double check = 0;
         while (running) {
             double now = System.nanoTime();
-            unp += (now - then) / nsPerTick;
+            check += (now - then) / nsPerTick;
             then = now;
-            while (unp >= 1) {
+            while (check >= 1) {
                 //tick++;
                 tick();
-                --unp;
+                --check;
             }
             try {
                 Thread.sleep(1);
@@ -915,10 +911,10 @@ public class TowerPanel extends JPanel implements Runnable {
                             return;
                         }
                         byte f = (byte) floor;
-                        for (int i = 1; i < 5; i++) {
+                        for (int i = 1; i <= 5; i++) {
                             if (i == 1) {
                                 tower.getGameMapList().get(f).layer3[y][x] += "open1";
-                            } else if (i == 4) {
+                            } else if (i == 5) {
                                 tower.getGameMapList().get(f).layer3[y][x] = "";
                             } else {
                                 String str = tower.getGameMapList().get(f).layer3[y][x];
@@ -941,10 +937,10 @@ public class TowerPanel extends JPanel implements Runnable {
                             return;
                         }
                         String f = specialGameMapNo;
-                        for (int i = 1; i < 5; i++) {
+                        for (int i = 1; i <= 5; i++) {
                             if (i == 1) {
                                 tower.getSpecialMap().get(f).layer3[y][x] += "open1";
-                            } else if (i == 4) {
+                            } else if (i == 5) {
                                 tower.getSpecialMap().get(f).layer3[y][x] = "";
                             } else {
                                 String str = tower.getSpecialMap().get(f).layer3[y][x];
@@ -1217,7 +1213,7 @@ public class TowerPanel extends JPanel implements Runnable {
     }
 
     /**
-     * 判断是否在普通法楼层
+     * 判断是否在普通楼层
      *
      * @return 如果在普通楼层, 则返回true;反之,则返回false
      */

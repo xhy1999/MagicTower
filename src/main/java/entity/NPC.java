@@ -1,6 +1,5 @@
 package entity;
 
-import main.Tower;
 import main.TowerPanel;
 
 import javax.swing.*;

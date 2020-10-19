@@ -8,7 +8,7 @@ import java.io.IOException;
 public class ImageUtil {
 
     /**
-     * @param alpha    透明度   （0不透明---10全透明）
+     * @param alpha    透明度   （0不透明---100全透明）
      */
     public Image changeAlpha(String path, int alpha) {
         //检查透明度是否越界

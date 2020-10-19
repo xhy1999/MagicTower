@@ -1,12 +1,9 @@
 package load;
 
 import entity.Stair;
-import entity.Wall;
-import main.Tower;
 
 import javax.swing.*;
 import java.util.HashMap;
-import java.util.Map;
 
 public class LoadStair {
 
