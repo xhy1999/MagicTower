@@ -11,7 +11,6 @@ public class Entity implements Cloneable, Serializable {
     String id;
     int hp, attack, defense, exp, money;
     String name;
-    boolean removed = false;
     //hostile为true才能攻击
     public boolean hostile = true;
 
@@ -19,16 +18,6 @@ public class Entity implements Cloneable, Serializable {
 
     public Entity() {
 
-    }
-
-    public Entity(String name, int hp, int attack, int defense, int exp, int money) {
-        this.hp = hp;
-        this.attack = attack;
-        this.defense = defense;
-        this.exp = exp;
-        this.money = money;
-        this.name = name;
-        this.icon = new ImageIcon[2];
     }
 
     public String getId() {
@@ -87,14 +76,6 @@ public class Entity implements Cloneable, Serializable {
         this.name = name;
     }
 
-    public boolean isRemoved() {
-        return removed;
-    }
-
-    public void setRemoved(boolean removed) {
-        this.removed = removed;
-    }
-
     public boolean isHostile() {
         return hostile;
     }
@@ -110,4 +91,5 @@ public class Entity implements Cloneable, Serializable {
     public void setIcon(ImageIcon[] icon) {
         this.icon = icon;
     }
+
 }

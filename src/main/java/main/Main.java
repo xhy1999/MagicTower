@@ -1,5 +1,7 @@
 package main;
 
+import entity.Tower;
+
 /**
  * @author Xhy
  */

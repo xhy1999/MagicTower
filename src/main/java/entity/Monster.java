@@ -1,6 +1,5 @@
 package entity;
 
-import main.Tower;
 import main.TowerPanel;
 
 import javax.swing.*;
@@ -13,10 +12,6 @@ public class Monster extends Entity implements Cloneable,Serializable {
 
     public boolean scriptStart;
     public boolean scriptEnd;
-
-    public Monster() {
-
-    }
 
     public Monster(String id, String name, int hp, int attack, int defense, int exp, int money, ImageIcon imageIcon1, ImageIcon imageIcon2) {
         this.id = id;

@@ -1,9 +1,11 @@
-package entity;
+package util;
+
+import entity.Monster;
+import entity.Player;
 
 public class FightCalc {
 
     private Monster monster;
-    private Player player;
     public boolean canAttack;
     public int mDamageTotal;
 
@@ -13,7 +15,6 @@ public class FightCalc {
     private short playerCriticalVal = 20;
 
     public FightCalc(Player player, Monster monster) {
-        this.player = player;
         this.monster = monster;
         if (!monster.hostile) {
             return;

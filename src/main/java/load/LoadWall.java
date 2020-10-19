@@ -1,13 +1,9 @@
 package load;
 
-import entity.Entity;
 import entity.Wall;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class LoadWall {
 

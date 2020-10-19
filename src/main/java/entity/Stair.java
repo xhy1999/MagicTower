@@ -1,7 +1,5 @@
 package entity;
 
-import main.MusicPlayer;
-import main.Tower;
 import main.TowerPanel;
 
 import javax.swing.*;
