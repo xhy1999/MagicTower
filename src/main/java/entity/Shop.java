@@ -2,8 +2,6 @@ package entity;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Shop extends Entity implements Cloneable, Serializable {
 

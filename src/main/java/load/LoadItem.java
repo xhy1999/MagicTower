@@ -1,12 +1,9 @@
 package load;
 
-import entity.Door;
 import entity.Item;
-import entity.Wall;
 
 import javax.swing.*;
 import java.util.HashMap;
-import java.util.Map;
 
 public class LoadItem {
 
@@ -133,9 +130,9 @@ public class LoadItem {
                 new ImageIcon(getClass().getResource("/image/item/item06_2.png")));
         itemMap.put(item.getId(), item);
 
-    item = new Item("item06_3", "圣水瓶", "\b它可以将你的体质增加一倍(生命值加倍)。",
-            new ImageIcon(getClass().getResource("/image/item/item06_3.png")));
-    itemMap.put(item.getId(), item);
+        item = new Item("item06_3", "圣水瓶", "\b它可以将你的体质增加一倍(生命值加倍)。",
+                new ImageIcon(getClass().getResource("/image/item/item06_3.png")));
+        itemMap.put(item.getId(), item);
 
         item = new Item("item06_4", "茶壶", null,
                 new ImageIcon(getClass().getResource("/image/item/item06_4.png")));
