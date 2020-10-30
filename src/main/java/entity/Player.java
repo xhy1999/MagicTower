@@ -38,9 +38,9 @@ public class Player implements Cloneable {
         //TODO 正式版这里要改为 2000
         this.hp = 2000;
         //TODO 正式版这里要改为 10
-        this.attack = 10000;
+        this.attack = 10;
         //TODO 正式版这里要改为 10
-        this.defense = 10000;
+        this.defense = 10;
         //TODO 正式版这里要改为 0
         this.exp = 0;
         //TODO 正式版这里要改为 0
