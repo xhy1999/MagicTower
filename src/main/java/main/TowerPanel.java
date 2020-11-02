@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Xhy
  */
-public final class TowerPanel extends GLJPanel implements Runnable {
+public final class TowerPanel extends JPanel implements Runnable {
 
     /**
      * 单个图像大小,默认采用CSxCS图形,可根据需要调整比例
@@ -162,7 +162,7 @@ public final class TowerPanel extends GLJPanel implements Runnable {
                 needTick--;
             }
             try {
-                Thread.sleep(16);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -221,6 +221,8 @@ public final class TowerPanel extends GLJPanel implements Runnable {
         updateFloorNum();
         showMesLabel.setText("数据读取成功");
     }
+
+    /*********************************************** 主要逻辑 ***********************************************/
 
     //玩家上次移动时间
     public long lastMove = System.currentTimeMillis();
@@ -840,6 +842,19 @@ public final class TowerPanel extends GLJPanel implements Runnable {
         return true;
     }
 
+    /*********************************************** 绘制方法 ***********************************************/
+
+    @Override
+    public void paintComponent(Graphics g) {// 描绘窗体，此处在默认JPanel基础上构建底层地图
+        super.paintComponent(g);
+        if (running) {
+            drawBackGround(g);
+            drawAttribute(g);
+            drawMap(g);
+            drawPlayer(g);
+        }
+    }
+
     /**
      * 创建属性界面
      */
@@ -1069,17 +1084,6 @@ public final class TowerPanel extends GLJPanel implements Runnable {
     }
 
     /**
-     * 绘制玩家
-     */
-    private void drawPlayer(Graphics g) {
-        int startX = 6 * CS;
-        int startY = 1 * CS;
-        byte x = this.tower.getPlayer().x;
-        byte y = this.tower.getPlayer().y;
-        g.drawImage(this.tower.getPlayer().getPlayerIcon()[DIRECTION][moveNo].getImage(), startX + x * CS, startY + y * CS, CS, CS, this);
-    }
-
-    /**
      * 绘制地图
      */
     private static final byte INTERVAL_2 = 2;
@@ -1133,6 +1137,19 @@ public final class TowerPanel extends GLJPanel implements Runnable {
     }
 
     /**
+     * 绘制玩家
+     */
+    private void drawPlayer(Graphics g) {
+        int startX = 6 * CS;
+        int startY = 1 * CS;
+        byte x = this.tower.getPlayer().x;
+        byte y = this.tower.getPlayer().y;
+        g.drawImage(this.tower.getPlayer().getPlayerIcon()[DIRECTION][moveNo].getImage(), startX + x * CS, startY + y * CS, CS, CS, this);
+    }
+
+    /*********************************************** 工具方法 ***********************************************/
+
+    /**
      * @param icons
      * @param interval 间隔多少帧切换一次 当间隔大于每秒帧数时,不会改变
      * @return
@@ -1159,17 +1176,6 @@ public final class TowerPanel extends GLJPanel implements Runnable {
         return null;
     }
 
-    @Override
-    public void paintComponent(Graphics g) {// 描绘窗体，此处在默认JPanel基础上构建底层地图
-        super.paintComponent(g);
-        if (running) {
-            drawBackGround(g);
-            drawAttribute(g);
-            drawMap(g);
-            drawPlayer(g);
-        }
-    }
-
     /**
      * 判断是否在普通法楼层
      *
@@ -1190,6 +1196,8 @@ public final class TowerPanel extends GLJPanel implements Runnable {
             floorNumLabel.setText(floor + "F");
         }
     }
+
+    /*********************************************** 额外窗口 ***********************************************/
 
     //秘籍彩蛋
     private String secretScript = "";
@@ -1890,15 +1898,16 @@ public final class TowerPanel extends GLJPanel implements Runnable {
         dialogBox.setVisible(true);
     }
 
+    /*********************************************** 结尾字幕 ***********************************************/
     public void end() {
         running = false;
         musicPlayer.playEndBackgroundMusic();
-        this.remove(playerPicLabel);
-        this.remove(floorLabel);
-        this.remove(floorNumLabel);
         this.remove(playerWindowLine);
         this.remove(infoWindowLine);
         this.remove(mapWindowLine);
+        this.remove(playerPicLabel);
+        this.remove(floorLabel);
+        this.remove(floorNumLabel);
         this.remove(lvLabel);
         this.remove(hpPicLabel);
         this.remove(hpLabel);

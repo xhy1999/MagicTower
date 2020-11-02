@@ -40,7 +40,7 @@ public final class MusicPlayer {
 
     public MusicPlayer() {
         musicExecutor = new ThreadPoolExecutor(10, Integer.MAX_VALUE,
-                        500L, TimeUnit.MILLISECONDS, new SynchronousQueue<>());
+                        0L, TimeUnit.MILLISECONDS, new SynchronousQueue<>());
         openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL), false);
         openSpecialDoor = creatSoundThread(getClass().getResource(openSpecialDoorSoundURL), false);
         upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL), false);
@@ -70,82 +70,81 @@ public final class MusicPlayer {
 
     public void openDoor() {
         musicExecutor.execute(openDoor);
-        //openDoor.start();
         openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL), false);
     }
 
     public void openSpecialDoor() {
-        openSpecialDoor.start();
+        musicExecutor.execute(openSpecialDoor);
         openSpecialDoor = creatSoundThread(getClass().getResource(openSpecialDoorSoundURL), false);
     }
 
     public void upAndDown() {
-        upAndDown.start();
+        musicExecutor.execute(upAndDown);
         upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL), false);
     }
 
     public void specialStair() {
-        specialStair.start();
+        musicExecutor.execute(specialStair);
         specialStair = creatSoundThread(getClass().getResource(specialStairSoundURL), false);
     }
 
     public void fall() {
-        fall.start();
+        musicExecutor.execute(fall);
         fall = creatSoundThread(getClass().getResource(fallSoundURL), false);
     }
 
     public void dialogueSpace() {
-        dialogueSpace.start();
+        musicExecutor.execute(dialogueSpace);
         dialogueSpace = creatSoundThread(getClass().getResource(dialogueSpaceSoundURL), false);
     }
 
     public void getItem() {
-        getItem.start();
+        musicExecutor.execute(getItem);
         getItem = creatSoundThread(getClass().getResource(getItemSoundURL), false);
     }
 
     public void getSpecialItem() {
-        getSpecialItem.start();
+        musicExecutor.execute(getSpecialItem);
         getSpecialItem = creatSoundThread(getClass().getResource(getSpecialItemSoundURL), false);
     }
 
     public void fight() {
-        fight.start();
+        musicExecutor.execute(fight);
         fight = creatSoundThread(getClass().getResource(fightSoundURL), false);
     }
 
     public void walk() {
-        walk.start();
+        musicExecutor.execute(walk);
         walk = creatSoundThread(getClass().getResource(walkSoundURL), false);
     }
 
     public void floorTransferSelect() {
-        floorTransferSelect.start();
+        musicExecutor.execute(floorTransferSelect);
         floorTransferSelect = creatSoundThread(getClass().getResource(floorTransferSelectSoundURL), false);
     }
 
     public void shopSelect() {
-        shopSelect.start();
+        musicExecutor.execute(shopSelect);
         shopSelect = creatSoundThread(getClass().getResource(shopSelectSoundURL), false);
     }
 
     public void shopBuySuc() {
-        shopBuySuc.start();
+        musicExecutor.execute(shopBuySuc);
         shopBuySuc = creatSoundThread(getClass().getResource(shopBuySucSoundURL), false);
     }
 
     public void shopExpBuySuc() {
-        shopExpBuySuc.start();
+        musicExecutor.execute(shopExpBuySuc);
         shopExpBuySuc = creatSoundThread(getClass().getResource(shopExpBuySucSoundURL), false);
     }
 
     public void shopBuyFail() {
-        shopBuyFail.start();
+        musicExecutor.execute(shopBuyFail);
         shopBuyFail = creatSoundThread(getClass().getResource(shopBuyFailSoundURL), false);
     }
 
     public void fail() {
-        fail.start();
+        musicExecutor.execute(fail);
         fail = creatSoundThread(getClass().getResource(failSoundURL), false);
     }
 
