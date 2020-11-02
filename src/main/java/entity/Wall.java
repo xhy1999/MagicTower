@@ -2,7 +2,7 @@ package entity;
 
 import javax.swing.*;
 
-public class Wall extends Entity {
+public final class Wall extends Entity {
 
     public Wall(String id, ImageIcon imageIcon) {
         this.id = id;

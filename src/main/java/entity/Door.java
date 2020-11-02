@@ -2,7 +2,7 @@ package entity;
 
 import javax.swing.*;
 
-public class Door extends Entity {
+public final class Door extends Entity {
 
     //openable为true才能打开
     public boolean openable;

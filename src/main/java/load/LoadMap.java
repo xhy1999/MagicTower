@@ -1,16 +1,14 @@
 package load;
 
 import entity.GameMap;
-import entity.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class LoadMap {
+public final class LoadMap {
 
     public List<GameMap> initMap() {
-        List<GameMap> mapList = new ArrayList<>();
+        List<GameMap> mapList = new ArrayList<>(24);
 
         String[][] layer1;
         String[][] layer2;

@@ -1,10 +1,13 @@
 package util;
 
 import java.net.URL;
+import java.util.concurrent.*;
 
-public class MusicPlayer {
+public final class MusicPlayer {
 
     Audio audio;
+
+    private ExecutorService musicExecutor;
 
     private Thread openDoor, openSpecialDoor, upAndDown, specialStair, fall, dialogueSpace, getItem, getSpecialItem,
                     fight, walk, floorTransferSelect, shopSelect, shopBuySuc, shopExpBuySuc, shopBuyFail, fail, underground, undergroundEnd, undergroundPostScript;
@@ -36,6 +39,8 @@ public class MusicPlayer {
     private String undergroundSoundPostScriptURL = "/audio/UndergroundPostScript.mp3";
 
     public MusicPlayer() {
+        musicExecutor = new ThreadPoolExecutor(10, Integer.MAX_VALUE,
+                        500L, TimeUnit.MILLISECONDS, new SynchronousQueue<>());
         openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL), false);
         openSpecialDoor = creatSoundThread(getClass().getResource(openSpecialDoorSoundURL), false);
         upAndDown = creatSoundThread(getClass().getResource(upAndDownSoundURL), false);
@@ -64,7 +69,8 @@ public class MusicPlayer {
     }
 
     public void openDoor() {
-        openDoor.start();
+        musicExecutor.execute(openDoor);
+        //openDoor.start();
         openDoor = creatSoundThread(getClass().getResource(openDoorSoundURL), false);
     }
 

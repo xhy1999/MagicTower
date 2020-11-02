@@ -4,7 +4,7 @@ import main.TowerPanel;
 
 import javax.swing.*;
 
-public class Stair extends Entity {
+public final class Stair extends Entity {
 
     public Stair(String id, ImageIcon imageIcon) {
         this.id = id;

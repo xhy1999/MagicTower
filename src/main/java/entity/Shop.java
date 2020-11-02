@@ -3,7 +3,7 @@ package entity;
 import javax.swing.*;
 import java.io.Serializable;
 
-public class Shop extends Entity implements Cloneable, Serializable {
+public final class Shop extends Entity implements Cloneable, Serializable {
 
     public String need;
     public int price;

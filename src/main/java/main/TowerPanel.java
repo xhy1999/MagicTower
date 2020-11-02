@@ -8,20 +8,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Xhy
  */
-public class TowerPanel extends GLJPanel implements Runnable {
+public final class TowerPanel extends GLJPanel implements Runnable {
 
     /**
-     * 单个图像大小,默认采用32x32图形,可根据需要调整比例
-     * 当然,应始终和窗体大小比例协调;比如32x32的图片,
+     * 单个图像大小,默认采用CSxCS图形,可根据需要调整比例
+     * 当然,应始终和窗体大小比例协调;比如CSxCS的图片,
      * 如果一行设置15个,那么就是480
      */
-    private static final int CS = 32;
+    private static final byte CS = 32;
 
     //标题栏高度
     private static int TITLE_HEIGHT = 26;
@@ -34,8 +39,8 @@ public class TowerPanel extends GLJPanel implements Runnable {
     /**
      * 窗体的宽和高
      */
-    private static final int WINDOW_WIDTH = 18 * 32 - 10;
-    private static final int WINDOW_HEIGHT = 14 * 32 - 10 + 16;
+    private static final int WINDOW_WIDTH = 18 * CS - 10;
+    private static final int WINDOW_HEIGHT = 14 * CS - 10 + 16;
 
     /**
      * 人物方向
@@ -49,8 +54,8 @@ public class TowerPanel extends GLJPanel implements Runnable {
     /**
      * 设定显示图像对象
      */
-    JLabel playerPicLabel;
     static JLabel floorNumLabel;
+    JLabel playerPicLabel;
     JLabel floorLabel;
     JLabel playerWindowLine, infoWindowLine, mapWindowLine;
     JLabel lvLabel;
@@ -72,7 +77,7 @@ public class TowerPanel extends GLJPanel implements Runnable {
     /**
      * 帧数(每秒8帧)
      */
-    byte frames = 0;
+    private byte frames = 0;
 
     private boolean running = false;
     public static boolean canMove = true;
@@ -85,24 +90,28 @@ public class TowerPanel extends GLJPanel implements Runnable {
     //TODO 正式版这里要改为 0
     public static int floor = 0;
 
-    JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
-    Container contentPane;
+    private ExecutorService mainExecutor;
     private List<Tower> gameSave;
+    private Tower tower;
 
-    Tower tower;
+    JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
 
     public TowerPanel(Tower tower) {
         this.tower = tower;
         this.gameSave = new LinkedList<>();
-        tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
-        tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
+        this.mainExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                5L, TimeUnit.SECONDS, new SynchronousQueue<>());
+        this.tower.getPlayer().x = this.tower.getGameMapList().get(floor).upPositionX;
+        this.tower.getPlayer().y = this.tower.getGameMapList().get(floor).upPositionY;
         //TODO 正式版这里要改为 0
-        tower.getPlayer().maxFloor = 0;
-        tower.getPlayer().minFloor = 0;
+        this.tower.getPlayer().maxFloor = 0;
+        this.tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
         DIRECTION = DIRECTION_UP;
         input = new KeyInputHandler(this);
+
+        /********************UI部分********************/
         this.setLayout(null);
         //设定初始构造时面板大小
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -119,7 +128,7 @@ public class TowerPanel extends GLJPanel implements Runnable {
         Toolkit tool = this.getToolkit();
         Image image = tool.getImage(this.getClass().getResource("/image/icon/mt.png"));
         mainframe.setIconImage(image);
-        contentPane = mainframe.getContentPane();
+        Container contentPane = mainframe.getContentPane();
         contentPane.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         contentPane.add(this, BorderLayout.CENTER);
         mainframe.pack();
@@ -135,16 +144,57 @@ public class TowerPanel extends GLJPanel implements Runnable {
         //audioPlayer.startBackgroundMusic(tower.getPlayer().floor);
     }
 
+    @Override
+    public void run() {
+        TITLE_HEIGHT = (int) (mainframe.getBounds().getSize().getHeight() - this.getSize().getHeight());
+        Short fps = 0; //tick = 0
+        double fpsTimer = System.currentTimeMillis();
+        double nsPerTick = 1000000000.0 / 10;
+        double then = System.nanoTime();
+        double needTick = 0;
+        while (running) {
+            double now = System.nanoTime();
+            needTick += (now - then) / nsPerTick;
+            then = now;
+            while (needTick >= 1) {
+                //tick++;
+                tick();
+                needTick--;
+            }
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            repaint();
+            fps++;
+            if (System.currentTimeMillis() - fpsTimer > 125) {
+                playerPicLabel.setIcon(tower.getPlayer().getPlayerIcon()[1][frames % 4]);
+                if (frames == 7) {
+                    //System.out.printf("FPS:%d %n", fps);
+                    //System.out.printf("FPS:%d tick:%d %n", fps, tick);
+                    showFpsLabel.setText(fps.toString());
+                    frames = 0;
+                    fps = 0;
+                    //tick = 0;
+                } else {
+                    frames++;
+                }
+                fpsTimer += 125;
+            }
+        }
+    }
+
     /**
      * 保存游戏
      */
     private void save() {
-        tower.canUseFloorTransfer = canUseFloorTransfer;
-        tower.canUseMonsterManual = canUseMonsterManual;
-        tower.specialGameMapNo = specialGameMapNo;
-        tower.floor = floor;
+        this.tower.canUseFloorTransfer = canUseFloorTransfer;
+        this.tower.canUseMonsterManual = canUseMonsterManual;
+        this.tower.specialGameMapNo = specialGameMapNo;
+        this.tower.floor = floor;
         try {
-            gameSave.add(0, tower.clone());
+            gameSave.add(0, this.tower.clone());
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -159,17 +209,635 @@ public class TowerPanel extends GLJPanel implements Runnable {
             return;
         }
         try {
-            tower = gameSave.get(0).clone();
+            this.tower = gameSave.get(0).clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        canUseFloorTransfer = tower.canUseFloorTransfer;
-        canUseMonsterManual = tower.canUseMonsterManual;
-        specialGameMapNo = tower.specialGameMapNo;
-        floor = tower.floor;
+        canUseFloorTransfer = this.tower.canUseFloorTransfer;
+        canUseMonsterManual = this.tower.canUseMonsterManual;
+        specialGameMapNo = this.tower.specialGameMapNo;
+        floor = this.tower.floor;
         DIRECTION = DIRECTION_DOWN;
         updateFloorNum();
         showMesLabel.setText("数据读取成功");
+    }
+
+    //玩家上次移动时间
+    public long lastMove = System.currentTimeMillis();
+    //不动多久后玩家动作停止
+    private static final short STOP_TIME = 180;
+    //玩家动作帧数计数
+    private byte moveNo = 0;
+
+    public void tick() {
+        if (!canMove) {
+            lastMove = System.currentTimeMillis();
+            moveNo = 0;
+            return;
+        }
+        if (isNormalFloor()) {
+            String stair = this.tower.getGameMapList().get(floor).layer3[this.tower.getPlayer().y][this.tower.getPlayer().x];
+            if (stair.equals("stair01")) {
+                musicPlayer.upAndDown();
+                floor--;
+                this.tower.getPlayer().x = this.tower.getGameMapList().get(floor).downPositionX;
+                this.tower.getPlayer().y = this.tower.getGameMapList().get(floor).downPositionY;
+                updateFloorNum();
+                DIRECTION = DIRECTION_DOWN;
+                musicPlayer.playBackgroundMusic(floor);
+                nowMonsterManual = 0;
+                if (floor < this.tower.getPlayer().minFloor) {
+                    this.tower.getPlayer().minFloor = floor;
+                }
+                return;
+            } else if (stair.equals("stair02")) {
+                musicPlayer.upAndDown();
+                floor++;
+                this.tower.getPlayer().x = this.tower.getGameMapList().get(floor).upPositionX;
+                this.tower.getPlayer().y = this.tower.getGameMapList().get(floor).upPositionY;
+                updateFloorNum();
+                DIRECTION = DIRECTION_DOWN;
+                musicPlayer.playBackgroundMusic(floor);
+                nowMonsterManual = 0;
+                if (floor > this.tower.getPlayer().maxFloor) {
+                    this.tower.getPlayer().maxFloor = floor;
+                }
+                return;
+            } else if (stair.contains("stair03") || stair.contains("stair04")) {
+                this.tower.getStairMap().get(stair).script(this, this.tower, specialGameMapNo);
+                updateFloorNum();
+                return;
+            }
+        } else {
+            String stair = this.tower.getSpecialMap().get(specialGameMapNo).layer3[this.tower.getPlayer().y][this.tower.getPlayer().x];
+            if (stair.contains("stair03") || stair.contains("stair04")) {
+                this.tower.getStairMap().get(stair).script(this, this.tower, specialGameMapNo);
+                updateFloorNum();
+                return;
+            }
+        }
+        if (input.up.down) {
+            this.DIRECTION = DIRECTION_UP;
+            moveNo = (byte) ((moveNo + 1) % 4);
+            if (!canMove(this.tower.getPlayer().x, (byte) (this.tower.getPlayer().y - 1))) {
+                return;
+            }
+            musicPlayer.walk();
+            this.tower.getPlayer().y--;
+            lastMove = System.currentTimeMillis();
+        } else if (input.down.down) {
+            this.DIRECTION = DIRECTION_DOWN;
+            moveNo = (byte) ((moveNo + 1) % 4);
+            if (!canMove(this.tower.getPlayer().x, (byte) (this.tower.getPlayer().y + 1))) {
+                return;
+            }
+            musicPlayer.walk();
+            this.tower.getPlayer().y++;
+            lastMove = System.currentTimeMillis();
+        } else if (input.left.down) {
+            this.DIRECTION = DIRECTION_LEFT;
+            if (!canMove((byte) (this.tower.getPlayer().x - 1), this.tower.getPlayer().y)) {
+                return;
+            }
+            musicPlayer.walk();
+            moveNo = (byte) ((moveNo + 1) % 4);
+            this.tower.getPlayer().x--;
+            lastMove = System.currentTimeMillis();
+        } else if (input.right.down) {
+            this.DIRECTION = DIRECTION_RIGHT;
+            if (!canMove((byte) (this.tower.getPlayer().x + 1), this.tower.getPlayer().y)) {
+                return;
+            }
+            musicPlayer.walk();
+            moveNo = (byte) ((moveNo + 1) % 4);
+            this.tower.getPlayer().x++;
+            lastMove = System.currentTimeMillis();
+        } else if (canUseMonsterManual && input.use_rod.down) {
+            canMove = false;
+            mainExecutor.execute(() -> {
+                //System.out.println("开始计算");
+                String[][] monsterLayer;
+                if (isNormalFloor()) {
+                    monsterLayer = this.tower.getGameMapList().get(floor).layer1;
+                } else {
+                    monsterLayer = this.tower.getSpecialMap().get(specialGameMapNo).layer1;
+                }
+                List<String> monsterIdList = new ArrayList<>();
+                //y
+                for (int i = 0; i < monsterLayer.length; i++) {
+                    //x
+                    for (int j = 0; j < monsterLayer[i].length; j++) {
+                        if (monsterLayer[j][i] != null && monsterLayer[j][i].contains("monster")) {
+                            monsterIdList.add(monsterLayer[j][i]);
+                        }
+                    }
+                }
+                List<FightCalc> fightCalcList = new ArrayList<>();
+                List<FightCalc> dieAttackList = new ArrayList<>();
+                boolean monster11 = false, monster12 = false;
+                for (int i = 0, length = monsterIdList.size(); i < length; i++) {
+                    String monsterId = monsterIdList.get(i);
+                    Monster monster = this.tower.getMonsterMap().get(monsterId);
+                    if (monster.getId().contains("monster11")) {
+                        if (monster11) {
+                            continue;
+                        }
+                        monster = this.tower.getMonsterMap().get("monster11_8");
+                        monster11 = true;
+                    } else if (monster.getId().contains("monster12")) {
+                        if (monster12) {
+                            continue;
+                        }
+                        monster = this.tower.getMonsterMap().get("monster12_8");
+                        monster12 = true;
+                    }
+                    FightCalc fightCalc = new FightCalc(this.tower.getPlayer(), monster);
+                    int no = 0;
+                    if (fightCalc.canAttack) {
+                        for (int j = 0; j < fightCalcList.size(); j++) {
+                            if (fightCalcList.get(j).mDamageTotal >= fightCalc.mDamageTotal) {
+                                no = i;
+                                break;
+                            }
+                            if (j == fightCalcList.size() - 1) {
+                                no = fightCalcList.size();
+                                break;
+                            }
+                        }
+                        fightCalcList.add(no, fightCalc);
+                    } else {
+                        for (int j = 0; j < dieAttackList.size(); j++) {
+                            if (dieAttackList.get(j).getMonster().getAttack() >= fightCalc.getMonster().getAttack()) {
+                                no = j;
+                                break;
+                            }
+                            if (j == dieAttackList.size() - 1) {
+                                no = dieAttackList.size();
+                                break;
+                            }
+                        }
+                        dieAttackList.add(no, fightCalc);
+                    }
+                }
+                fightCalcList.addAll(dieAttackList);
+                //System.out.println("计算完成,共" + monsterNo + "只怪物");
+                showMonsterManual(fightCalcList);
+                canMove = true;
+            });
+        } else if (canUseFloorTransfer && input.use_floor_transfer.down) {
+            if (!isNormalFloor()) {
+                musicPlayer.fail();
+                return;
+            }
+            canMove = false;
+            mainExecutor.execute(() -> {
+                showFloorTransfer();
+                canMove = true;
+            });
+        }
+        //TODO 正式版这里要去掉
+        else if (input.escape.down) {
+            end();
+        } else if (input.save.down) {
+            save();
+        } else if (input.load.down) {
+            load();
+        }
+        if (System.currentTimeMillis() - lastMove > STOP_TIME) {
+            moveNo = 0;
+        }
+        if (isNormalFloor()) {
+            if (this.tower.getGameMapList().get(floor).layer3[this.tower.getPlayer().y][this.tower.getPlayer().x].contains("door") && !this.tower.getGameMapList().get(floor).layer3[this.tower.getPlayer().y][this.tower.getPlayer().x].contains("open")) {
+                this.tower.getGameMapList().get(floor).layer3[this.tower.getPlayer().y][this.tower.getPlayer().x] += "open";
+                return;
+            }
+        } else {
+            if (this.tower.getSpecialMap().get(specialGameMapNo).layer3[this.tower.getPlayer().y][this.tower.getPlayer().x].contains("door") && !this.tower.getSpecialMap().get(specialGameMapNo).layer3[this.tower.getPlayer().y][this.tower.getPlayer().x].contains("open")) {
+                this.tower.getSpecialMap().get(specialGameMapNo).layer3[this.tower.getPlayer().y][this.tower.getPlayer().x] += "open";
+                return;
+            }
+        }
+    }
+
+    //开门时间
+    private static final byte DOOR_OPEN_TIME = 40;
+    //对话中按下空格
+    private boolean escapeDown = false;
+
+    /**
+     * 判断能否移动到 (x,y)
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    private boolean canMove(byte x, byte y) {
+        GameMap gameMap;
+        if (isNormalFloor()) {
+            gameMap = this.tower.getGameMapList().get(floor);
+        } else {
+            gameMap = this.tower.getSpecialMap().get(specialGameMapNo);
+        }
+        String[][] layer1 = gameMap.layer1;
+        String[][] layer2 = gameMap.layer2;
+        String[][] layer3 = gameMap.layer3;
+        if (x >= GAME_COL || x < 0 || y >= GAME_ROW || y < 0) {
+            return false;
+        }
+        if (layer1[y][x].contains("npc")) {
+            canMove = false;
+            mainExecutor.execute(() -> {
+                NPC npc;
+                try {
+                    npc = this.tower.getNpcMap().get(layer1[y][x]);
+                } catch (Exception e) {
+                    System.err.println("layer1 (x=" + y + ",y=" + x + ") npcId(" + layer1[y][x] + ") 不存在!");
+                    return;
+                }
+                npc.script_start(this.tower);
+                //重新获取一边,以防npc改变而这里没变
+                npc = this.tower.getNpcMap().get(layer1[y][x]);
+                if (!npc.canMeet) {
+                    canMove = true;
+                    return;
+                }
+                meetNpc(layer1[y][x]);
+                if (npc.canRemove) {
+                    if (isNormalFloor()) {
+                        this.tower.getGameMapList().get(floor).layer1[y][x] = "";
+                    } else {
+                        this.tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
+                    }
+                }
+                npc.script_end(this.tower);
+                canMove = true;
+                input.clear();
+            });
+            return false;
+        } else if (layer1[y][x].contains("shop")) {
+            canMove = false;
+            mainExecutor.execute(() -> {
+                Shop shop;
+                try {
+                    shop = this.tower.getShopMap().get(layer1[y][x]);
+                } catch (Exception e) {
+                    System.err.println("layer1 (x=" + x + ",y=" + y + ") shopId(" + layer1[y][x] + ") 不存在!");
+                    return;
+                }
+                if (!shop.canMeet) {
+                    canMove = true;
+                    return;
+                }
+                meetShop(shop.getId());
+            });
+            return false;
+        }
+        if (layer3[y][x].contains("wall")) {
+            return false;
+        } else if (layer3[y][x].contains("door") && !layer3[y][x].contains("open")) {
+            boolean open = false;
+            switch (layer3[y][x]) {
+                case "door01":
+                    if (this.tower.getPlayer().yKey - 1 >= 0) {
+                        musicPlayer.openDoor();
+                        this.tower.getPlayer().yKey--;
+                        open = true;
+                    }
+                    break;
+                case "door02":
+                    if (this.tower.getPlayer().bKey - 1 >= 0) {
+                        musicPlayer.openDoor();
+                        this.tower.getPlayer().bKey--;
+                        open = true;
+                    }
+                    break;
+                case "door03":
+                    if (this.tower.getPlayer().rKey - 1 >= 0) {
+                        musicPlayer.openDoor();
+                        this.tower.getPlayer().rKey--;
+                        open = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (!open && (layer3[y][x].contains("door04") || layer3[y][x].contains("door05"))) {
+                try {
+                    if (this.tower.getDoorMap().get(layer3[y][x]).openable) {
+                        musicPlayer.openSpecialDoor();
+                        open = true;
+                    }
+                } catch (Exception e) {
+                    System.err.println("layer3 (x=" + x + ",y=" + y + ") doorId(" + layer1[y][x] + ") 不存在!");
+                    return false;
+                }
+            }
+            if (open) {
+                mainExecutor.execute(() -> {
+                    if (isNormalFloor()) {
+                        if (this.tower.getGameMapList().get(floor).layer3[y][x].equals("") || this.tower.getGameMapList().get(floor).layer3[y][x].contains("open")) {
+                            return;
+                        }
+                        byte f = (byte) floor;
+                        for (int i = 1; i < 5; i++) {
+                            if (i == 1) {
+                                this.tower.getGameMapList().get(f).layer3[y][x] += "open1";
+                            } else if (i == 4) {
+                                this.tower.getGameMapList().get(f).layer3[y][x] = "";
+                            } else {
+                                String str = this.tower.getGameMapList().get(f).layer3[y][x];
+                                try {
+                                    this.tower.getGameMapList().get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
+                                } catch (IndexOutOfBoundsException e) {
+                                    e.printStackTrace();
+                                    this.tower.getGameMapList().get(f).layer3[y][x] = "";
+                                }
+                            }
+                            try {
+                                Thread.sleep(DOOR_OPEN_TIME);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        this.tower.getGameMapList().get(f).layer3[y][x] = "";
+                    } else {
+                        if (this.tower.getSpecialMap().get(specialGameMapNo).layer3[y][x].equals("") || this.tower.getSpecialMap().get(specialGameMapNo).layer3[y][x].contains("open")) {
+                            return;
+                        }
+                        String f = specialGameMapNo;
+                        for (int i = 1; i < 5; i++) {
+                            if (i == 1) {
+                                this.tower.getSpecialMap().get(f).layer3[y][x] += "open1";
+                            } else if (i == 4) {
+                                this.tower.getSpecialMap().get(f).layer3[y][x] = "";
+                            } else {
+                                String str = this.tower.getSpecialMap().get(f).layer3[y][x];
+                                try {
+                                    this.tower.getSpecialMap().get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
+                                } catch (IndexOutOfBoundsException e) {
+                                    e.printStackTrace();
+                                    this.tower.getSpecialMap().get(f).layer3[y][x] = "";
+                                }
+                            }
+                            try {
+                                Thread.sleep(DOOR_OPEN_TIME);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        this.tower.getSpecialMap().get(f).layer3[y][x] = "";
+                    }
+                });
+            }
+            return false;
+        }
+        if (layer2[y][x].contains("item")) {
+            boolean flag = false;
+            if (layer2[y][x].contains("item01")) {
+                switch (layer2[y][x]) {
+                    case "item01_1":
+                        showMesLabel.setText("获得1把黄钥匙");
+                        this.tower.getPlayer().yKey++;
+                        flag = true;
+                        break;
+                    case "item01_2":
+                        showMesLabel.setText("获得1把蓝钥匙");
+                        this.tower.getPlayer().bKey++;
+                        flag = true;
+                        break;
+                    case "item01_3":
+                        showMesLabel.setText("获得1把红钥匙");
+                        this.tower.getPlayer().rKey++;
+                        flag = true;
+                        break;
+                    case "item01_5":
+                        showMesLabel.setText("获得万能钥匙,钥匙数量各+1");
+                        this.tower.getPlayer().yKey++;
+                        this.tower.getPlayer().bKey++;
+                        this.tower.getPlayer().rKey++;
+                        flag = true;
+                        break;
+                }
+            } else if (layer2[y][x].contains("item02")) {
+                switch (layer2[y][x]) {
+                    case "item02_1":
+                        showMesLabel.setText("获得红宝石,攻击+3");
+                        this.tower.getPlayer().attack += 3;
+                        flag = true;
+                        break;
+                    case "item02_2":
+                        showMesLabel.setText("获得蓝宝石,防御+3");
+                        this.tower.getPlayer().defense += 3;
+                        flag = true;
+                        break;
+                    case "item02_3":
+                        showMesLabel.setText("获得绿宝石,攻防各+3");
+                        this.tower.getPlayer().attack += 3;
+                        this.tower.getPlayer().defense += 3;
+                        flag = true;
+                        break;
+                }
+            } else if (layer2[y][x].contains("item03")) {
+                switch (layer2[y][x]) {
+                    case "item03_1":
+                        showMesLabel.setText("获得小体力药水,生命+200");
+                        this.tower.getPlayer().hp += 200;
+                        flag = true;
+                        break;
+                    case "item03_2":
+                        showMesLabel.setText("获得大体力药水,生命+500");
+                        this.tower.getPlayer().hp += 500;
+                        flag = true;
+                        break;
+                    case "item03_3":
+                        showMesLabel.setText("获得经验药水,经验+10");
+                        this.tower.getPlayer().exp += 10;
+                        flag = true;
+                        break;
+                }
+            } else if (layer2[y][x].contains("item04")) {
+                switch (layer2[y][x]) {
+                    case "item04_1":
+                        showMesLabel.setText("获得铁剑,攻击+10");
+                        this.tower.getPlayer().attack += 10;
+                        flag = true;
+                        break;
+                    case "item04_2":
+                        showMesLabel.setText("获得银剑,攻击+30");
+                        this.tower.getPlayer().attack += 30;
+                        flag = true;
+                        break;
+                    case "item04_3":
+                        showMesLabel.setText("获得武士剑,攻击+50");
+                        this.tower.getPlayer().attack += 50;
+                        flag = true;
+                        break;
+                    case "item04_4":
+                        showMesLabel.setText("获得圣剑,攻击+120");
+                        this.tower.getPlayer().attack += 120;
+                        flag = true;
+                        break;
+                    case "item04_5":
+                        showMesLabel.setText("获得圣神剑,攻击+190");
+                        this.tower.getPlayer().attack += 190;
+                        flag = true;
+                        break;
+                }
+            } else if (layer2[y][x].contains("item05")) {
+                switch (layer2[y][x]) {
+                    case "item05_1":
+                        showMesLabel.setText("获得铁盾,防御+10");
+                        this.tower.getPlayer().defense += 10;
+                        flag = true;
+                        break;
+                    case "item05_2":
+                        showMesLabel.setText("获得银盾,防御+30");
+                        this.tower.getPlayer().defense += 30;
+                        flag = true;
+                        break;
+                    case "item05_3":
+                        showMesLabel.setText("获得武士盾,防御+50");
+                        this.tower.getPlayer().defense += 50;
+                        flag = true;
+                        break;
+                    case "item05_4":
+                        showMesLabel.setText("获得圣盾,防御+120");
+                        this.tower.getPlayer().defense += 120;
+                        flag = true;
+                        break;
+                    case "item05_5":
+                        showMesLabel.setText("获得圣神盾,防御+190");
+                        this.tower.getPlayer().defense += 190;
+                        flag = true;
+                        break;
+                }
+            } else if (layer2[y][x].contains("item06")) {
+                switch (layer2[y][x]) {
+                    case "item06_3":
+                        showMesLabel.setText("获得圣水瓶,生命值翻倍");
+                        this.tower.getPlayer().hp *= 2;
+                        flag = true;
+                        break;
+                }
+            } else if (layer2[y][x].contains("item07")) {
+                switch (layer2[y][x]) {
+                    case "item07_1":
+                        showMesLabel.setText("获得心之灵杖");
+                        flag = true;
+                        this.tower.getPlayer().inventory.put("SpiritStick", 1);
+                        if (this.tower.getPlayer().inventory.containsKey("SunStick")) {
+                            if (this.tower.getPlayer().inventory.get("SunStick").equals(1)) {
+                                this.tower.getDoorMap().get("door04_2").openable = true;
+                            }
+                        }
+                        break;
+                    case "item07_3":
+                        showMesLabel.setText("获得炎之灵杖");
+                        flag = true;
+                        this.tower.getPlayer().inventory.put("SunStick", 1);
+                        if (this.tower.getPlayer().inventory.containsKey("SpiritStick")) {
+                            if (this.tower.getPlayer().inventory.get("SpiritStick").equals(1)) {
+                                this.tower.getDoorMap().get("door04_2").openable = true;
+                            }
+                        }
+                        break;
+                }
+            } else if (layer2[y][x].contains("item08")) {
+                switch (layer2[y][x]) {
+                    case "item08_1":
+                        showMesLabel.setText("获得小飞羽,等级+1");
+                        this.tower.getPlayer().level++;
+                        this.tower.getPlayer().attack += 7;
+                        this.tower.getPlayer().defense += 7;
+                        this.tower.getPlayer().hp += 1000;
+                        flag = true;
+                        break;
+                }
+            } else if (layer2[y][x].contains("item09")) {
+                switch (layer2[y][x]) {
+                    case "item09_1":
+                        showMesLabel.setText("获得幸运硬币,金币+300");
+                        this.tower.getPlayer().money += 300;
+                        flag = true;
+                        break;
+                    case "item09_4":
+                        showMesLabel.setText("获得风之罗盘,可以使用楼层传送");
+                        canUseFloorTransfer = true;
+                        flag = true;
+                        break;
+                    case "item09_5":
+                        showMesLabel.setText("获得幸运十字架");
+                        this.tower.getPlayer().inventory.put("item09_5", 1);
+                        flag = true;
+                        break;
+                    case "item09_6":
+                        showMesLabel.setText("获得圣光徽,可以查看怪物信息");
+                        canUseMonsterManual = true;
+                        flag = true;
+                        break;
+                    case "item09_8":
+                        showMesLabel.setText("获得星光神锒");
+                        this.tower.getPlayer().inventory.put("LumpHammer", 1);
+                        flag = true;
+                        break;
+                }
+            }
+            if (flag) {
+                Item item = this.tower.getItemMap().get(layer2[y][x]);
+                if (item.msg != null) {
+                    canMove = false;
+                    musicPlayer.getSpecialItem();
+                    mainExecutor.execute(() -> getSpecialItem(item));
+                } else {
+                    musicPlayer.getItem();
+                }
+            } else {
+                try {
+                    showMesLabel.setText("获得" + this.tower.getItemMap().get(layer2[y][x]).getName() + ",嘛事没有");
+                } catch (Exception e) {
+                    System.err.println("layer2 (x=" + x + ",y=" + y + ") itemId(" + layer2[y][x] + ") 不存在!");
+                }
+            }
+            if (isNormalFloor()) {
+                this.tower.getGameMapList().get(floor).layer2[y][x] = "";
+            } else {
+                this.tower.getSpecialMap().get(specialGameMapNo).layer2[y][x] = "";
+            }
+            return false;
+        }
+        if (layer1[y][x].contains("monster")) {
+            Monster monster = null;
+            try {
+                monster = this.tower.getMonsterMap().get(layer1[y][x]);
+            } catch (Exception e) {
+                System.err.println("layer1 (x=" + x + ",y=" + y + ") monsterId(" + layer1[y][x] + ") 不存在!");
+            }
+            monster.script_start(this.tower);
+            FightCalc fightCalc = new FightCalc(this.tower.getPlayer(), monster);
+            if (!fightCalc.canAttack) {
+                showMesLabel.setText("无法击杀:" + this.tower.getMonsterMap().get(layer1[y][x]).getName());
+                return false;
+            }
+            int pHP = this.tower.getPlayer().hp - fightCalc.mDamageTotal;
+            if (pHP > 0) {
+                musicPlayer.fight();
+                showMesLabel.setText("击杀:" + monster.getName() + ",损失" + (this.tower.getPlayer().hp - pHP) + "HP");
+                if (isNormalFloor()) {
+                    this.tower.getGameMapList().get(floor).layer1[y][x] = "";
+                } else {
+                    this.tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
+                }
+                this.tower.getPlayer().hp = pHP;
+                this.tower.getPlayer().money += monster.getMoney();
+                this.tower.getPlayer().exp += monster.getExp();
+                monster.script_end(this, this.tower);
+                return true;
+            } else {
+                showMesLabel.setText("无法击杀:" + this.tower.getMonsterMap().get(layer1[y][x]).getName());
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -178,139 +846,139 @@ public class TowerPanel extends GLJPanel implements Runnable {
     public void showAttribute() {
         // 各属性的显示
         playerPicLabel = new JLabel();
-        playerPicLabel.setBounds(32 + 14, 32 + 12, 36, 38);
+        playerPicLabel.setBounds(CS + 14, CS + 12, 36, 38);
         //playerPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/role.png")));
 
         playerWindowLine = new JLabel();
-        playerWindowLine.setBounds(32 - 3, 32 - 3, 32 * 4 + 6, 32 * 6 + 6);
+        playerWindowLine.setBounds(CS - 3, CS - 3, CS * 4 + 6, CS * 6 + 6);
         playerWindowLine.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
 
         infoWindowLine = new JLabel();
-        infoWindowLine.setBounds(32 - 3, 32 * 8 - 3, 32 * 4 + 6, 32 * 4 + 6);
+        infoWindowLine.setBounds(CS - 3, CS * 8 - 3, CS * 4 + 6, CS * 4 + 6);
         infoWindowLine.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
 
         mapWindowLine = new JLabel();
-        mapWindowLine.setBounds(32 * 6 - 3, 32 - 3, 32 * 11 + 6, 32 * 11 + 6);
+        mapWindowLine.setBounds(CS * 6 - 3, CS - 3, CS * 11 + 6, CS * 11 + 6);
         mapWindowLine.setBorder(BorderFactory.createLineBorder(new Color(0, 155, 207), 3));
 
         floorLabel = new JLabel("魔塔", JLabel.CENTER);
-        floorLabel.setBounds(320 + 10, 0, 32, 32 - 3);
+        floorLabel.setBounds(CS * 10 + 10, 0, CS, CS - 3);
         floorLabel.setForeground(Color.white);
         floorLabel.setFont(new Font("宋体", Font.BOLD, 14));
 
         floorNumLabel = new JLabel(floor + "F", JLabel.CENTER);
-        floorNumLabel.setBounds(358, 0, 32 + 24, 32 - 3);
+        floorNumLabel.setBounds(358, 0, CS + 24, CS - 3);
         floorNumLabel.setForeground(Color.white);
         floorNumLabel.setFont(new Font("微软雅黑", Font.BOLD, 14));
 
 
-        lvLabel = new JLabel("Lv." + tower.getPlayer().level, JLabel.CENTER);
-        lvLabel.setBounds(96 - 10, 32 + 17, 60, 32);
+        lvLabel = new JLabel("Lv." + this.tower.getPlayer().level, JLabel.CENTER);
+        lvLabel.setBounds(96 - 10, CS + 17, 60, CS);
         lvLabel.setForeground(Color.white);
         lvLabel.setFont(new Font("微软雅黑", Font.BOLD, 18));
         //lvLabel.setOpaque(true);
         //lvLabel.setBackground(new Color(255, 255, 255, 100));
 
         hpPicLabel = new JLabel("生命:");
-        hpPicLabel.setBounds(32 + 5, 90, 45, 32);
+        hpPicLabel.setBounds(CS + 5, 90, 45, CS);
         hpPicLabel.setForeground(Color.white);
         hpPicLabel.setFont(new Font("微软雅黑", Font.BOLD, 15));
 
-        hpLabel = new JLabel("" + tower.getPlayer().hp, JLabel.CENTER);
-        hpLabel.setBounds(32 + 5 + 45, 90 + 1, 75, 32);
+        hpLabel = new JLabel(String.valueOf(this.tower.getPlayer().hp), JLabel.CENTER);
+        hpLabel.setBounds(CS + 5 + 45, 90 + 1, 75, CS);
         hpLabel.setForeground(Color.white);
         hpLabel.setFont(new Font("微软雅黑", Font.BOLD, 18));
 
         atkPicLabel = new JLabel("攻击:");
-        atkPicLabel.setBounds(32 + 5, 122, 45, 32);
+        atkPicLabel.setBounds(CS + 5, 122, 45, CS);
         atkPicLabel.setForeground(Color.white);
         atkPicLabel.setFont(new Font("微软雅黑", Font.BOLD, 15));
 
-        atkLabel = new JLabel("" + tower.getPlayer().attack, JLabel.CENTER);
-        atkLabel.setBounds(32 + 5 + 45, 122 + 1, 75, 32);
+        atkLabel = new JLabel(String.valueOf(this.tower.getPlayer().attack), JLabel.CENTER);
+        atkLabel.setBounds(CS + 5 + 45, 122 + 1, 75, CS);
         atkLabel.setForeground(Color.white);
         atkLabel.setFont(new Font("微软雅黑", Font.BOLD, 18));
 
         defPicLabel = new JLabel("防御:");
-        defPicLabel.setBounds(32 + 5, 154, 45, 32);
+        defPicLabel.setBounds(CS + 5, 154, 45, CS);
         defPicLabel.setForeground(Color.white);
         defPicLabel.setFont(new Font("微软雅黑", Font.BOLD, 15));
 
-        defLabel = new JLabel("" + tower.getPlayer().defense, JLabel.CENTER);
-        defLabel.setBounds(32 + 5 + 45, 154 + 1, 75, 32);
+        defLabel = new JLabel(String.valueOf(this.tower.getPlayer().defense), JLabel.CENTER);
+        defLabel.setBounds(CS + 5 + 45, 154 + 1, 75, CS);
         defLabel.setForeground(Color.white);
         defLabel.setFont(new Font("微软雅黑", Font.BOLD, 18));
 
         expPicLabel = new JLabel("经验:");
-        expPicLabel.setBounds(32 + 5, 186, 45, 32);
+        expPicLabel.setBounds(CS + 5, 186, 45, CS);
         expPicLabel.setForeground(Color.white);
         expPicLabel.setFont(new Font("微软雅黑", Font.BOLD, 15));
 
-        expLabel = new JLabel("" + tower.getPlayer().exp, JLabel.CENTER);
-        expLabel.setBounds(32 + 5 + 45, 186 + 1, 75, 32);
+        expLabel = new JLabel(String.valueOf(this.tower.getPlayer().exp), JLabel.CENTER);
+        expLabel.setBounds(CS + 5 + 45, 186 + 1, 75, CS);
         expLabel.setForeground(Color.white);
         expLabel.setFont(new Font("微软雅黑", Font.BOLD, 18));
 
         symbol1 = new JLabel("×", JLabel.CENTER);
-        symbol1.setBounds(25, 0, 32, 26);
+        symbol1.setBounds(25, 0, CS, 26);
         symbol1.setForeground(Color.white);
-        symbol1.setFont(new Font("微软雅黑", Font.PLAIN, 32));
+        symbol1.setFont(new Font("微软雅黑", Font.PLAIN, CS));
 
         yKeyPicLabel = new JLabel();
         yKeyPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/item/item01_1.png")));
-        yKeyPicLabel.setBounds(32, 256, 64, 32);
+        yKeyPicLabel.setBounds(CS, 256, 64, CS);
         yKeyPicLabel.setForeground(Color.white);
         yKeyPicLabel.add(symbol1, BorderLayout.CENTER);
 
-        yKeyLabel = new JLabel("" + tower.getPlayer().yKey, JLabel.CENTER);
+        yKeyLabel = new JLabel(String.valueOf(this.tower.getPlayer().yKey), JLabel.CENTER);
         yKeyLabel.setBounds(96 - 15, 256, 64 + 15, 30);
         yKeyLabel.setForeground(Color.white);
         yKeyLabel.setFont(new Font("微软雅黑", Font.BOLD, 22));
 
         symbol2 = new JLabel("×", JLabel.CENTER);
-        symbol2.setBounds(25, 0, 32, 26);
+        symbol2.setBounds(25, 0, CS, 26);
         symbol2.setForeground(Color.white);
-        symbol2.setFont(new Font("微软雅黑", Font.PLAIN, 32));
+        symbol2.setFont(new Font("微软雅黑", Font.PLAIN, CS));
 
         bKeyPicLabel = new JLabel();
         bKeyPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/item/item01_2.png")));
-        bKeyPicLabel.setBounds(32, 288, 64, 32);
+        bKeyPicLabel.setBounds(CS, 288, 64, CS);
         bKeyPicLabel.setForeground(Color.white);
         bKeyPicLabel.add(symbol2, BorderLayout.CENTER);
 
-        bKeyLabel = new JLabel("" + tower.getPlayer().bKey, JLabel.CENTER);
+        bKeyLabel = new JLabel(String.valueOf(this.tower.getPlayer().bKey), JLabel.CENTER);
         bKeyLabel.setBounds(96 - 15, 288, 64 + 15, 30);
         bKeyLabel.setForeground(Color.white);
         bKeyLabel.setFont(new Font("微软雅黑", Font.BOLD, 22));
 
         symbol3 = new JLabel("×", JLabel.CENTER);
-        symbol3.setBounds(25, 0, 32, 26);
+        symbol3.setBounds(25, 0, CS, 26);
         symbol3.setForeground(Color.white);
-        symbol3.setFont(new Font("微软雅黑", Font.PLAIN, 32));
+        symbol3.setFont(new Font("微软雅黑", Font.PLAIN, CS));
 
         rKeyPicLabel = new JLabel();
         rKeyPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/item/item01_3.png")));
-        rKeyPicLabel.setBounds(32, 320, 64, 32);
+        rKeyPicLabel.setBounds(CS, CS * 10, 64, CS);
         rKeyPicLabel.setForeground(Color.white);
         rKeyPicLabel.add(symbol3, BorderLayout.CENTER);
 
-        rKeyLabel = new JLabel("" + tower.getPlayer().rKey, JLabel.CENTER);
-        rKeyLabel.setBounds(96 - 15, 320, 64 + 15, 30);
+        rKeyLabel = new JLabel(String.valueOf(this.tower.getPlayer().rKey), JLabel.CENTER);
+        rKeyLabel.setBounds(96 - 15, CS * 10, 64 + 15, 30);
         rKeyLabel.setForeground(Color.white);
         rKeyLabel.setFont(new Font("微软雅黑", Font.BOLD, 22));
 
         symbol4 = new JLabel("×", JLabel.CENTER);
-        symbol4.setBounds(25, 0, 32, 26);
+        symbol4.setBounds(25, 0, CS, 26);
         symbol4.setForeground(Color.white);
-        symbol4.setFont(new Font("微软雅黑", Font.PLAIN, 32));
+        symbol4.setFont(new Font("微软雅黑", Font.PLAIN, CS));
 
         monPicLabel = new JLabel();
         monPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/money.png")));
-        monPicLabel.setBounds(32, 352, 64, 32);
+        monPicLabel.setBounds(CS, 352, 64, CS);
         monPicLabel.setForeground(Color.white);
         monPicLabel.add(symbol4, BorderLayout.CENTER);
 
-        monLabel = new JLabel("" + tower.getPlayer().money, JLabel.CENTER);
+        monLabel = new JLabel(String.valueOf(this.tower.getPlayer().money), JLabel.CENTER);
         monLabel.setBounds(96 - 15, 352, 64 + 15, 30);
         monLabel.setForeground(Color.white);
         monLabel.setFont(new Font("微软雅黑", Font.BOLD, 22));
@@ -318,10 +986,10 @@ public class TowerPanel extends GLJPanel implements Runnable {
         showMesLabel = new JLabel("魔塔(v1.13)", JLabel.LEFT);
         showMesLabel.setForeground(Color.white);
         showMesLabel.setFont(new Font(null, Font.BOLD, 22));
-        showMesLabel.setBounds(16, 13 * 32 + 8 - 1, 478, 32);
+        showMesLabel.setBounds(16, CS * 13 + 8 - 1, 478, CS);
 
         fpsLabel = new JLabel("FPS:", JLabel.RIGHT);
-        fpsLabel.setBounds(512, 420, 32, 20);
+        fpsLabel.setBounds(512, 420, CS, 20);
         fpsLabel.setForeground(Color.white);
         fpsLabel.setFont(new Font("微软雅黑", Font.BOLD, 12));
 
@@ -358,150 +1026,109 @@ public class TowerPanel extends GLJPanel implements Runnable {
         this.add(showFpsLabel);
     }
 
-    private void drawAttribute(Graphics g) {
-        //构造背景
-        //System.out.println("开始构造背景...");
+    private void drawBackGround(Graphics g) {
+        //构造背景界面
         for (int i = 0; i <= 14; i++) {
             for (int j = 0; j <= 17; j++) {
                 if (i == 7 && (j == 1 || j == 2 || j == 3 || j == 4)) {
-                    g.drawImage(tower.getWallImage()[1], j * CS, i * CS, this);
+                    g.drawImage(this.tower.getWallImage()[1], j * CS, i * CS, this);
                     continue;
                 }
                 if (i == 13 || i == 14) {
-                    g.drawImage(tower.getFloorImage()[0], j * CS, i * CS, this);
+                    g.drawImage(this.tower.getFloorImage()[0], j * CS, i * CS, this);
                     continue;
                 }
                 if (i == 0 || i == 12 || j == 0 || j == 5 || j == 17) {
                     if (i == 0 && (j == 10 || j == 11 || j == 12)) {
-                        g.drawImage(tower.getFloorImage()[0], j * CS, i * CS, this);
+                        g.drawImage(this.tower.getFloorImage()[0], j * CS, i * CS, this);
                     } else {
-                        g.drawImage(tower.getWallImage()[1], j * CS, i * CS, this);
+                        g.drawImage(this.tower.getWallImage()[1], j * CS, i * CS, this);
                     }
                 } else {
-                    g.drawImage(tower.getFloorImage()[0], j * CS, i * CS, this);
+                    g.drawImage(this.tower.getFloorImage()[0], j * CS, i * CS, this);
                 }
             }
         }
-        //System.out.println("开始构造属性界面...");
-        if (tower.getPlayer().hp > 999999) {
-            hpLabel.setText(Math.floor(tower.getPlayer().hp / 1000) / 10 + "w");
+    }
+
+    private void drawAttribute(Graphics g) {
+        //构造属性界面
+        if (this.tower.getPlayer().hp > 999999) {
+            hpLabel.setText(Math.floor(this.tower.getPlayer().hp / 1000) / 10 + "w");
         } else {
-            hpLabel.setText("" + tower.getPlayer().hp);
+            hpLabel.setText(String.valueOf(this.tower.getPlayer().hp));
         }
-        lvLabel.setText("Lv." + tower.getPlayer().level);
-        atkLabel.setText("" + tower.getPlayer().attack);
-        defLabel.setText("" + tower.getPlayer().defense);
-        expLabel.setText("" + tower.getPlayer().exp);
-        monLabel.setText("" + tower.getPlayer().money);
-        yKeyLabel.setText("" + tower.getPlayer().yKey);
-        bKeyLabel.setText("" + tower.getPlayer().bKey);
-        rKeyLabel.setText("" + tower.getPlayer().rKey);
+        lvLabel.setText("Lv." + this.tower.getPlayer().level);
+        atkLabel.setText(String.valueOf(this.tower.getPlayer().attack));
+        defLabel.setText(String.valueOf(this.tower.getPlayer().defense));
+        expLabel.setText(String.valueOf(this.tower.getPlayer().exp));
+        monLabel.setText(String.valueOf(this.tower.getPlayer().money));
+        yKeyLabel.setText(String.valueOf(this.tower.getPlayer().yKey));
+        bKeyLabel.setText(String.valueOf(this.tower.getPlayer().bKey));
+        rKeyLabel.setText(String.valueOf(this.tower.getPlayer().rKey));
     }
 
     /**
      * 绘制玩家
      */
     private void drawPlayer(Graphics g) {
-        int startX = 6 * 32;
-        int startY = 1 * 32;
-        byte x = tower.getPlayer().x;
-        byte y = tower.getPlayer().y;
-        g.drawImage(tower.getPlayer().getPlayerIcon()[DIRECTION][moveNo].getImage(), startX + x * CS, startY + y * CS, 32, 32, this);
+        int startX = 6 * CS;
+        int startY = 1 * CS;
+        byte x = this.tower.getPlayer().x;
+        byte y = this.tower.getPlayer().y;
+        g.drawImage(this.tower.getPlayer().getPlayerIcon()[DIRECTION][moveNo].getImage(), startX + x * CS, startY + y * CS, CS, CS, this);
     }
 
     /**
      * 绘制地图
      */
+    private static final byte INTERVAL_2 = 2;
     private void drawMap(Graphics g) {
-        //System.out.println("构造地图中..." + frames);
-        repaint();
+        //System.out.println("构造地图中..." + drawMapNo++);
         GameMap gameMap;
         if (isNormalFloor()) {
-            gameMap = tower.getGameMapList().get(floor);
+            gameMap = this.tower.getGameMapList().get(floor);
         } else {
-            gameMap = tower.getSpecialMap().get(specialGameMapNo);
+            gameMap = this.tower.getSpecialMap().get(specialGameMapNo);
         }
         String[][] layer1 = gameMap.layer1;
         String[][] layer2 = gameMap.layer2;
         String[][] layer3 = gameMap.layer3;
-        int startX = 6 * 32;
-        int startY = 1 * 32;
-        try {
-            for (int i = 0; i < GAME_ROW; i++) {
-                for (int j = 0; j < GAME_COL; j++) {
-                    if (layer3[i][j].contains("wall")) {
-                        try {
-                            String wallId = tower.getWallMap().get(layer3[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.getWallMap().get(wallId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
-                        } catch (Exception e) {
-                            System.err.println("layer3 (x=" + i + ",y=" + j + ") wallId(" + layer3[i][j] + ") 不存在!");
-                        }
-                    } else if (layer3[i][j].contains("door")) {
-                        if (!layer3[i][j].contains("open")) {
-                            try {
-                                String doorId = tower.getDoorMap().get(layer3[i][j]).getId();
-                                g.drawImage(tower.getDoorMap().get(doorId).getIcon()[0].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
-                            } catch (Exception e) {
-                                System.err.println("layer3 (x=" + i + ",y=" + j + ") doorId(" + layer3[i][j] + ") 不存在!");
-                            }
-                        } else {
-                            String doorId = tower.getDoorMap().get(layer3[i][j].substring(0, layer3[i][j].indexOf("open"))).getId();
-                            byte no;
-                            try {
-                                no = Byte.parseByte(layer3[i][j].substring(layer3[i][j].length() - 1));
-                            } catch (Exception e) {
-                                no = -1;
-                                e.printStackTrace();
-                            }
-                            try {
-                                g.drawImage(tower.getDoorMap().get(doorId).getIcon()[no].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
-                            } catch (Exception e) {
-                                //e.printStackTrace();
-                            }
-                        }
-                    } else if (layer3[i][j].contains("stair")) {
-                        try {
-                            String stairId = tower.getStairMap().get(layer3[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.getStairMap().get(stairId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
-                        } catch (Exception e) {
-                            System.err.println("layer3 (x=" + i + ",y=" + j + ") stairId(" + layer3[i][j] + ") 不存在!");
-                        }
+        int startX = 6 * CS;
+        int startY = 1 * CS;
+        for (int i = 0; i < GAME_ROW; i++) {
+            for (int j = 0; j < GAME_COL; j++) {
+                if (layer3[i][j].contains("wall")) {
+                    String wallId = this.tower.getWallMap().get(layer3[i][j]).getId();
+                    g.drawImage(getImageFromIcons(this.tower.getWallMap().get(wallId).getIcon(), INTERVAL_2), startX + j * CS, startY + i * CS, CS, CS, this);
+                } else if (layer3[i][j].contains("door")) {
+                    if (!layer3[i][j].contains("open")) {
+                        String doorId = this.tower.getDoorMap().get(layer3[i][j]).getId();
+                        g.drawImage(this.tower.getDoorMap().get(doorId).getIcon()[0].getImage(), startX + j * CS, startY + i * CS, CS, CS, this);
+                    } else {
+                        String doorId = this.tower.getDoorMap().get(layer3[i][j].substring(0, layer3[i][j].indexOf("open"))).getId();
+                        byte no = Byte.parseByte(layer3[i][j].substring(layer3[i][j].length() - 1));
+                        g.drawImage(this.tower.getDoorMap().get(doorId).getIcon()[no].getImage(), startX + j * CS, startY + i * CS, CS, CS, this);
                     }
-                    if (layer2[i][j].contains("item")) {
-                        try {
-                            String itemId = tower.getItemMap().get(layer2[i][j]).getId();
-                            g.drawImage(tower.getItemMap().get(itemId).getIcon()[0].getImage(), startX + j * CS, startY + i * CS, 32, 32, this);
-                        } catch (Exception e) {
-                            System.err.println("layer2 (x=" + i + ",y=" + j + ") itemId(" + layer2[i][j] + ") 不存在!");
-                        }
-                    }
-                    if (layer1[i][j].contains("monster")) {
-                        try {
-                            String monsterId = tower.getMonsterMap().get(layer1[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.getMonsterMap().get(monsterId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
-                        } catch (Exception e) {
-                            System.err.println("layer1 (x=" + i + ",y=" + j + ") monsterId(" + layer1[i][j] + ") 不存在!");
-                        }
-                    } else if (layer1[i][j].contains("npc")) {
-                        try {
-                            String npcId = tower.getNpcMap().get(layer1[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.getNpcMap().get(npcId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
-                        } catch (Exception e) {
-                            System.err.println("layer1 (x=" + i + ",y=" + j + ") npcId(" + layer1[i][j] + ") 不存在!");
-                        }
-                    } else if (layer1[i][j].contains("shop")) {
-                        try {
-                            String shopId = tower.getShopMap().get(layer1[i][j]).getId();
-                            g.drawImage(getImageFromIcons(tower.getShopMap().get(shopId).getIcon(), 2), startX + j * CS, startY + i * CS, 32, 32, this);
-                        } catch (Exception e) {
-                            System.err.println("layer1 (x=" + i + ",y=" + j + ") shopId(" + layer1[i][j] + ") 不存在!");
-                        }
-                    }
+                } else if (layer3[i][j].contains("stair")) {
+                    String stairId = this.tower.getStairMap().get(layer3[i][j]).getId();
+                    g.drawImage(getImageFromIcons(this.tower.getStairMap().get(stairId).getIcon(), INTERVAL_2), startX + j * CS, startY + i * CS, CS, CS, this);
+                }
+                if (layer2[i][j].contains("item")) {
+                    String itemId = this.tower.getItemMap().get(layer2[i][j]).getId();
+                    g.drawImage(this.tower.getItemMap().get(itemId).getIcon()[0].getImage(), startX + j * CS, startY + i * CS, CS, CS, this);
+                }
+                if (layer1[i][j].contains("monster")) {
+                    String monsterId = this.tower.getMonsterMap().get(layer1[i][j]).getId();
+                    g.drawImage(getImageFromIcons(this.tower.getMonsterMap().get(monsterId).getIcon(), INTERVAL_2), startX + j * CS, startY + i * CS, CS, CS, this);
+                } else if (layer1[i][j].contains("npc")) {
+                    String npcId = this.tower.getNpcMap().get(layer1[i][j]).getId();
+                    g.drawImage(getImageFromIcons(this.tower.getNpcMap().get(npcId).getIcon(), INTERVAL_2), startX + j * CS, startY + i * CS, CS, CS, this);
+                } else if (layer1[i][j].contains("shop")) {
+                    String shopId = this.tower.getShopMap().get(layer1[i][j]).getId();
+                    g.drawImage(getImageFromIcons(this.tower.getShopMap().get(shopId).getIcon(), INTERVAL_2), startX + j * CS, startY + i * CS, CS, CS, this);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
         }
     }
 
@@ -510,22 +1137,23 @@ public class TowerPanel extends GLJPanel implements Runnable {
      * @param interval 间隔多少帧切换一次 当间隔大于每秒帧数时,不会改变
      * @return
      */
-    private Image getImageFromIcons(ImageIcon[] icons, float interval) {
+    private Image getImageFromIcons(ImageIcon[] icons, byte interval) {
+        //a << b = a * 2^b
         if (frames <= interval - 1) {
             return icons[0].getImage();
-        } else if (frames <= 2 * interval - 1) {
+        } else if (frames <= (interval << 1) - 1) {
             return icons[1 % icons.length].getImage();
-        } else if (frames <= 3 * interval - 1) {
+        } else if (frames <= interval * 3 - 1) {
             return icons[2 % icons.length].getImage();
-        } else if (frames <= 4 * interval - 1) {
+        } else if (frames <= (interval << 2) - 1) {
             return icons[3 % icons.length].getImage();
-        } else if (frames <= 5 * interval - 1) {
+        } else if (frames <= interval * 5 - 1) {
             return icons[4 % icons.length].getImage();
-        } else if (frames <= 6 * interval - 1) {
+        } else if (frames <= interval * 6 - 1) {
             return icons[5 % icons.length].getImage();
-        } else if (frames <= 7 * interval - 1) {
+        } else if (frames <= interval * 7 - 1) {
             return icons[6 % icons.length].getImage();
-        } else if (frames <= 8 * interval - 1) {
+        } else if (frames <= (interval << 3) - 1) {
             return icons[7 % icons.length].getImage();
         }
         return null;
@@ -535,688 +1163,11 @@ public class TowerPanel extends GLJPanel implements Runnable {
     public void paintComponent(Graphics g) {// 描绘窗体，此处在默认JPanel基础上构建底层地图
         super.paintComponent(g);
         if (running) {
+            drawBackGround(g);
             drawAttribute(g);
             drawMap(g);
-            try {
-                drawPlayer(g);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            drawPlayer(g);
         }
-    }
-
-    @Override
-    public void run() {
-        int fps = 0; //tick = 0
-        double fpsTimer = System.currentTimeMillis();
-        double nsPerTick = 1000000000.0 / 10;
-        double then = System.nanoTime();
-        double unp = 0;
-        TITLE_HEIGHT = (int) (mainframe.getBounds().getSize().getHeight() - this.getSize().getHeight());
-        while (running) {
-            double now = System.nanoTime();
-            unp += (now - then) / nsPerTick;
-            then = now;
-            while (unp >= 1) {
-                //tick++;
-                tick();
-                --unp;
-            }
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            fps++;
-            if (System.currentTimeMillis() - fpsTimer > 125) {
-                playerPicLabel.setIcon(tower.getPlayer().getPlayerIcon()[1][frames % 4]);
-                if (frames == 7) {
-                    //System.out.printf("FPS:%d %n", fps);
-                    //System.out.printf("FPS:%d tick:%d %n", fps, tick);
-                    showFpsLabel.setText(fps + "");
-                    frames = 0;
-                    fps = 0;
-                    //tick = 0;
-                } else {
-                    frames++;
-                }
-                fpsTimer += 125;
-            }
-        }
-        //System.out.println("end");
-    }
-
-    /**
-     * 玩家上次移动时间
-     */
-    public long lastMove = System.currentTimeMillis();
-    /**
-     * 不动多久后玩家动作停止
-     */
-    private static short stopTime = 180;
-    /**
-     * 玩家动作帧数计数
-     */
-    private byte moveNo = 0;
-
-    public void tick() {
-        if (!canMove) {
-            lastMove = System.currentTimeMillis();
-            moveNo = 0;
-            return;
-        }
-        if (isNormalFloor()) {
-            String stair = tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x];
-            if (stair.equals("stair01")) {
-                musicPlayer.upAndDown();
-                floor--;
-                tower.getPlayer().x = tower.getGameMapList().get(floor).downPositionX;
-                tower.getPlayer().y = tower.getGameMapList().get(floor).downPositionY;
-                updateFloorNum();
-                DIRECTION = DIRECTION_DOWN;
-                musicPlayer.playBackgroundMusic(floor);
-                nowMonsterManual = 0;
-                if (floor < tower.getPlayer().minFloor) {
-                    tower.getPlayer().minFloor = floor;
-                }
-                return;
-            } else if (stair.equals("stair02")) {
-                musicPlayer.upAndDown();
-                floor++;
-                tower.getPlayer().x = tower.getGameMapList().get(floor).upPositionX;
-                tower.getPlayer().y = tower.getGameMapList().get(floor).upPositionY;
-                updateFloorNum();
-                DIRECTION = DIRECTION_DOWN;
-                musicPlayer.playBackgroundMusic(floor);
-                nowMonsterManual = 0;
-                if (floor > tower.getPlayer().maxFloor) {
-                    tower.getPlayer().maxFloor = floor;
-                }
-                return;
-            } else if (stair.contains("stair03") || stair.contains("stair04")) {
-                tower.getStairMap().get(stair).script(this, tower, specialGameMapNo);
-                updateFloorNum();
-                return;
-            }
-        } else {
-            String stair = tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x];
-            if (stair.contains("stair03") || stair.contains("stair04")) {
-                tower.getStairMap().get(stair).script(this, tower, specialGameMapNo);
-                updateFloorNum();
-                return;
-            }
-        }
-        if (input.up.down) {
-            this.DIRECTION = DIRECTION_UP;
-            moveNo = (byte) ((moveNo + 1) % 4);
-            if (!canMove(tower.getPlayer().x, (byte) (tower.getPlayer().y - 1))) {
-                return;
-            }
-            musicPlayer.walk();
-            tower.getPlayer().y--;
-            lastMove = System.currentTimeMillis();
-        } else if (input.down.down) {
-            this.DIRECTION = DIRECTION_DOWN;
-            moveNo = (byte) ((moveNo + 1) % 4);
-            if (!canMove(tower.getPlayer().x, (byte) (tower.getPlayer().y + 1))) {
-                return;
-            }
-            musicPlayer.walk();
-            tower.getPlayer().y++;
-            lastMove = System.currentTimeMillis();
-        } else if (input.left.down) {
-            this.DIRECTION = DIRECTION_LEFT;
-            if (!canMove((byte) (tower.getPlayer().x - 1), tower.getPlayer().y)) {
-                return;
-            }
-            musicPlayer.walk();
-            moveNo = (byte) ((moveNo + 1) % 4);
-            tower.getPlayer().x--;
-            lastMove = System.currentTimeMillis();
-        } else if (input.right.down) {
-            this.DIRECTION = DIRECTION_RIGHT;
-            if (!canMove((byte) (tower.getPlayer().x + 1), tower.getPlayer().y)) {
-                return;
-            }
-            musicPlayer.walk();
-            moveNo = (byte) ((moveNo + 1) % 4);
-            tower.getPlayer().x++;
-            lastMove = System.currentTimeMillis();
-        } else if (canUseMonsterManual && input.use_rod.down) {
-            canMove = false;
-            new Thread(() -> {
-                //System.out.println("开始计算");
-                String[][] monsterLayer;
-                if (isNormalFloor()) {
-                    monsterLayer = tower.getGameMapList().get(floor).layer1;
-                } else {
-                    monsterLayer = tower.getSpecialMap().get(specialGameMapNo).layer1;
-                }
-                Map<String, Boolean> monsterIdMap = new HashMap<>();
-                //y
-                for (int i = 0; i < monsterLayer.length; i++) {
-                    //x
-                    for (int j = 0; j < monsterLayer[i].length; j++) {
-                        if (monsterLayer[j][i] != null && monsterLayer[j][i].contains("monster")) {
-                            monsterIdMap.put(monsterLayer[j][i], true);
-                        }
-                    }
-                }
-                Iterator iter = monsterIdMap.entrySet().iterator();
-                int monsterNo = 0;
-                List<FightCalc> fightCalcList = new ArrayList<>();
-                List<FightCalc> dieAttackList = new ArrayList<>();
-                boolean monster11 = false, monster12 = false;
-                while (iter.hasNext()) {
-                    Map.Entry entry = (Map.Entry) iter.next();
-                    Object key = entry.getKey();
-                    Object val = entry.getValue();
-                    Monster monster = tower.getMonsterMap().get(key);
-                    if (monster.getId().contains("monster11")) {
-                        if (monster11) {
-                            continue;
-                        }
-                        monster = tower.getMonsterMap().get("monster11_8");
-                        monster11 = true;
-                    } else if (monster.getId().contains("monster12")) {
-                        if (monster12) {
-                            continue;
-                        }
-                        monster = tower.getMonsterMap().get("monster12_8");
-                        monster12 = true;
-                    }
-                    FightCalc fightCalc = new FightCalc(tower.getPlayer(), monster);
-                    monsterNo++;
-                    int no = 0;
-                    if (fightCalc.canAttack) {
-                        for (int i = 0; i < fightCalcList.size(); i++) {
-                            if (fightCalcList.get(i).mDamageTotal >= fightCalc.mDamageTotal) {
-                                no = i;
-                                break;
-                            }
-                            if (i == fightCalcList.size() - 1) {
-                                no = fightCalcList.size();
-                                break;
-                            }
-                        }
-                        fightCalcList.add(no, fightCalc);
-                    } else {
-                        for (int i = 0; i < dieAttackList.size(); i++) {
-                            if (dieAttackList.get(i).getMonster().getAttack() >= fightCalc.getMonster().getAttack()) {
-                                no = i;
-                                break;
-                            }
-                            if (i == dieAttackList.size() - 1) {
-                                no = dieAttackList.size();
-                                break;
-                            }
-                        }
-                        dieAttackList.add(no, fightCalc);
-                    }
-                }
-                fightCalcList.addAll(dieAttackList);
-                //System.out.println("计算完成,共" + monsterNo + "只怪物");
-                showMonsterManual(fightCalcList);
-                canMove = true;
-            }).start();
-        } else if (canUseFloorTransfer && input.use_floor_transfer.down) {
-            if (!isNormalFloor()) {
-                musicPlayer.fail();
-                return;
-            }
-            canMove = false;
-            new Thread(() -> {
-                showFloorTransfer();
-                canMove = true;
-            }).start();
-        }
-        //TODO 正式版这里要去掉
-        else if (input.escape.down) {
-            //end();
-        } else if (input.save.down) {
-            save();
-        } else if (input.load.down) {
-            load();
-        }
-        if (System.currentTimeMillis() - lastMove > stopTime) {
-            moveNo = 0;
-        }
-        if (isNormalFloor()) {
-            if (tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
-                tower.getGameMapList().get(floor).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
-                return;
-            }
-        } else {
-            if (tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("door") && !tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x].contains("open")) {
-                tower.getSpecialMap().get(specialGameMapNo).layer3[tower.getPlayer().y][tower.getPlayer().x] += "open";
-                return;
-            }
-        }
-    }
-
-    /**
-     * 开门时间
-     */
-    private static final byte DOOR_OPEN_TIME = 40;
-    /**
-     * 对话中按下空格
-     */
-    private boolean escapeDown = false;
-
-    /**
-     * 判断能否移动到 (x,y)
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    private boolean canMove(byte x, byte y) {
-        GameMap gameMap;
-        if (isNormalFloor()) {
-            gameMap = tower.getGameMapList().get(floor);
-        } else {
-            gameMap = tower.getSpecialMap().get(specialGameMapNo);
-        }
-        String[][] layer1 = gameMap.layer1;
-        String[][] layer2 = gameMap.layer2;
-        String[][] layer3 = gameMap.layer3;
-        if (x >= GAME_COL || x < 0 || y >= GAME_ROW || y < 0) {
-            return false;
-        }
-        if (layer1[y][x].contains("npc")) {
-            canMove = false;
-            new Thread(() -> {
-                NPC npc;
-                try {
-                    npc = tower.getNpcMap().get(layer1[y][x]);
-                } catch (Exception e) {
-                    System.err.println("layer1 (x=" + y + ",y=" + x + ") npcId(" + layer1[y][x] + ") 不存在!");
-                    return;
-                }
-                npc.script_start(tower);
-                //重新获取一边,以防npc改变而这里没变
-                npc = tower.getNpcMap().get(layer1[y][x]);
-                if (!npc.canMeet) {
-                    canMove = true;
-                    return;
-                }
-                meetNpc(layer1[y][x]);
-                if (npc.canRemove) {
-                    if (isNormalFloor()) {
-                        tower.getGameMapList().get(floor).layer1[y][x] = "";
-                    } else {
-                        tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
-                    }
-                }
-                npc.script_end(tower);
-                canMove = true;
-                input.clear();
-            }).start();
-            return false;
-        } else if (layer1[y][x].contains("shop")) {
-            canMove = false;
-            new Thread(() -> {
-                Shop shop;
-                try {
-                    shop = tower.getShopMap().get(layer1[y][x]);
-                } catch (Exception e) {
-                    System.err.println("layer1 (x=" + x + ",y=" + y + ") shopId(" + layer1[y][x] + ") 不存在!");
-                    return;
-                }
-                if (!shop.canMeet) {
-                    canMove = true;
-                    return;
-                }
-                meetShop(shop.getId());
-            }).start();
-            return false;
-        }
-        if (layer3[y][x].contains("wall")) {
-            return false;
-        } else if (layer3[y][x].contains("door") && !layer3[y][x].contains("open")) {
-            boolean open = false;
-            switch (layer3[y][x]) {
-                case "door01":
-                    if (tower.getPlayer().yKey - 1 >= 0) {
-                        musicPlayer.openDoor();
-                        tower.getPlayer().yKey--;
-                        open = true;
-                    }
-                    break;
-                case "door02":
-                    if (tower.getPlayer().bKey - 1 >= 0) {
-                        musicPlayer.openDoor();
-                        tower.getPlayer().bKey--;
-                        open = true;
-                    }
-                    break;
-                case "door03":
-                    if (tower.getPlayer().rKey - 1 >= 0) {
-                        musicPlayer.openDoor();
-                        tower.getPlayer().rKey--;
-                        open = true;
-                    }
-                    break;
-                default:
-                    break;
-            }
-            if (!open && (layer3[y][x].contains("door04") || layer3[y][x].contains("door05"))) {
-                try {
-                    if (tower.getDoorMap().get(layer3[y][x]).openable) {
-                        musicPlayer.openSpecialDoor();
-                        open = true;
-                    }
-                } catch (Exception e) {
-                    System.err.println("layer3 (x=" + x + ",y=" + y + ") doorId(" + layer1[y][x] + ") 不存在!");
-                    return false;
-                }
-            }
-            if (open) {
-                new Thread(() -> {
-                    if (isNormalFloor()) {
-                        if (tower.getGameMapList().get(floor).layer3[y][x].equals("") || tower.getGameMapList().get(floor).layer3[y][x].contains("open")) {
-                            return;
-                        }
-                        byte f = (byte) floor;
-                        for (int i = 1; i < 5; i++) {
-                            if (i == 1) {
-                                tower.getGameMapList().get(f).layer3[y][x] += "open1";
-                            } else if (i == 4) {
-                                tower.getGameMapList().get(f).layer3[y][x] = "";
-                            } else {
-                                String str = tower.getGameMapList().get(f).layer3[y][x];
-                                try {
-                                    tower.getGameMapList().get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
-                                } catch (IndexOutOfBoundsException e) {
-                                    e.printStackTrace();
-                                    tower.getGameMapList().get(f).layer3[y][x] = "";
-                                }
-                            }
-                            try {
-                                Thread.sleep(DOOR_OPEN_TIME);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        tower.getGameMapList().get(f).layer3[y][x] = "";
-                    } else {
-                        if (tower.getSpecialMap().get(specialGameMapNo).layer3[y][x].equals("") || tower.getSpecialMap().get(specialGameMapNo).layer3[y][x].contains("open")) {
-                            return;
-                        }
-                        String f = specialGameMapNo;
-                        for (int i = 1; i < 5; i++) {
-                            if (i == 1) {
-                                tower.getSpecialMap().get(f).layer3[y][x] += "open1";
-                            } else if (i == 4) {
-                                tower.getSpecialMap().get(f).layer3[y][x] = "";
-                            } else {
-                                String str = tower.getSpecialMap().get(f).layer3[y][x];
-                                try {
-                                    tower.getSpecialMap().get(f).layer3[y][x] = str.substring(0, str.length() - 1) + i;
-                                } catch (IndexOutOfBoundsException e) {
-                                    e.printStackTrace();
-                                    tower.getSpecialMap().get(f).layer3[y][x] = "";
-                                }
-                            }
-                            try {
-                                Thread.sleep(DOOR_OPEN_TIME);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        tower.getSpecialMap().get(f).layer3[y][x] = "";
-                    }
-                }).start();
-            }
-            return false;
-        }
-        if (layer2[y][x].contains("item")) {
-            boolean flag = false;
-            if (layer2[y][x].contains("item01")) {
-                switch (layer2[y][x]) {
-                    case "item01_1":
-                        showMesLabel.setText("获得1把黄钥匙");
-                        tower.getPlayer().yKey++;
-                        flag = true;
-                        break;
-                    case "item01_2":
-                        showMesLabel.setText("获得1把蓝钥匙");
-                        tower.getPlayer().bKey++;
-                        flag = true;
-                        break;
-                    case "item01_3":
-                        showMesLabel.setText("获得1把红钥匙");
-                        tower.getPlayer().rKey++;
-                        flag = true;
-                        break;
-                    case "item01_5":
-                        showMesLabel.setText("获得万能钥匙,钥匙数量各+1");
-                        tower.getPlayer().yKey++;
-                        tower.getPlayer().bKey++;
-                        tower.getPlayer().rKey++;
-                        flag = true;
-                        break;
-                }
-            } else if (layer2[y][x].contains("item02")) {
-                switch (layer2[y][x]) {
-                    case "item02_1":
-                        showMesLabel.setText("获得红宝石,攻击+3");
-                        tower.getPlayer().attack += 3;
-                        flag = true;
-                        break;
-                    case "item02_2":
-                        showMesLabel.setText("获得蓝宝石,防御+3");
-                        tower.getPlayer().defense += 3;
-                        flag = true;
-                        break;
-                    case "item02_3":
-                        showMesLabel.setText("获得绿宝石,攻防各+3");
-                        tower.getPlayer().attack += 3;
-                        tower.getPlayer().defense += 3;
-                        flag = true;
-                        break;
-                }
-            } else if (layer2[y][x].contains("item03")) {
-                switch (layer2[y][x]) {
-                    case "item03_1":
-                        showMesLabel.setText("获得小体力药水,生命+200");
-                        tower.getPlayer().hp += 200;
-                        flag = true;
-                        break;
-                    case "item03_2":
-                        showMesLabel.setText("获得大体力药水,生命+500");
-                        tower.getPlayer().hp += 500;
-                        flag = true;
-                        break;
-                    case "item03_3":
-                        showMesLabel.setText("获得经验药水,经验+10");
-                        tower.getPlayer().exp += 10;
-                        flag = true;
-                        break;
-                }
-            } else if (layer2[y][x].contains("item04")) {
-                switch (layer2[y][x]) {
-                    case "item04_1":
-                        showMesLabel.setText("获得铁剑,攻击+10");
-                        tower.getPlayer().attack += 10;
-                        flag = true;
-                        break;
-                    case "item04_2":
-                        showMesLabel.setText("获得银剑,攻击+30");
-                        tower.getPlayer().attack += 30;
-                        flag = true;
-                        break;
-                    case "item04_3":
-                        showMesLabel.setText("获得武士剑,攻击+50");
-                        tower.getPlayer().attack += 50;
-                        flag = true;
-                        break;
-                    case "item04_4":
-                        showMesLabel.setText("获得圣剑,攻击+120");
-                        tower.getPlayer().attack += 120;
-                        flag = true;
-                        break;
-                    case "item04_5":
-                        showMesLabel.setText("获得圣神剑,攻击+190");
-                        tower.getPlayer().attack += 190;
-                        flag = true;
-                        break;
-                }
-            } else if (layer2[y][x].contains("item05")) {
-                switch (layer2[y][x]) {
-                    case "item05_1":
-                        showMesLabel.setText("获得铁盾,防御+10");
-                        tower.getPlayer().defense += 10;
-                        flag = true;
-                        break;
-                    case "item05_2":
-                        showMesLabel.setText("获得银盾,防御+30");
-                        tower.getPlayer().defense += 30;
-                        flag = true;
-                        break;
-                    case "item05_3":
-                        showMesLabel.setText("获得武士盾,防御+50");
-                        tower.getPlayer().defense += 50;
-                        flag = true;
-                        break;
-                    case "item05_4":
-                        showMesLabel.setText("获得圣盾,防御+120");
-                        tower.getPlayer().defense += 120;
-                        flag = true;
-                        break;
-                    case "item05_5":
-                        showMesLabel.setText("获得圣神盾,防御+190");
-                        tower.getPlayer().defense += 190;
-                        flag = true;
-                        break;
-                }
-            } else if (layer2[y][x].contains("item06")) {
-                switch (layer2[y][x]) {
-                    case "item06_3":
-                        showMesLabel.setText("获得圣水瓶,生命值翻倍");
-                        tower.getPlayer().hp *= 2;
-                        flag = true;
-                        break;
-                }
-            } else if (layer2[y][x].contains("item07")) {
-                switch (layer2[y][x]) {
-                    case "item07_1":
-                        showMesLabel.setText("获得心之灵杖");
-                        flag = true;
-                        tower.getPlayer().inventory.put("SpiritStick", 1);
-                        if (tower.getPlayer().inventory.containsKey("SunStick")) {
-                            if (tower.getPlayer().inventory.get("SunStick").equals(1)) {
-                                tower.getDoorMap().get("door04_2").openable = true;
-                            }
-                        }
-                        break;
-                    case "item07_3":
-                        showMesLabel.setText("获得炎之灵杖");
-                        flag = true;
-                        tower.getPlayer().inventory.put("SunStick", 1);
-                        if (tower.getPlayer().inventory.containsKey("SpiritStick")) {
-                            if (tower.getPlayer().inventory.get("SpiritStick").equals(1)) {
-                                tower.getDoorMap().get("door04_2").openable = true;
-                            }
-                        }
-                        break;
-                }
-            } else if (layer2[y][x].contains("item08")) {
-                switch (layer2[y][x]) {
-                    case "item08_1":
-                        showMesLabel.setText("获得小飞羽,等级+1");
-                        tower.getPlayer().level++;
-                        tower.getPlayer().attack += 7;
-                        tower.getPlayer().defense += 7;
-                        tower.getPlayer().hp += 1000;
-                        flag = true;
-                        break;
-                }
-            } else if (layer2[y][x].contains("item09")) {
-                switch (layer2[y][x]) {
-                    case "item09_1":
-                        showMesLabel.setText("获得幸运硬币,金币+300");
-                        tower.getPlayer().money += 300;
-                        flag = true;
-                        break;
-                    case "item09_4":
-                        showMesLabel.setText("获得风之罗盘,可以使用楼层传送");
-                        canUseFloorTransfer = true;
-                        flag = true;
-                        break;
-                    case "item09_5":
-                        showMesLabel.setText("获得幸运十字架");
-                        tower.getPlayer().inventory.put("item09_5", 1);
-                        flag = true;
-                        break;
-                    case "item09_6":
-                        showMesLabel.setText("获得圣光徽,可以查看怪物信息");
-                        canUseMonsterManual = true;
-                        flag = true;
-                        break;
-                    case "item09_8":
-                        showMesLabel.setText("获得星光神锒");
-                        tower.getPlayer().inventory.put("LumpHammer", 1);
-                        flag = true;
-                        break;
-                }
-            }
-            if (flag) {
-                Item item = tower.getItemMap().get(layer2[y][x]);
-                if (item.msg != null) {
-                    canMove = false;
-                    musicPlayer.getSpecialItem();
-                    new Thread(() -> getSpecialItem(item)).start();
-                } else {
-                    musicPlayer.getItem();
-                }
-            } else {
-                try {
-                    showMesLabel.setText("获得" + tower.getItemMap().get(layer2[y][x]).getName() + ",嘛事没有");
-                } catch (Exception e) {
-                    System.err.println("layer2 (x=" + x + ",y=" + y + ") itemId(" + layer2[y][x] + ") 不存在!");
-                }
-            }
-            if (isNormalFloor()) {
-                tower.getGameMapList().get(floor).layer2[y][x] = "";
-            } else {
-                tower.getSpecialMap().get(specialGameMapNo).layer2[y][x] = "";
-            }
-            return false;
-        }
-        if (layer1[y][x].contains("monster")) {
-            Monster monster = null;
-            try {
-                monster = tower.getMonsterMap().get(layer1[y][x]);
-            } catch (Exception e) {
-                System.err.println("layer1 (x=" + x + ",y=" + y + ") monsterId(" + layer1[y][x] + ") 不存在!");
-            }
-            monster.script_start(tower);
-            FightCalc fightCalc = new FightCalc(tower.getPlayer(), monster);
-            if (!fightCalc.canAttack) {
-                showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
-                return false;
-            }
-            int pHP = tower.getPlayer().hp - fightCalc.mDamageTotal;
-            if (pHP > 0) {
-                musicPlayer.fight();
-                showMesLabel.setText("击杀:" + monster.getName() + ",损失" + (tower.getPlayer().hp - pHP) + "HP");
-                if (isNormalFloor()) {
-                    tower.getGameMapList().get(floor).layer1[y][x] = "";
-                } else {
-                    tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
-                }
-                tower.getPlayer().hp = pHP;
-                tower.getPlayer().money += monster.getMoney();
-                tower.getPlayer().exp += monster.getExp();
-                monster.script_end(this, tower);
-                return true;
-            } else {
-                showMesLabel.setText("无法击杀:" + tower.getMonsterMap().get(layer1[y][x]).getName());
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -1249,7 +1200,7 @@ public class TowerPanel extends GLJPanel implements Runnable {
      * @param npcId
      */
     public void meetNpc(String npcId) {
-        NPC npc = tower.getNpcMap().get(npcId);
+        NPC npc = this.tower.getNpcMap().get(npcId);
         List<Dialogue> dialogues = npc.dialogues;
         for (int i = 0; i < dialogues.size(); i++) {
             Dialogue dialogue = dialogues.get(i);
@@ -1263,16 +1214,16 @@ public class TowerPanel extends GLJPanel implements Runnable {
             content.setBorder(BorderFactory.createLineBorder(Color.white));
             JLabel tip = new JLabel("Space...");
             if (dialogue.name.contains("player")) {
-                pict.setBounds(208, 8, 32, 32);
+                pict.setBounds(208, 8, CS, CS);
                 name = new JLabel("勇士");
                 name.setBounds(176, 16, 32, 16);
-                photo = new ImageIcon(tower.getPlayer().getPlayerIcon()[1][0].getImage());
+                photo = new ImageIcon(this.tower.getPlayer().getPlayerIcon()[1][0].getImage());
                 System.out.println("勇士:\n" + dialogue.text);
             } else {
-                pict.setBounds(13, 8, 32, 32);
+                pict.setBounds(13, 8, CS, CS);
                 name = new JLabel(npc.getName());
                 name.setBounds(48, 16, 120, 16);
-                photo = new ImageIcon(tower.getNpcMap().get(npcId).getIcon()[0].getImage());
+                photo = new ImageIcon(this.tower.getNpcMap().get(npcId).getIcon()[0].getImage());
                 System.out.println(npc.getName() + ":\n" + dialogue.text);
             }
             pict.setIcon(photo);
@@ -1367,13 +1318,13 @@ public class TowerPanel extends GLJPanel implements Runnable {
     byte nowSelected = 0;
 
     public void meetShop(String shopId) {
-        Shop shop = tower.getShopMap().get(shopId);
+        Shop shop = this.tower.getShopMap().get(shopId);
         dialogBox = new JDialog(mainframe, null, true);
         ImageIcon photo;
         JPanel dialog = new JPanel(null);
         JLabel shopImg = new JLabel();
         JTextArea shopDialogue = new JTextArea();
-        shopImg.setBounds(10, 8, 32, 32);
+        shopImg.setBounds(10, 8, CS, CS);
         JLabel name = new JLabel(shop.getName());
         name.setBounds(50, 12, 200, 25);
         photo = new ImageIcon(shop.getIcon()[0].getImage());
@@ -1437,7 +1388,7 @@ public class TowerPanel extends GLJPanel implements Runnable {
                         if (shop.price != 0) {
                             price = (short) shop.price;
                         } else {
-                            price = Short.valueOf(shop.sell.price.get(nowSelected) + "");
+                            price = Short.valueOf(shop.sell.price.get(nowSelected).toString());
                         }
                         if (shop.need.equals("money")) {
                             if (tower.getPlayer().money >= price) {
@@ -1628,15 +1579,15 @@ public class TowerPanel extends GLJPanel implements Runnable {
             mainLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
 
             JLabel picLabel = new JLabel();
-            picLabel.setBounds(3, 4, 32, 32);
+            picLabel.setBounds(3, 4, CS, CS);
             picLabel.setIcon(monster.getIcon()[0]);
 
-            ImageIcon background = new ImageIcon(tower.getFloorImage()[0]);
+            ImageIcon background = new ImageIcon(this.tower.getFloorImage()[0]);
             background.setImage(background.getImage().getScaledInstance(background.getIconWidth(), background.getIconHeight(), Image.SCALE_DEFAULT));
 
             JLabel backgroundLabel = new JLabel();
             backgroundLabel.setIcon(background);
-            backgroundLabel.setBounds(3, 4, 32, 32);
+            backgroundLabel.setBounds(3, 4, CS, CS);
 
             JLabel nameLabel = new JLabel("名称", JLabel.CENTER);
             nameLabel.setBounds(38, 3, 30, 15);
@@ -1780,7 +1731,7 @@ public class TowerPanel extends GLJPanel implements Runnable {
         dialog.setBackground(Color.black);
         dialog.add(pict);
         dialog.add(content);
-        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32 - 3);
+        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + CS - 3);
         dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
@@ -1814,21 +1765,21 @@ public class TowerPanel extends GLJPanel implements Runnable {
         floorLabel.setFont(new Font("微软雅黑", Font.PLAIN, 38));
 
         JLabel upPicLabel = new JLabel();
-        if (nowSelectFloor + 1 <= tower.getPlayer().maxFloor) {
+        if (nowSelectFloor + 1 <= this.tower.getPlayer().maxFloor) {
             upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_1.png")));
         } else {
             upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_2.png")));
         }
-        upPicLabel.setBounds(160, 85, 32, 32);
+        upPicLabel.setBounds(160, 85, CS, CS);
         upPicLabel.setForeground(Color.white);
 
         JLabel downPicLabel = new JLabel();
-        if (nowSelectFloor - 1 >= tower.getPlayer().minFloor) {
+        if (nowSelectFloor - 1 >= this.tower.getPlayer().minFloor) {
             downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_1.png")));
         } else {
             downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_2.png")));
         }
-        downPicLabel.setBounds(160, 233, 32, 32);
+        downPicLabel.setBounds(160, 233, CS, CS);
         downPicLabel.setForeground(Color.white);
 
         JLabel enterLabel = new JLabel("-Enter-", JLabel.CENTER);
@@ -1934,7 +1885,7 @@ public class TowerPanel extends GLJPanel implements Runnable {
         dialog.setBackground(Color.black);
         dialog.add(pict);
         dialog.add(content);
-        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + 32 - 3);
+        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + CS - 3);
         dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }
@@ -2059,7 +2010,7 @@ public class TowerPanel extends GLJPanel implements Runnable {
         this.add(endLabel);
 
         ImageUtil imageUtil = new ImageUtil();
-        new Thread(() -> {
+        mainExecutor.execute(() -> {
             for (int i = 0; i <= 120; i++) {
                 if (i <= 50) {
                     imgLabel.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 2 * i)));
@@ -2133,9 +2084,9 @@ public class TowerPanel extends GLJPanel implements Runnable {
             this.remove(textLabel10);
             this.remove(imgLabel);
             this.remove(endLabel);
-            new Thread(() -> imageScript()).start();
+            mainExecutor.execute(() -> imageScript());
             postScript();
-        }).run();
+        });
     }
 
     //线程中调用

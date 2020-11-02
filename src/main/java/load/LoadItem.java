@@ -5,10 +5,10 @@ import entity.Item;
 import javax.swing.*;
 import java.util.HashMap;
 
-public class LoadItem {
+public final class LoadItem {
 
     public HashMap<String, Item> initItem() {
-        HashMap<String, Item> itemMap = new HashMap<>(10);
+        HashMap<String, Item> itemMap = new HashMap<>(64);
 
         Item item = new Item("item01_1", "黄钥匙", null,
                 new ImageIcon(getClass().getResource("/image/item/item01_1.png")));

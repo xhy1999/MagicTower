@@ -3,12 +3,11 @@ package load;
 import entity.GameMap;
 
 import java.util.HashMap;
-import java.util.Map;
 
-public class LoadSpecialMap {
+public final class LoadSpecialMap {
 
     public HashMap<String, GameMap> initSpecialMap() {
-        HashMap<String, GameMap> specialMap = new HashMap<>();
+        HashMap<String, GameMap> specialMap = new HashMap<>(8);
 
         String[][] layer1;
         String[][] layer2;

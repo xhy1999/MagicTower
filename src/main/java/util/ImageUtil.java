@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class ImageUtil {
+public final class ImageUtil {
 
     /**
      * @param alpha    透明度   （0不透明---100全透明）

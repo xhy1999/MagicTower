@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author Xhy
  */
-public class Player implements Cloneable {
+public final class Player implements Cloneable {
 
     public String name;
     public int hp;
@@ -38,9 +38,9 @@ public class Player implements Cloneable {
         //TODO 正式版这里要改为 2000
         this.hp = 2000;
         //TODO 正式版这里要改为 10
-        this.attack = 10;
+        this.attack = 10000;
         //TODO 正式版这里要改为 10
-        this.defense = 10;
+        this.defense = 10000;
         //TODO 正式版这里要改为 0
         this.exp = 0;
         //TODO 正式版这里要改为 0

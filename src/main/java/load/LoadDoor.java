@@ -5,10 +5,10 @@ import entity.Door;
 import javax.swing.*;
 import java.util.HashMap;
 
-public class LoadDoor {
+public final class LoadDoor {
 
     public HashMap<String, Door> initDoor() {
-        HashMap<String, Door> doorMap = new HashMap<>(9);
+        HashMap<String, Door> doorMap = new HashMap<>(16);
 
         /**
          * 黄门

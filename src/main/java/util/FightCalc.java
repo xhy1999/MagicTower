@@ -3,7 +3,7 @@ package util;
 import entity.Monster;
 import entity.Player;
 
-public class FightCalc {
+public final class FightCalc {
 
     private Monster monster;
     public boolean canAttack;

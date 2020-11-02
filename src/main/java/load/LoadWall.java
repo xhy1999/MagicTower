@@ -5,7 +5,7 @@ import entity.Wall;
 import javax.swing.*;
 import java.util.HashMap;
 
-public class LoadWall {
+public final class LoadWall {
 
     public HashMap<String, Wall> initWall() {
         HashMap<String, Wall> wallMap = new HashMap<>(8);

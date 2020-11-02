@@ -8,11 +8,10 @@ import java.util.HashMap;
 /**
  * @author Xhy
  */
-public class LoadMonster {
-
+public final class LoadMonster {
 
     public HashMap<String, Monster> initMonster() {
-        HashMap<String, Monster> monsterMap = new HashMap<>();
+        HashMap<String, Monster> monsterMap = new HashMap<>(128);
 
         /**
          * 史莱姆系

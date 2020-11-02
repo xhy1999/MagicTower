@@ -10,7 +10,7 @@ import java.net.URL;
 /**
  * @author Xhy
  */
-public class Audio extends Thread {
+public final class Audio extends Thread {
 
     private boolean isLoop;
     private URL path;

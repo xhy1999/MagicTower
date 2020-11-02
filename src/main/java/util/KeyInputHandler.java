@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Xhy
  */
-public class KeyInputHandler implements KeyListener {
+public final class KeyInputHandler implements KeyListener {
 
     public class Key {
 

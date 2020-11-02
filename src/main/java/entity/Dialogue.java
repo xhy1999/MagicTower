@@ -2,7 +2,7 @@ package entity;
 
 import java.io.Serializable;
 
-public class Dialogue implements Cloneable, Serializable {
+public final class Dialogue implements Cloneable, Serializable {
 
     public String name;
     public String text;

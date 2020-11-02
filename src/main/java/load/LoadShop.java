@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class LoadShop {
+public final class LoadShop {
 
     public HashMap<String, Shop> initShop() {
-        HashMap<String, Shop> shopMap = new HashMap<>();
+        HashMap<String, Shop> shopMap = new HashMap<>(16);
 
         Shop shop = new Shop("shop01_1", "贪婪之神", "money", 25, false,
                 new ImageIcon(getClass().getResource("/image/shop/shop01_1_1.png")));
@@ -22,18 +22,18 @@ public class LoadShop {
         shopMap.put(shop.getId(), shop);
 
 
-        List<String> name = new ArrayList<>();
+        List<String> name = new ArrayList<>(4);
         name.add("增加800点生命值");
         name.add("增加4点攻击");
         name.add("增加4点防御");
         name.add("离开商店");
 
-        List<String> attribute = new ArrayList<>();
+        List<String> attribute = new ArrayList<>(3);
         attribute.add("hp");
         attribute.add("attack");
         attribute.add("defense");
 
-        List<Short> val = new ArrayList<>();
+        List<Short> val = new ArrayList<>(3);
         val.add(new Short((short) 800));
         val.add(new Short((short) 4));
         val.add(new Short((short) 4));
@@ -53,18 +53,18 @@ public class LoadShop {
                 new ImageIcon(getClass().getResource("/image/shop/shop02_3_1.png")));
         shopMap.put(shop.getId(), shop);
 
-        name = new ArrayList<>();
+        name = new ArrayList<>(4);
         name.add("增加4000点生命值");
         name.add("增加20点攻击");
         name.add("增加20点防御");
         name.add("离开商店");
 
-        attribute = new ArrayList<>();
+        attribute = new ArrayList<>(3);
         attribute.add("hp");
         attribute.add("attack");
         attribute.add("defense");
 
-        val = new ArrayList<>();
+        val = new ArrayList<>(3);
         val.add(new Short((short) 4000));
         val.add(new Short((short) 20));
         val.add(new Short((short) 20));
@@ -76,23 +76,23 @@ public class LoadShop {
                 new ImageIcon(getClass().getResource("/image/shop/shop02_2_2.png")));
         shopMap.put(shop.getId(), shop);
 
-        name = new ArrayList<>();
+        name = new ArrayList<>(4);
         name.add("等级提升1级(需要100点)");
         name.add("增加5点攻击(需要30点)");
         name.add("增加5点防御(需要30点)");
         name.add("离开商店");
 
-        attribute = new ArrayList<>();
+        attribute = new ArrayList<>(3);
         attribute.add("lv");
         attribute.add("attack");
         attribute.add("defense");
 
-        val = new ArrayList<>();
+        val = new ArrayList<>(3);
         val.add(new Short((short) 1));
         val.add(new Short((short) 5));
         val.add(new Short((short) 5));
 
-        List<Integer> priceList = new ArrayList<>();
+        List<Integer> priceList = new ArrayList<>(3);
         priceList.add(100);
         priceList.add(30);
         priceList.add(30);
@@ -104,23 +104,23 @@ public class LoadShop {
                 new ImageIcon(getClass().getResource("/image/shop/shop03_2.png")));
         shopMap.put(shop.getId(), shop);
 
-        name = new ArrayList<>();
+        name = new ArrayList<>(4);
         name.add("购买1把黄钥匙($10)");
         name.add("购买1把蓝钥匙($50)");
         name.add("购买1把红钥匙($100)");
         name.add("离开商店");
 
-        attribute = new ArrayList<>();
+        attribute = new ArrayList<>(3);
         attribute.add("yKey");
         attribute.add("bKey");
         attribute.add("rKey");
 
-        val = new ArrayList<>();
+        val = new ArrayList<>(3);
         val.add(new Short((short) 1));
         val.add(new Short((short) 1));
         val.add(new Short((short) 1));
 
-        priceList = new ArrayList<>();
+        priceList = new ArrayList<>(3);
         priceList.add(10);
         priceList.add(50);
         priceList.add(100);
@@ -132,23 +132,23 @@ public class LoadShop {
                 new ImageIcon(getClass().getResource("/image/shop/shop04_2.png")));
         shopMap.put(shop.getId(), shop);
 
-        name = new ArrayList<>();
+        name = new ArrayList<>(4);
         name.add("卖出1把黄钥匙($7)");
         name.add("卖出1把蓝钥匙($35)");
         name.add("卖出1把红钥匙($70)");
         name.add("离开商店");
 
-        attribute = new ArrayList<>();
+        attribute = new ArrayList<>(3);
         attribute.add("yKey");
         attribute.add("bKey");
         attribute.add("rKey");
 
-        val = new ArrayList<>();
+        val = new ArrayList<>(3);
         val.add(new Short((short) 1));
         val.add(new Short((short) 1));
         val.add(new Short((short) 1));
 
-        priceList = new ArrayList<>();
+        priceList = new ArrayList<>(3);
         priceList.add(7);
         priceList.add(35);
         priceList.add(70);
@@ -160,23 +160,23 @@ public class LoadShop {
                 new ImageIcon(getClass().getResource("/image/shop/shop04_2.png")));
         shopMap.put(shop.getId(), shop);
 
-        name = new ArrayList<>();
+        name = new ArrayList<>(4);
         name.add("等级提升3级(需要270点)");
         name.add("增加17点攻击(需要95点)");
         name.add("增加17点防御(需要95点)");
         name.add("离开商店");
 
-        attribute = new ArrayList<>();
+        attribute = new ArrayList<>(3);
         attribute.add("lv");
         attribute.add("attack");
         attribute.add("defense");
 
-        val = new ArrayList<>();
+        val = new ArrayList<>(3);
         val.add(new Short((short) 3));
         val.add(new Short((short) 17));
         val.add(new Short((short) 17));
 
-        priceList = new ArrayList<>();
+        priceList = new ArrayList<>(3);
         priceList.add(270);
         priceList.add(95);
         priceList.add(95);

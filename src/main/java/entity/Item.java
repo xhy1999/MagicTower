@@ -2,7 +2,7 @@ package entity;
 
 import javax.swing.*;
 
-public class Item extends Entity {
+public final class Item extends Entity {
 
     public String msg;
 

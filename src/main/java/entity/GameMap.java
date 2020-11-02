@@ -2,7 +2,7 @@ package entity;
 
 import java.io.Serializable;
 
-public class GameMap implements Cloneable, Serializable {
+public final class GameMap implements Cloneable, Serializable {
 
     /**
      * 楼层
@@ -35,7 +35,7 @@ public class GameMap implements Cloneable, Serializable {
     public String[][] layer3;
 
     public GameMap(int floor, String[][] layer1, String[][] layer2, String[][] layer3) {
-        this.floor = floor + "";
+        this.floor = String.valueOf(floor);
         this.layer1 = layer1;
         this.layer2 = layer2;
         this.layer3 = layer3;

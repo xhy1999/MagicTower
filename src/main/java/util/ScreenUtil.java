@@ -2,7 +2,7 @@ package util;
 
 import java.awt.*;
 
-public class ScreenUtil {
+public final class ScreenUtil {
 
     private int screenWidth;
     private int screenHeight;

@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author Xhy
  */
-public class Tower implements Cloneable {
+public final class Tower implements Cloneable {
 
     private Player player;
 

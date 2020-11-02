@@ -5,10 +5,10 @@ import entity.Stair;
 import javax.swing.*;
 import java.util.HashMap;
 
-public class LoadStair {
+public final class LoadStair {
 
     public HashMap<String, Stair> initStair() {
-        HashMap<String, Stair> stairMap = new HashMap<>(2);
+        HashMap<String, Stair> stairMap = new HashMap<>(16);
 
         Stair stair = new Stair("stair01", new ImageIcon(getClass().getResource("/image/stair/stair01.png")));
         stairMap.put(stair.getId(), stair);
