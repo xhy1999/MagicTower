@@ -8,13 +8,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import static pane.MonsterManualPane.showMonsterManual;
 
 /**
  * @author Xhy
@@ -26,21 +27,21 @@ public final class TowerPanel extends JPanel implements Runnable {
      * 当然,应始终和窗体大小比例协调;比如CSxCS的图片,
      * 如果一行设置15个,那么就是480
      */
-    private static final byte CS = 32;
+    public static final byte CS = 32;
 
     //标题栏高度
-    private static int TITLE_HEIGHT = 26;
+    public static int TITLE_HEIGHT = 26;
 
     //行
-    private static final int GAME_ROW = 11;
+    public static final int GAME_ROW = 11;
     //列
-    private static final int GAME_COL = 11;
+    public static final int GAME_COL = 11;
 
     /**
      * 窗体的宽和高
      */
-    private static final int WINDOW_WIDTH = 18 * CS - 10;
-    private static final int WINDOW_HEIGHT = 14 * CS - 10 + 16;
+    public static final int WINDOW_WIDTH = 18 * CS - 10;
+    public static final int WINDOW_HEIGHT = 14 * CS - 10 + 16;
 
     /**
      * 人物方向
@@ -88,13 +89,13 @@ public final class TowerPanel extends JPanel implements Runnable {
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     //TODO 正式版这里要改为 0
-    public static int floor = 0;
+    public static int floor = 1;
 
     private ExecutorService mainExecutor;
     private List<Tower> gameSave;
     private Tower tower;
 
-    JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
+    public static JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
 
     public TowerPanel(Tower tower) {
         this.tower = tower;
@@ -230,6 +231,8 @@ public final class TowerPanel extends JPanel implements Runnable {
     private static final short STOP_TIME = 180;
     //玩家动作帧数计数
     private byte moveNo = 0;
+    //当前怪物手册的页数(仅当层数切换时重置为0)
+    public static byte nowMonsterManual = 0;
 
     public void tick() {
         if (!canMove) {
@@ -315,76 +318,8 @@ public final class TowerPanel extends JPanel implements Runnable {
             this.tower.getPlayer().x++;
             lastMove = System.currentTimeMillis();
         } else if (canUseMonsterManual && input.use_rod.down) {
-            canMove = false;
             mainExecutor.execute(() -> {
-                //System.out.println("开始计算");
-                String[][] monsterLayer;
-                if (isNormalFloor()) {
-                    monsterLayer = this.tower.getGameMapList().get(floor).layer1;
-                } else {
-                    monsterLayer = this.tower.getSpecialMap().get(specialGameMapNo).layer1;
-                }
-                List<String> monsterIdList = new ArrayList<>();
-                //y
-                for (int i = 0; i < monsterLayer.length; i++) {
-                    //x
-                    for (int j = 0; j < monsterLayer[i].length; j++) {
-                        if (monsterLayer[j][i] != null && monsterLayer[j][i].contains("monster")) {
-                            monsterIdList.add(monsterLayer[j][i]);
-                        }
-                    }
-                }
-                List<FightCalc> fightCalcList = new ArrayList<>();
-                List<FightCalc> dieAttackList = new ArrayList<>();
-                boolean monster11 = false, monster12 = false;
-                for (int i = 0, length = monsterIdList.size(); i < length; i++) {
-                    String monsterId = monsterIdList.get(i);
-                    Monster monster = this.tower.getMonsterMap().get(monsterId);
-                    if (monster.getId().contains("monster11")) {
-                        if (monster11) {
-                            continue;
-                        }
-                        monster = this.tower.getMonsterMap().get("monster11_8");
-                        monster11 = true;
-                    } else if (monster.getId().contains("monster12")) {
-                        if (monster12) {
-                            continue;
-                        }
-                        monster = this.tower.getMonsterMap().get("monster12_8");
-                        monster12 = true;
-                    }
-                    FightCalc fightCalc = new FightCalc(this.tower.getPlayer(), monster);
-                    int no = 0;
-                    if (fightCalc.canAttack) {
-                        for (int j = 0; j < fightCalcList.size(); j++) {
-                            if (fightCalcList.get(j).mDamageTotal >= fightCalc.mDamageTotal) {
-                                no = i;
-                                break;
-                            }
-                            if (j == fightCalcList.size() - 1) {
-                                no = fightCalcList.size();
-                                break;
-                            }
-                        }
-                        fightCalcList.add(no, fightCalc);
-                    } else {
-                        for (int j = 0; j < dieAttackList.size(); j++) {
-                            if (dieAttackList.get(j).getMonster().getAttack() >= fightCalc.getMonster().getAttack()) {
-                                no = j;
-                                break;
-                            }
-                            if (j == dieAttackList.size() - 1) {
-                                no = dieAttackList.size();
-                                break;
-                            }
-                        }
-                        dieAttackList.add(no, fightCalc);
-                    }
-                }
-                fightCalcList.addAll(dieAttackList);
-                //System.out.println("计算完成,共" + monsterNo + "只怪物");
-                showMonsterManual(fightCalcList);
-                canMove = true;
+                showMonsterManual(this.tower);
             });
         } else if (canUseFloorTransfer && input.use_floor_transfer.down) {
             if (!isNormalFloor()) {
@@ -1181,8 +1116,8 @@ public final class TowerPanel extends JPanel implements Runnable {
      *
      * @return 如果在普通楼层, 则返回true;反之,则返回false
      */
-    public boolean isNormalFloor() {
-        return specialGameMapNo == null || specialGameMapNo.equals("");
+    public static boolean isNormalFloor() {
+        return specialGameMapNo == null || "".equals(specialGameMapNo);
     }
 
     static public void updateFloorNum() {
@@ -1567,182 +1502,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         dialogBox.setVisible(true);
     }
 
-    byte nowMonsterManual = 0;
 
-    public void showMonsterManual(List<FightCalc> fightCalcList) {
-        if (fightCalcList.size() == 0) {
-            return;
-        }
-        dialogBox = new JDialog(mainframe, null, true);
-        JPanel dialog = new JPanel(null);
-        JLabel pict = new JLabel();
-        JTextArea content = new JTextArea();
-        dialogBox.setSize(352, 352);
-        dialogBox.setUndecorated(true);
-        for (int i = 8 * nowMonsterManual; i < fightCalcList.size() && i < 8 * (nowMonsterManual + 1); i++) {
-            Monster monster = fightCalcList.get(i).getMonster();
-            JLabel mainLabel = new JLabel();
-            mainLabel.setBounds(3, 8 + 42 * (i % 8), 346, 40);
-            mainLabel.setForeground(Color.white);
-            mainLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
-
-            JLabel picLabel = new JLabel();
-            picLabel.setBounds(3, 4, CS, CS);
-            picLabel.setIcon(monster.getIcon()[0]);
-
-            ImageIcon background = new ImageIcon(this.tower.getFloorImage()[0]);
-            background.setImage(background.getImage().getScaledInstance(background.getIconWidth(), background.getIconHeight(), Image.SCALE_DEFAULT));
-
-            JLabel backgroundLabel = new JLabel();
-            backgroundLabel.setIcon(background);
-            backgroundLabel.setBounds(3, 4, CS, CS);
-
-            JLabel nameLabel = new JLabel("名称", JLabel.CENTER);
-            nameLabel.setBounds(38, 3, 30, 15);
-            nameLabel.setForeground(Color.white);
-            nameLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel nameValLabel = new JLabel(monster.getName(), JLabel.CENTER);
-            nameValLabel.setBounds(68, 3, 95, 15);
-            nameValLabel.setForeground(Color.white);
-            nameValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel hpLabel = new JLabel("生命", JLabel.CENTER);
-            hpLabel.setBounds(38, 21, 30, 15);
-            hpLabel.setForeground(Color.white);
-            hpLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel hpValLabel = new JLabel(String.valueOf(monster.getHp()), JLabel.CENTER);
-            hpValLabel.setBounds(68, 21, 95, 15);
-            hpValLabel.setForeground(Color.white);
-            hpValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel attackLabel = new JLabel("攻击", JLabel.CENTER);
-            attackLabel.setBounds(163, 3, 30, 15);
-            attackLabel.setForeground(Color.white);
-            attackLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel attackValLabel = new JLabel(String.valueOf(monster.getAttack()), JLabel.RIGHT);
-            attackValLabel.setBounds(193, 3, 35, 15);
-            attackValLabel.setForeground(Color.white);
-            attackValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel defenseLabel = new JLabel("防御", JLabel.CENTER);
-            defenseLabel.setBounds(163, 21, 30, 15);
-            defenseLabel.setForeground(Color.white);
-            defenseLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel defenseValLabel = new JLabel(String.valueOf(monster.getDefense()), JLabel.RIGHT);
-            defenseValLabel.setBounds(193, 21, 35, 15);
-            defenseValLabel.setForeground(Color.white);
-            defenseValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel rewardLabel = new JLabel("金·经", JLabel.CENTER);
-            rewardLabel.setBounds(228, 3, 45, 15);
-            rewardLabel.setForeground(Color.white);
-            rewardLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel rewardValLabel = new JLabel(monster.getMoney() + "·" + monster.getExp(), JLabel.CENTER);
-            rewardValLabel.setBounds(273, 3, 70, 15);
-            rewardValLabel.setForeground(Color.white);
-            rewardValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel damageLabel = new JLabel("损失", JLabel.CENTER);
-            damageLabel.setBounds(228, 21, 45, 15);
-            damageLabel.setForeground(Color.white);
-            damageLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            JLabel damageValLabel = new JLabel("", JLabel.CENTER);
-            if (fightCalcList.get(i).canAttack) {
-                damageValLabel.setText(String.valueOf(fightCalcList.get(i).mDamageTotal));
-            } else {
-                damageValLabel.setText("DIE");
-            }
-            damageValLabel.setBounds(273, 21, 70, 15);
-            damageValLabel.setForeground(Color.white);
-            damageValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-
-            mainLabel.add(picLabel);
-            mainLabel.add(backgroundLabel);
-            mainLabel.add(nameLabel);
-            mainLabel.add(nameValLabel);
-            mainLabel.add(hpLabel);
-            mainLabel.add(hpValLabel);
-            mainLabel.add(attackLabel);
-            mainLabel.add(attackValLabel);
-            mainLabel.add(defenseLabel);
-            mainLabel.add(defenseValLabel);
-            mainLabel.add(rewardLabel);
-            mainLabel.add(rewardValLabel);
-            mainLabel.add(damageLabel);
-            mainLabel.add(damageValLabel);
-            dialogBox.add(mainLabel);
-        }
-        content.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent arg0) {
-
-            }
-
-            public void keyReleased(KeyEvent arg0) {
-
-            }
-
-            public void keyPressed(KeyEvent arg0) {
-                boolean closeFlag = false;
-                boolean changeFlag = false;
-                switch (arg0.getKeyCode()) {
-                    case KeyEvent.VK_SPACE:
-                        closeFlag = true;
-                        break;
-                    case KeyEvent.VK_ESCAPE:
-                        closeFlag = true;
-                        break;
-                    case KeyEvent.VK_ENTER:
-                        closeFlag = true;
-                        break;
-                    case KeyEvent.VK_D:
-                        closeFlag = true;
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        if (nowMonsterManual != 0) {
-                            nowMonsterManual--;
-                            changeFlag = true;
-                        }
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        if (nowMonsterManual < fightCalcList.size() / 8.0 - 1) {
-                            nowMonsterManual++;
-                            changeFlag = true;
-                        }
-                        break;
-                    default:
-                        return;
-                }
-                if (closeFlag) {
-                    dialogBox.dispose();
-                    input.clear();
-                    canMove = true;
-                    nowMonsterManual = 0;
-                }
-                if (changeFlag) {
-                    input.clear();
-                    dialogBox.dispose();
-                    showMonsterManual(fightCalcList);
-                }
-            }
-        });
-        content.setLineWrap(true);
-        content.setEditable(false);
-        content.setBounds(0, 0, 1, 1);
-        content.setBackground(Color.black);
-        dialog.setSize(352, 352);
-        dialog.setBackground(Color.black);
-        dialog.add(pict);
-        dialog.add(content);
-        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + CS - 3);
-        dialogBox.add(dialog);
-        dialogBox.setVisible(true);
-    }
 
     int nowSelectFloor = 0;
 
