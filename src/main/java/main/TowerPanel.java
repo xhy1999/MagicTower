@@ -16,6 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static pane.MonsterManualPane.showMonsterManual;
+import static pane.FloorTransferPane.showFloorTransfer;
 
 /**
  * @author Xhy
@@ -85,7 +86,7 @@ public final class TowerPanel extends JPanel implements Runnable {
     public static KeyInputHandler input;
     public static MusicPlayer musicPlayer;
     //TODO 正式版这里要改为 false
-    public static boolean canUseFloorTransfer = false;
+    public static boolean canUseFloorTransfer = true;
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     //TODO 正式版这里要改为 0
@@ -105,7 +106,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         this.tower.getPlayer().x = this.tower.getGameMapList().get(floor).upPositionX;
         this.tower.getPlayer().y = this.tower.getGameMapList().get(floor).upPositionY;
         //TODO 正式版这里要改为 0
-        this.tower.getPlayer().maxFloor = 0;
+        this.tower.getPlayer().maxFloor = 23;
         this.tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
@@ -233,6 +234,8 @@ public final class TowerPanel extends JPanel implements Runnable {
     private byte moveNo = 0;
     //当前怪物手册的页数(仅当层数切换时重置为0)
     public static byte nowMonsterManual = 0;
+    //当前选择的层数
+    public static int nowSelectFloor = 0;
 
     public void tick() {
         if (!canMove) {
@@ -328,8 +331,7 @@ public final class TowerPanel extends JPanel implements Runnable {
             }
             canMove = false;
             mainExecutor.execute(() -> {
-                showFloorTransfer();
-                canMove = true;
+                showFloorTransfer(this.tower);
             });
         }
         //TODO 正式版这里要去掉
@@ -1498,162 +1500,6 @@ public final class TowerPanel extends JPanel implements Runnable {
         dialog.add(content);
         dialog.add(tip);
         dialogBox.setLocation(mainframe.getLocation().x + 171, TITLE_HEIGHT + mainframe.getLocation().y + 96);
-        dialogBox.add(dialog);
-        dialogBox.setVisible(true);
-    }
-
-
-
-    int nowSelectFloor = 0;
-
-    public void showFloorTransfer() {
-        if ((nowSelectFloor = floor) < 0) {
-            nowSelectFloor = 0;
-        }
-        dialogBox = new JDialog(mainframe, null, true);
-        JPanel dialog = new JPanel(null);
-        JLabel pict = new JLabel();
-        JTextArea content = new JTextArea();
-        dialogBox.setSize(352, 352);
-        dialogBox.setUndecorated(true);
-
-        JLabel mainLabel = new JLabel();
-        mainLabel.setBounds(50, 135, 250, 80);
-        mainLabel.setForeground(Color.white);
-        mainLabel.setBorder(BorderFactory.createLineBorder(new Color(0, 153, 204), 3));
-
-        JLabel floorNoLabel = new JLabel(String.valueOf(nowSelectFloor), JLabel.CENTER);
-        floorNoLabel.setBounds(75, 0, 100, 80);
-        floorNoLabel.setForeground(Color.white);
-        floorNoLabel.setFont(new Font("微软雅黑", Font.PLAIN, 38));
-
-        JLabel floorLabel = new JLabel("F", JLabel.CENTER);
-        floorLabel.setBounds(140, 0, 100, 80);
-        floorLabel.setForeground(Color.white);
-        floorLabel.setFont(new Font("微软雅黑", Font.PLAIN, 38));
-
-        JLabel upPicLabel = new JLabel();
-        if (nowSelectFloor + 1 <= this.tower.getPlayer().maxFloor) {
-            upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_1.png")));
-        } else {
-            upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_2.png")));
-        }
-        upPicLabel.setBounds(160, 85, CS, CS);
-        upPicLabel.setForeground(Color.white);
-
-        JLabel downPicLabel = new JLabel();
-        if (nowSelectFloor - 1 >= this.tower.getPlayer().minFloor) {
-            downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_1.png")));
-        } else {
-            downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_2.png")));
-        }
-        downPicLabel.setBounds(160, 233, CS, CS);
-        downPicLabel.setForeground(Color.white);
-
-        JLabel enterLabel = new JLabel("-Enter-", JLabel.CENTER);
-        enterLabel.setBounds(220, 230, 80, 30);
-        enterLabel.setForeground(Color.white);
-        enterLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-
-        JLabel quitLabel = new JLabel("-Quit(F)-", JLabel.CENTER);
-        quitLabel.setBounds(240, 310, 100, 30);
-        quitLabel.setForeground(Color.white);
-        quitLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-
-        mainLabel.add(floorNoLabel);
-        mainLabel.add(floorLabel);
-        dialogBox.add(mainLabel);
-        dialogBox.add(upPicLabel);
-        dialogBox.add(downPicLabel);
-        dialogBox.add(enterLabel);
-        dialogBox.add(quitLabel);
-
-        content.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent arg0) {
-
-            }
-
-            public void keyReleased(KeyEvent arg0) {
-
-            }
-
-            public void keyPressed(KeyEvent arg0) {
-                boolean closeFlag = false;
-                boolean changeFlag = false;
-                switch (arg0.getKeyCode()) {
-                    case KeyEvent.VK_UP:
-                        if (nowSelectFloor + 1 > tower.getPlayer().maxFloor) {
-                            break;
-                        }
-                        musicPlayer.floorTransferSelect();
-                        nowSelectFloor++;
-                        changeFlag = true;
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        if (nowSelectFloor - 1 < tower.getPlayer().minFloor) {
-                            break;
-                        }
-                        musicPlayer.floorTransferSelect();
-                        nowSelectFloor--;
-                        changeFlag = true;
-                        break;
-                    case KeyEvent.VK_SPACE:
-                        closeFlag = true;
-                        break;
-                    case KeyEvent.VK_ENTER:
-                        closeFlag = true;
-                        musicPlayer.upAndDown();
-                        if (floor < nowSelectFloor) {
-                            tower.getPlayer().x = tower.getGameMapList().get(nowSelectFloor).upPositionX;
-                            tower.getPlayer().y = tower.getGameMapList().get(nowSelectFloor).upPositionY;
-                            DIRECTION = DIRECTION_DOWN;
-                            musicPlayer.playBackgroundMusic(nowSelectFloor);
-                            nowMonsterManual = 0;
-                        } else if (floor > nowSelectFloor) {
-                            tower.getPlayer().x = tower.getGameMapList().get(nowSelectFloor).downPositionX;
-                            tower.getPlayer().y = tower.getGameMapList().get(nowSelectFloor).downPositionY;
-                            DIRECTION = DIRECTION_DOWN;
-                            musicPlayer.playBackgroundMusic(nowSelectFloor);
-                            nowMonsterManual = 0;
-                        }
-                        floor = nowSelectFloor;
-                        updateFloorNum();
-                        break;
-                    case KeyEvent.VK_F:
-                        closeFlag = true;
-                        break;
-                    default:
-                        return;
-                }
-                if (closeFlag) {
-                    dialogBox.dispose();
-                    input.clear();
-                    canMove = true;
-                }
-                if (changeFlag) {
-                    floorNoLabel.setText(String.valueOf(nowSelectFloor));
-                    if (nowSelectFloor >= tower.getPlayer().maxFloor) {
-                        upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_2.png")));
-                    } else {
-                        upPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/up_1.png")));
-                    }
-                    if (nowSelectFloor <= tower.getPlayer().minFloor) {
-                        downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_2.png")));
-                    } else {
-                        downPicLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/down_1.png")));
-                    }
-                }
-            }
-        });
-        content.setLineWrap(true);
-        content.setEditable(false);
-        content.setBounds(0, 0, 1, 1);
-        content.setBackground(Color.black);
-        dialog.setSize(352, 352);
-        dialog.setBackground(Color.black);
-        dialog.add(pict);
-        dialog.add(content);
-        dialogBox.setLocation(mainframe.getLocation().x + 195, TITLE_HEIGHT + mainframe.getLocation().y + CS - 3);
         dialogBox.add(dialog);
         dialogBox.setVisible(true);
     }

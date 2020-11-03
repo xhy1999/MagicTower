@@ -40,7 +40,6 @@ public final class ImageUtil {
             g2.drawImage(image, 0, 0, weight,height, null);
             g2.dispose();
             return Toolkit.getDefaultToolkit().createImage(output.getSource());
-
         } catch (IOException e) {
             e.printStackTrace();
         }

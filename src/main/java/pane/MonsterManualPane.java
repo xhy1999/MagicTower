@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MonsterManualPane {
+public final class MonsterManualPane {
 
     public static JLayeredPane monsterManualPane = new JLayeredPane();
     private static JPanel showPanel;
