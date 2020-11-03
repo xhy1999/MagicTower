@@ -9,8 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MonsterManualPane {
 
@@ -86,7 +88,7 @@ public class MonsterManualPane {
 
     private static void update(List<FightCalc> fightCalcList, Image floorImage) {
         showPanel.removeAll();
-        for (int i = 8 * TowerPanel.nowMonsterManual; i < fightCalcList.size() && i < 8 * (TowerPanel.nowMonsterManual + 1); i++) {
+        for (int i = TowerPanel.nowMonsterManual << 3, length = fightCalcList.size(); i < length && i < TowerPanel.nowMonsterManual + 1 << 3; i++) {
             Monster monster = fightCalcList.get(i).getMonster();
             JLabel mainLabel = new JLabel();
             mainLabel.setBounds(3, 8 + 42 * (i % 8), 346, 40);
@@ -208,6 +210,7 @@ public class MonsterManualPane {
         }
         List<FightCalc> fightCalcList = new ArrayList<>();
         List<FightCalc> dieAttackList = new ArrayList<>();
+        //血影和魔龙只需计算一次
         boolean monster11 = false, monster12 = false;
         for (String monsterId : monsterIdSet) {
             Monster monster = tower.getMonsterMap().get(monsterId);
