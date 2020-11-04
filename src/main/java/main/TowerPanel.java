@@ -15,8 +15,16 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import static pane.FloorTransferPane.floorTransferPane;
+import static pane.MonsterManualPane.monsterManualPane;
 import static pane.MonsterManualPane.showMonsterManual;
 import static pane.FloorTransferPane.showFloorTransfer;
+import static pane.NpcDialogPane.npcDialogPane;
+import static pane.NpcDialogPane.showNpcDialog;
+import static pane.ShopPane.shopPane;
+import static pane.ShopPane.showShop;
+import static pane.SpecialItemPane.showSpecialItem;
+import static pane.SpecialItemPane.specialItemPane;
 
 /**
  * @author Xhy
@@ -81,7 +89,7 @@ public final class TowerPanel extends JPanel implements Runnable {
      */
     private byte frames = 0;
 
-    private boolean running = false;
+    public static boolean running = false;
     public static boolean canMove = true;
     public static KeyInputHandler input;
     public static MusicPlayer musicPlayer;
@@ -99,6 +107,11 @@ public final class TowerPanel extends JPanel implements Runnable {
     public static JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
 
     public TowerPanel(Tower tower) {
+        this.add(monsterManualPane);
+        this.add(floorTransferPane);
+        this.add(specialItemPane);
+        this.add(shopPane);
+        this.add(npcDialogPane);
         this.tower = tower;
         this.gameSave = new LinkedList<>();
         this.mainExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
@@ -185,6 +198,7 @@ public final class TowerPanel extends JPanel implements Runnable {
                 fpsTimer += 125;
             }
         }
+        end();
     }
 
     /**
@@ -336,7 +350,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         }
         //TODO 正式版这里要去掉
         else if (input.escape.down) {
-            end();
+            running = false;
         } else if (input.save.down) {
             save();
         } else if (input.load.down) {
@@ -384,37 +398,9 @@ public final class TowerPanel extends JPanel implements Runnable {
             return false;
         }
         if (layer1[y][x].contains("npc")) {
-            canMove = false;
-            mainExecutor.execute(() -> {
-                NPC npc;
-                try {
-                    npc = this.tower.getNpcMap().get(layer1[y][x]);
-                } catch (Exception e) {
-                    System.err.println("layer1 (x=" + y + ",y=" + x + ") npcId(" + layer1[y][x] + ") 不存在!");
-                    return;
-                }
-                npc.script_start(this.tower);
-                //重新获取一边,以防npc改变而这里没变
-                npc = this.tower.getNpcMap().get(layer1[y][x]);
-                if (!npc.canMeet) {
-                    canMove = true;
-                    return;
-                }
-                meetNpc(layer1[y][x]);
-                if (npc.canRemove) {
-                    if (isNormalFloor()) {
-                        this.tower.getGameMapList().get(floor).layer1[y][x] = "";
-                    } else {
-                        this.tower.getSpecialMap().get(specialGameMapNo).layer1[y][x] = "";
-                    }
-                }
-                npc.script_end(this.tower);
-                canMove = true;
-                input.clear();
-            });
+            showNpcDialog(this.tower, layer1[y][x], x, y);
             return false;
         } else if (layer1[y][x].contains("shop")) {
-            canMove = false;
             mainExecutor.execute(() -> {
                 Shop shop;
                 try {
@@ -424,10 +410,9 @@ public final class TowerPanel extends JPanel implements Runnable {
                     return;
                 }
                 if (!shop.canMeet) {
-                    canMove = true;
                     return;
                 }
-                meetShop(shop.getId());
+                showShop(this.tower, shop.getId());
             });
             return false;
         }
@@ -724,9 +709,8 @@ public final class TowerPanel extends JPanel implements Runnable {
             if (flag) {
                 Item item = this.tower.getItemMap().get(layer2[y][x]);
                 if (item.msg != null) {
-                    canMove = false;
                     musicPlayer.getSpecialItem();
-                    mainExecutor.execute(() -> getSpecialItem(item));
+                    mainExecutor.execute(() -> showSpecialItem(item));
                 } else {
                     musicPlayer.getItem();
                 }
@@ -769,7 +753,7 @@ public final class TowerPanel extends JPanel implements Runnable {
                 this.tower.getPlayer().hp = pHP;
                 this.tower.getPlayer().money += monster.getMoney();
                 this.tower.getPlayer().exp += monster.getExp();
-                monster.script_end(this, this.tower);
+                monster.script_end(this.tower);
                 return true;
             } else {
                 showMesLabel.setText("无法击杀:" + this.tower.getMonsterMap().get(layer1[y][x]).getName());
@@ -1134,381 +1118,12 @@ public final class TowerPanel extends JPanel implements Runnable {
         }
     }
 
-    /*********************************************** 额外窗口 ***********************************************/
-
-    //秘籍彩蛋
-    private String secretScript = "";
-
-    /**
-     * 与NPC对话
-     *
-     * @param npcId
-     */
-    public void meetNpc(String npcId) {
-        NPC npc = this.tower.getNpcMap().get(npcId);
-        List<Dialogue> dialogues = npc.dialogues;
-        for (int i = 0; i < dialogues.size(); i++) {
-            Dialogue dialogue = dialogues.get(i);
-            dialogBox = new JDialog(mainframe, null, true);
-            String s;
-            ImageIcon photo;
-            JPanel dialog = new JPanel(null);
-            JLabel pict = new JLabel();
-            JLabel name;
-            JTextArea content = new JTextArea();
-            content.setBorder(BorderFactory.createLineBorder(Color.white));
-            JLabel tip = new JLabel("Space...");
-            if (dialogue.name.contains("player")) {
-                pict.setBounds(208, 8, CS, CS);
-                name = new JLabel("勇士");
-                name.setBounds(176, 16, 32, 16);
-                photo = new ImageIcon(this.tower.getPlayer().getPlayerIcon()[1][0].getImage());
-                System.out.println("勇士:\n" + dialogue.text);
-            } else {
-                pict.setBounds(13, 8, CS, CS);
-                name = new JLabel(npc.getName());
-                name.setBounds(48, 16, 120, 16);
-                photo = new ImageIcon(this.tower.getNpcMap().get(npcId).getIcon()[0].getImage());
-                System.out.println(npc.getName() + ":\n" + dialogue.text);
-            }
-            pict.setIcon(photo);
-            name.setFont(new Font("宋体", Font.BOLD, 13));
-            name.setBackground(Color.white);
-            name.setForeground(Color.white);
-            s = dialogue.text;
-            dialogBox.setSize(256, 128);
-            dialogBox.setUndecorated(true);
-            content.addKeyListener(new KeyListener() {
-                public void keyTyped(KeyEvent arg0) {
-
-                }
-
-                public void keyReleased(KeyEvent arg0) {
-
-                }
-
-                public void keyPressed(KeyEvent arg0) {
-                    boolean close = false;
-                    switch (arg0.getKeyCode()) {
-                        case KeyEvent.VK_SPACE:
-                            close = true;
-                            musicPlayer.dialogueSpace();
-                            break;
-                    }
-                    if (npc.getName().equals("奇怪的人")) {
-                        switch (arg0.getKeyCode()) {
-                            case KeyEvent.VK_UP:
-                                secretScript += "8";
-                                break;
-                            case KeyEvent.VK_DOWN:
-                                secretScript += "2";
-                                break;
-                            case KeyEvent.VK_LEFT:
-                                secretScript += "4";
-                                break;
-                            case KeyEvent.VK_RIGHT:
-                                secretScript += "6";
-                                break;
-                            case KeyEvent.VK_A:
-                                secretScript += "A";
-                                break;
-                            case KeyEvent.VK_B:
-                                secretScript += "B";
-                                break;
-                        }
-                        if (secretScript.equals("88224646BABA")) {
-                            close = true;
-                            tower.getGameMapList().get(0).layer3[10][5] = "stair03_1";
-                            tower.getGameMapList().get(1).layer1[9][6] = "";
-                        }
-                    }
-                    if (close) {
-                        secretScript = "";
-                        escapeDown = true;
-                        dialogBox.dispose();
-                    }
-                }
-            });
-            dialog.setSize(256, 128);
-            dialog.setBackground(Color.black);
-            content.setText(s);
-            content.setLineWrap(true);
-            content.setEditable(false);
-            content.setBounds(4, 48, 248, 58);
-            content.setFont(new Font("宋体", Font.BOLD, 16));
-            content.setBackground(Color.black);
-            content.setForeground(Color.WHITE);
-            tip.setBounds(212, 105, 50, 25);
-            tip.setFont(new Font("微软雅黑", Font.BOLD, 11));
-            tip.setForeground(Color.white);
-            tip.setBackground(Color.white);
-            dialog.add(pict);
-            dialog.add(name);
-            dialog.add(content);
-            dialog.add(tip);
-            dialogBox.setLocation(mainframe.getLocation().x + 242, TITLE_HEIGHT + mainframe.getLocation().y + 96);
-            dialogBox.add(dialog);
-            dialogBox.setVisible(true);
-            while (!escapeDown) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            escapeDown = false;
-        }
-    }
-
-    byte nowSelected = 0;
-
-    public void meetShop(String shopId) {
-        Shop shop = this.tower.getShopMap().get(shopId);
-        dialogBox = new JDialog(mainframe, null, true);
-        ImageIcon photo;
-        JPanel dialog = new JPanel(null);
-        JLabel shopImg = new JLabel();
-        JTextArea shopDialogue = new JTextArea();
-        shopImg.setBounds(10, 8, CS, CS);
-        JLabel name = new JLabel(shop.getName());
-        name.setBounds(50, 12, 200, 25);
-        photo = new ImageIcon(shop.getIcon()[0].getImage());
-        shopImg.setIcon(photo);
-        name.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        name.setBackground(Color.white);
-        name.setForeground(Color.white);
-        JLabel selectLabel = new JLabel();
-        selectLabel.setIcon(new ImageIcon(getClass().getResource("/image/icon/selected.png")));
-        selectLabel.setBounds(10, 100, 30, 30);
-        selectLabel.setForeground(Color.white);
-        dialogBox.add(selectLabel);
-        List<String> sellNameList = shop.sell.name;
-        for (int i = 0; i < sellNameList.size(); i++) {
-            JLabel label = new JLabel(sellNameList.get(i), JLabel.CENTER);
-            label.setBounds(34, 100 + 30 * i, 200, 30);
-            label.setForeground(Color.white);
-            label.setFont(new Font("微软雅黑", Font.BOLD, 16));
-            dialogBox.add(label);
-        }
-        shopDialogue.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent arg0) {
-
-            }
-
-            public void keyReleased(KeyEvent arg0) {
-
-            }
-
-            public void keyPressed(KeyEvent arg0) {
-                Shop shop = tower.getShopMap().get(shopId);
-                switch (arg0.getKeyCode()) {
-                    case KeyEvent.VK_UP:
-                        input.clear();
-                        if (nowSelected <= 0) {
-                            break;
-                        }
-                        musicPlayer.shopSelect();
-                        nowSelected--;
-                        selectLabel.setBounds(10, 100 + nowSelected * 30, 30, 30);
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        input.clear();
-                        if (nowSelected >= 3) {
-                            break;
-                        }
-                        musicPlayer.shopSelect();
-                        nowSelected++;
-                        selectLabel.setBounds(10, 100 + nowSelected * 30, 30, 30);
-                        break;
-                    case KeyEvent.VK_ENTER:
-                        if (sellNameList.get(nowSelected).contains("离开")) {
-                            musicPlayer.upAndDown();
-                            dialogBox.dispose();
-                            canMove = true;
-                            input.clear();
-                            nowSelected = 0;
-                            break;
-                        }
-                        short price;
-                        if (shop.price != 0) {
-                            price = (short) shop.price;
-                        } else {
-                            price = Short.valueOf(shop.sell.price.get(nowSelected).toString());
-                        }
-                        if (shop.need.equals("money")) {
-                            if (tower.getPlayer().money >= price) {
-                                musicPlayer.shopBuySuc();
-                                tower.getPlayer().money -= price;
-                                shop.buyNum++;
-                                shopDialogue.setText(shop.dialogue.replaceFirst("%%", String.valueOf(shop.price)));
-                                List<String> attributeList = shop.sell.attribute;
-                                List<Short> valList = shop.sell.val;
-                                if (attributeList.get(nowSelected).contains("hp")) {
-                                    tower.getPlayer().hp += valList.get(nowSelected);
-                                } else if (attributeList.get(nowSelected).contains("attack")) {
-                                    tower.getPlayer().attack += valList.get(nowSelected);
-                                } else if (attributeList.get(nowSelected).contains("defense")) {
-                                    tower.getPlayer().defense += valList.get(nowSelected);
-                                } else if (attributeList.get(nowSelected).contains("yKey")) {
-                                    tower.getPlayer().yKey += valList.get(nowSelected);
-                                } else if (attributeList.get(nowSelected).contains("bKey")) {
-                                    tower.getPlayer().bKey += valList.get(nowSelected);
-                                } else if (attributeList.get(nowSelected).contains("rKey")) {
-                                    tower.getPlayer().rKey += valList.get(nowSelected);
-                                }
-                            } else {
-                                musicPlayer.shopBuyFail();
-                            }
-                        } else if (shop.need.equals("exp")) {
-                            if (tower.getPlayer().exp >= price) {
-                                musicPlayer.shopExpBuySuc();
-                                tower.getPlayer().exp -= price;
-                                shop.buyNum++;
-                                shopDialogue.setText(shop.dialogue.replaceFirst("%%", String.valueOf(shop.price)));
-                                List<String> attributeList = shop.sell.attribute;
-                                List<Short> valList = shop.sell.val;
-                                if (attributeList.get(nowSelected).contains("lv")) {
-                                    int var = valList.get(nowSelected);
-                                    tower.getPlayer().level += var;
-                                    tower.getPlayer().hp += 1000 * var;
-                                    tower.getPlayer().attack += 7 * var;
-                                    tower.getPlayer().defense += 7 * var;
-                                } else if (attributeList.get(nowSelected).contains("attack")) {
-                                    tower.getPlayer().attack += valList.get(nowSelected);
-                                } else if (attributeList.get(nowSelected).contains("defense")) {
-                                    tower.getPlayer().defense += valList.get(nowSelected);
-                                }
-                            } else {
-                                musicPlayer.shopBuyFail();
-                            }
-                        } else if (shop.need.equals("item")) {
-                            boolean sell = false;
-                            List<String> attributeList = shop.sell.attribute;
-                            if (attributeList.get(nowSelected).contains("yKey")) {
-                                if (tower.getPlayer().yKey >= shop.sell.val.get(nowSelected)) {
-                                    tower.getPlayer().yKey -= shop.sell.val.get(nowSelected);
-                                    tower.getPlayer().money += shop.sell.price.get(nowSelected);
-                                    sell = true;
-                                }
-                            } else if (attributeList.get(nowSelected).contains("bKey")) {
-                                if (tower.getPlayer().bKey >= shop.sell.val.get(nowSelected)) {
-                                    tower.getPlayer().bKey -= shop.sell.val.get(nowSelected);
-                                    tower.getPlayer().money += shop.sell.price.get(nowSelected);
-                                    sell = true;
-                                }
-                            } else if (attributeList.get(nowSelected).contains("rKey")) {
-                                if (tower.getPlayer().rKey >= shop.sell.val.get(nowSelected)) {
-                                    tower.getPlayer().rKey -= shop.sell.val.get(nowSelected);
-                                    tower.getPlayer().money += shop.sell.price.get(nowSelected);
-                                    sell = true;
-                                }
-                            }
-                            if (sell) {
-                                shop.buyNum++;
-                                musicPlayer.shopBuySuc();
-                            } else {
-                                musicPlayer.shopBuyFail();
-                            }
-                        }
-                        break;
-                    case KeyEvent.VK_ESCAPE:
-                        musicPlayer.upAndDown();
-                        dialogBox.dispose();
-                        canMove = true;
-                        input.clear();
-                        nowSelected = 0;
-                        break;
-
-                }
-            }
-        });
-        dialog.setSize(268, 235);
-        dialog.setBackground(Color.black);
-        shopDialogue.setText(shop.dialogue.replaceFirst("%%", String.valueOf(shop.price)));
-        shopDialogue.setLineWrap(true);
-        shopDialogue.setEditable(false);
-        shopDialogue.setBounds(4, 48, 260, 40);
-        shopDialogue.setFont(new Font("宋体", Font.BOLD, 16));
-        shopDialogue.setBackground(Color.black);
-        shopDialogue.setForeground(Color.WHITE);
-        dialog.add(shopImg);
-        dialog.add(name);
-        dialog.add(shopDialogue);
-        dialogBox.setSize(268, 235);
-        dialogBox.setUndecorated(true);
-        dialogBox.setLocation(mainframe.getLocation().x + 237, TITLE_HEIGHT + mainframe.getLocation().y + 71);
-        dialogBox.add(dialog);
-        dialogBox.setVisible(true);
-    }
-
-    public void getSpecialItem(Item item) {
-        dialogBox = new JDialog(mainframe, null, true);
-        JPanel dialog = new JPanel(null);
-        JLabel pict = new JLabel();
-        JLabel name;
-        JTextArea content = new JTextArea();
-        JLabel tip = new JLabel("Space...");
-        name = new JLabel(item.getName(), JLabel.CENTER);
-        name.setBounds(0, 10, 400, 30);
-        name.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        name.setBackground(Color.white);
-        name.setForeground(Color.white);
-        dialogBox.setSize(400, 128);
-        dialogBox.setUndecorated(true);
-        content.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent arg0) {
-
-            }
-
-            public void keyReleased(KeyEvent arg0) {
-
-            }
-
-            public void keyPressed(KeyEvent arg0) {
-                boolean close = false;
-                switch (arg0.getKeyCode()) {
-                    case KeyEvent.VK_SPACE:
-                        close = true;
-                        break;
-                    case KeyEvent.VK_ESCAPE:
-                        close = true;
-                        break;
-                }
-                if (close) {
-                    dialogBox.dispose();
-                    input.clear();
-                    canMove = true;
-                }
-            }
-        });
-        dialog.setSize(400, 128);
-        dialog.setBackground(Color.black);
-        dialog.setBorder(BorderFactory.createLineBorder(new Color(228, 122, 0), 3));
-        content.setText(item.msg);
-        content.setLineWrap(true);
-        content.setEditable(false);
-        content.setBounds(6, 48, 388, 58);
-        content.setFont(new Font("宋体", Font.BOLD, 16));
-        content.setBackground(Color.black);
-        content.setForeground(Color.WHITE);
-        tip.setBounds(354, 104, 50, 25);
-        tip.setFont(new Font("微软雅黑", Font.BOLD, 11));
-        tip.setForeground(Color.white);
-        tip.setBackground(Color.white);
-        dialog.add(pict);
-        dialog.add(name);
-        dialog.add(content);
-        dialog.add(tip);
-        dialogBox.setLocation(mainframe.getLocation().x + 171, TITLE_HEIGHT + mainframe.getLocation().y + 96);
-        dialogBox.add(dialog);
-        dialogBox.setVisible(true);
-    }
-
     /*********************************************** 结尾字幕 ***********************************************/
     public void end() {
         running = false;
         musicPlayer.playEndBackgroundMusic();
-        this.remove(playerWindowLine);
+        this.removeAll();
+        /*this.remove(playerWindowLine);
         this.remove(infoWindowLine);
         this.remove(mapWindowLine);
         this.remove(playerPicLabel);
@@ -1533,7 +1148,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         this.remove(monLabel);
         this.remove(showMesLabel);
         this.remove(fpsLabel);
-        this.remove(showFpsLabel);
+        this.remove(showFpsLabel);*/
 
         for (int i = 0; i <= 0xFF; i++) {
             this.setBackground(new Color(0, 0, 0, i));

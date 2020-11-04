@@ -5,6 +5,8 @@ import main.TowerPanel;
 import javax.swing.*;
 import java.io.Serializable;
 
+import static pane.NpcDialogPane.showNpcDialog;
+
 /**
  * @author Xhy
  */
@@ -55,12 +57,11 @@ public final class Monster extends Entity implements Cloneable,Serializable {
         }
     }
 
-    public void script_end(TowerPanel towerPanel, Tower tower) {
+    public void script_end(Tower tower) {
         if (!scriptEnd) {
             return;
         }
         if (this.getId().equals("monster10_4")) {
-            System.out.println("monster10_4");
             if (TowerPanel.floor == 16) {
                 System.out.println("16");
                 tower.getMonsterMap().get("monster03_4").updateAttribute(3333, 1200, 1133, 112, 100);
@@ -72,13 +73,8 @@ public final class Monster extends Entity implements Cloneable,Serializable {
         else if (this.getId().equals("monster10_15")) {
             if (TowerPanel.floor == 19) {
                 this.updateAttribute(45000, 2550, 2250, 375, 330);
-                towerPanel.canMove = false;
-                new Thread(() -> {
-                    towerPanel.meetNpc("npc06_2_2");
-                    towerPanel.canMove = true;
-                    towerPanel.input.clear();
-                    tower.getNpcMap().get("npc06_2_2").canMeet = false;
-                }).start();
+                showNpcDialog(tower, "npc06_2_2", null, null);
+                tower.getNpcMap().get("npc06_2_2").canMeet = false;
             }
             else if (TowerPanel.floor == 21) {
                 tower.getMonsterMap().get("monster03_4").updateAttribute(4999, 2400, 2266, 140, 125);
@@ -87,21 +83,16 @@ public final class Monster extends Entity implements Cloneable,Serializable {
                 tower.getMonsterMap().get("monster10_4").updateAttribute(30000, 2666, 2666, 166, 166);
                 this.updateAttribute(60000, 3400, 3000, 390, 343);
                 this.name = "吸血鬼";
-                towerPanel.canMove = false;
-                new Thread(() -> {
-                    towerPanel.meetNpc("npc06_2_3");
-                    towerPanel.canMove = true;
-                    towerPanel.input.clear();
-                    tower.getNpcMap().get("npc06_2_3").canMeet = false;
-                    if (tower.specialFloor) {
-                        tower.getGameMapList().get(21).layer3[1][5] = "stair02";
-                        tower.getGameMapList().get(21).layer3[6][5] = "";
-                        tower.getGameMapList().get(21).upPositionX = 5;
-                        tower.getGameMapList().get(21).upPositionY = 6;
-                    } else {
-                        //TODO towerPanel.over();   结局1
-                    }
-                }).start();
+                showNpcDialog(tower, "npc06_2_3", null, null);
+                tower.getNpcMap().get("npc06_2_3").canMeet = false;
+                if (tower.specialFloor) {
+                    tower.getGameMapList().get(21).layer3[1][5] = "stair02";
+                    tower.getGameMapList().get(21).layer3[6][5] = "";
+                    tower.getGameMapList().get(21).upPositionX = 5;
+                    tower.getGameMapList().get(21).upPositionY = 6;
+                } else {
+                    //TODO towerPanel.over();   结局1
+                }
             }
         }
         else if (this.getId().contains("monster11")) {
@@ -116,23 +107,11 @@ public final class Monster extends Entity implements Cloneable,Serializable {
                         }
                     }
                 }
-                towerPanel.canMove = false;
-                new Thread(() -> {
-                    towerPanel.meetNpc("npc07_1_2");
-                    towerPanel.canMove = true;
-                    towerPanel.input.clear();
-                    //TODO towerPanel.over();    结局2
-                    towerPanel.end();
-                }).start();
+                showNpcDialog(tower, "npc07_1_2", null, null);
             }
             else if (tower.getNpcMap().get("npc07_1_1").canMeet) {
-                towerPanel.canMove = false;
-                new Thread(() -> {
-                    towerPanel.meetNpc("npc07_1_1");
-                    towerPanel.canMove = true;
-                    towerPanel.input.clear();
-                    tower.getNpcMap().get("npc07_1_1").canMeet = false;
-                }).start();
+                showNpcDialog(tower, "npc07_1_1", null, null);
+                tower.getNpcMap().get("npc07_1_1").canMeet = false;
             }
         }
         else if (this.getId().contains("monster12")) {
@@ -147,23 +126,11 @@ public final class Monster extends Entity implements Cloneable,Serializable {
                         }
                     }
                 }
-                towerPanel.canMove = false;
-                new Thread(() -> {
-                    towerPanel.meetNpc("npc07_2_2");
-                    towerPanel.canMove = true;
-                    towerPanel.input.clear();
-                    //TODO towerPanel.over();    结局3
-                    towerPanel.end();
-                }).start();
+                showNpcDialog(tower, "npc07_2_2", null, null);
             }
             else if (tower.getNpcMap().get("npc07_2_1").canMeet) {
-                towerPanel.canMove = false;
-                new Thread(() -> {
-                    towerPanel.meetNpc("npc07_2_1");
-                    towerPanel.canMove = true;
-                    towerPanel.input.clear();
-                    tower.getNpcMap().get("npc07_2_1").canMeet = false;
-                }).start();
+                showNpcDialog(tower, "npc07_2_1", null, null);
+                tower.getNpcMap().get("npc07_2_1").canMeet = false;
             }
         }
     }

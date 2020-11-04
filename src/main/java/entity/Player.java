@@ -42,17 +42,17 @@ public final class Player implements Cloneable {
         //TODO 正式版这里要改为 10
         this.defense = 10000;
         //TODO 正式版这里要改为 0
-        this.exp = 0;
+        this.exp = 10000;
         //TODO 正式版这里要改为 0
-        this.money = 0;
+        this.money = 10000;
         //TODO 正式版这里要改为 1
         this.level = 1;
         //TODO 正式版这里要改为 0
-        this.yKey = 0;
+        this.yKey = 10;
         //TODO 正式版这里要改为 0
-        this.bKey = 0;
+        this.bKey = 10;
         //TODO 正式版这里要改为 0
-        this.rKey = 0;
+        this.rKey = 10;
         this.maxFloor = 0;
         this.minFloor = 0;
         this.x = 0;

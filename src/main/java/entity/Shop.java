@@ -7,7 +7,7 @@ public final class Shop extends Entity implements Cloneable, Serializable {
 
     public String need;
     public int price;
-    public int buyNum;
+    public int useNum;
     public String dialogue;
     public boolean canMeet;
     public Sell sell;

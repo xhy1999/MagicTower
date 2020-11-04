@@ -27,9 +27,6 @@ public final class FloorTransferPane {
         }
         TowerPanel.canMove = false;
         floorTransferPane.removeAll();
-        showPanel = new JPanel(null);
-        showPanel.setSize(TowerPanel.CS * 11, TowerPanel.CS * 11);
-        showPanel.setBackground(Color.black);
         init(tower);
         floorTransferPane.addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent arg0) {
@@ -104,7 +101,10 @@ public final class FloorTransferPane {
     }
 
     private static void init(Tower tower) {
-        showPanel.removeAll();
+        showPanel = new JPanel(null);
+        showPanel.setSize(TowerPanel.CS * 11, TowerPanel.CS * 11);
+        showPanel.setBackground(Color.black);
+
         JLabel mainLabel = new JLabel();
         mainLabel.setBounds(50, 135, 250, 80);
         mainLabel.setForeground(Color.white);
