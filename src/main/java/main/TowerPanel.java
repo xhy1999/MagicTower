@@ -1,6 +1,7 @@
 package main;
 
 import com.jogamp.opengl.awt.GLJPanel;
+import end.NormalEnd;
 import entity.*;
 import util.*;
 
@@ -94,13 +95,14 @@ public final class TowerPanel extends JPanel implements Runnable {
     public static KeyInputHandler input;
     public static MusicPlayer musicPlayer;
     //TODO 正式版这里要改为 false
-    public static boolean canUseFloorTransfer = true;
+    public static boolean canUseFloorTransfer = false;
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
+    public static byte end;
     //TODO 正式版这里要改为 0
-    public static int floor = 1;
+    public static int floor = 0;
 
-    private ExecutorService mainExecutor;
+    public static ExecutorService mainExecutor;
     private List<Tower> gameSave;
     private Tower tower;
 
@@ -115,11 +117,11 @@ public final class TowerPanel extends JPanel implements Runnable {
         this.tower = tower;
         this.gameSave = new LinkedList<>();
         this.mainExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                5L, TimeUnit.SECONDS, new SynchronousQueue<>());
+                1L, TimeUnit.SECONDS, new SynchronousQueue<>());
         this.tower.getPlayer().x = this.tower.getGameMapList().get(floor).upPositionX;
         this.tower.getPlayer().y = this.tower.getGameMapList().get(floor).upPositionY;
         //TODO 正式版这里要改为 0
-        this.tower.getPlayer().maxFloor = 23;
+        this.tower.getPlayer().maxFloor = 0;
         this.tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
@@ -235,6 +237,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         floor = this.tower.floor;
         DIRECTION = DIRECTION_DOWN;
         updateFloorNum();
+        musicPlayer.playBackgroundMusic(floor);
         showMesLabel.setText("数据读取成功");
     }
 
@@ -1119,523 +1122,20 @@ public final class TowerPanel extends JPanel implements Runnable {
     }
 
     /*********************************************** 结尾字幕 ***********************************************/
+
     public void end() {
         running = false;
         musicPlayer.playEndBackgroundMusic();
         this.removeAll();
-        /*this.remove(playerWindowLine);
-        this.remove(infoWindowLine);
-        this.remove(mapWindowLine);
-        this.remove(playerPicLabel);
-        this.remove(floorLabel);
-        this.remove(floorNumLabel);
-        this.remove(lvLabel);
-        this.remove(hpPicLabel);
-        this.remove(hpLabel);
-        this.remove(atkPicLabel);
-        this.remove(atkLabel);
-        this.remove(defPicLabel);
-        this.remove(defLabel);
-        this.remove(expPicLabel);
-        this.remove(expLabel);
-        this.remove(yKeyPicLabel);
-        this.remove(yKeyLabel);
-        this.remove(bKeyPicLabel);
-        this.remove(bKeyLabel);
-        this.remove(rKeyPicLabel);
-        this.remove(rKeyLabel);
-        this.remove(monPicLabel);
-        this.remove(monLabel);
-        this.remove(showMesLabel);
-        this.remove(fpsLabel);
-        this.remove(showFpsLabel);*/
-
-        for (int i = 0; i <= 0xFF; i++) {
-            this.setBackground(new Color(0, 0, 0, i));
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (end == 1) {
+            NormalEnd.end(this);
         }
-
-        JLabel imgLabel = new JLabel();
-        imgLabel.setForeground(Color.white);
-        imgLabel.setBounds(40, 140, 300, 288);
-        imgLabel.setVisible(true);
-
-        int x = 240, y = 490;
-
-        JLabel textLabel1 = new JLabel("这位勇士终于成功将公主救了出来...", JLabel.LEFT);
-        textLabel1.setForeground(Color.white);
-        textLabel1.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel1.setBounds(x, y, 400, 20);
-        textLabel1.setVisible(true);
-        JLabel textLabel2 = new JLabel("魔塔也被毁灭了...", JLabel.LEFT);
-        textLabel2.setForeground(Color.white);
-        textLabel2.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel2.setBounds(x, y + 20, 400, 20);
-        textLabel2.setVisible(true);
-        JLabel textLabel3 = new JLabel("剩下的只是一堆石头而已...", JLabel.LEFT);
-        textLabel3.setForeground(Color.white);
-        textLabel3.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel3.setBounds(x, y + 40, 400, 20);
-        textLabel3.setVisible(true);
-
-        JLabel textLabel4 = new JLabel("随后,勇士离开了这个国家", JLabel.LEFT);
-        textLabel4.setForeground(Color.white);
-        textLabel4.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel4.setBounds(x, y + 80, 400, 20);
-        textLabel4.setVisible(true);
-        JLabel textLabel5 = new JLabel("自此之后,再也没有人见过他的身影...", JLabel.LEFT);
-        textLabel5.setForeground(Color.white);
-        textLabel5.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel5.setBounds(x, y + 100, 400, 20);
-        textLabel5.setVisible(true);
-
-        JLabel textLabel6 = new JLabel("究竟他是谁?", JLabel.LEFT);
-        textLabel6.setForeground(Color.white);
-        textLabel6.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel6.setBounds(x, y + 140, 400, 20);
-        textLabel6.setVisible(true);
-        JLabel textLabel7 = new JLabel("究竟为何而来?", JLabel.LEFT);
-        textLabel7.setForeground(Color.white);
-        textLabel7.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel7.setBounds(x, y + 160, 400, 20);
-        textLabel7.setVisible(true);
-        JLabel textLabel8 = new JLabel("至今依然是个谜...", JLabel.LEFT);
-        textLabel8.setForeground(Color.white);
-        textLabel8.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel8.setBounds(x, y + 180, 400, 20);
-        textLabel8.setVisible(true);
-
-        JLabel textLabel9 = new JLabel("总之,任务完成了", JLabel.LEFT);
-        textLabel9.setForeground(Color.white);
-        textLabel9.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel9.setBounds(x, y + 220, 400, 20);
-        textLabel9.setVisible(true);
-        JLabel textLabel10 = new JLabel("这个国家也恢复了往日的和平景象...", JLabel.LEFT);
-        textLabel10.setForeground(Color.white);
-        textLabel10.setFont(new Font("微软雅黑", Font.BOLD, 18));
-        textLabel10.setBounds(x, y + 240, 400, 20);
-        textLabel10.setVisible(true);
-
-        JLabel endLabel = new JLabel("~END~", JLabel.CENTER);
-        endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, 0x00));
-        endLabel.setFont(new Font("微软雅黑", Font.PLAIN, 100));
-        endLabel.setBounds(0, 0, 576, 450);
-        endLabel.setVisible(true);
-
-        this.add(textLabel1);
-        this.add(textLabel2);
-        this.add(textLabel3);
-        this.add(textLabel4);
-        this.add(textLabel5);
-        this.add(textLabel6);
-        this.add(textLabel7);
-        this.add(textLabel8);
-        this.add(textLabel9);
-        this.add(textLabel10);
-        this.add(imgLabel);
-        this.add(endLabel);
-
-        ImageUtil imageUtil = new ImageUtil();
-        mainExecutor.execute(() -> {
-            for (int i = 0; i <= 120; i++) {
-                if (i <= 50) {
-                    imgLabel.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 2 * i)));
-                } else {
-                    imgLabel.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", (int) (120 - 0.4 * i))));
-                }
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            for (int i = 0; i <= y + 240 + 50; i++) {
-                textLabel1.setBounds(x, y - i, 400, 20);
-                textLabel2.setBounds(x, y + 20 - i, 400, 20);
-                textLabel3.setBounds(x, y + 40 - i, 400, 20);
-                textLabel4.setBounds(x, y + 80 - i, 400, 20);
-                textLabel5.setBounds(x, y + 100 - i, 400, 20);
-                textLabel6.setBounds(x, y + 140 - i, 400, 20);
-                textLabel7.setBounds(x, y + 160 - i, 400, 20);
-                textLabel8.setBounds(x, y + 180 - i, 400, 20);
-                textLabel9.setBounds(x, y + 220 - i, 400, 20);
-                textLabel10.setBounds(x, y + 240 - i, 400, 20);
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            for (int i = 0; i <= 72; i++) {
-                imgLabel.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/icon/image_sword.jpg", 72 - i)));
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            for (int i = 0; i <= 0xFE; i++) {
-                endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            for (int i = 0; i <= 100; i++) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            for (int i = 0xFE; i >= 0; i--) {
-                endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            musicPlayer.stopEndBackgroundMusic();
-            this.remove(textLabel1);
-            this.remove(textLabel2);
-            this.remove(textLabel3);
-            this.remove(textLabel4);
-            this.remove(textLabel5);
-            this.remove(textLabel6);
-            this.remove(textLabel7);
-            this.remove(textLabel8);
-            this.remove(textLabel9);
-            this.remove(textLabel10);
-            this.remove(imgLabel);
-            this.remove(endLabel);
-            mainExecutor.execute(() -> imageScript());
-            postScript();
-        });
-    }
-
-    //线程中调用
-    private void imageScript() {
-        try {
-            Thread.sleep(3500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        ImageUtil imageUtil = new ImageUtil();
-        JLabel label = new JLabel();
-        label.setForeground(Color.white);
-        label.setBounds(10, 140, 226, 162);
-        label.setVisible(true);
-        this.add(label);
-        for (int i = 1; i <= 9; i++) {
-            for (int j = 0; j <= 80; j++) {
-                label.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/gameImage/image" + i + ".png", j)));
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            for (int j = 0; j <= 100; j++) {
-                try {
-                    Thread.sleep(30);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            for (int j = 0; j <= 80; j++) {
-                label.setIcon(new ImageIcon(imageUtil.changeAlpha("/image/gameImage/image" + i + ".png", 80 - j)));
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                Thread.sleep(150);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        else if (end == 2) {
+            NormalEnd.end(this);
+        } else {
+            NormalEnd.end(this);
         }
     }
 
-    /**
-     * 字幕
-     * 需要在线程中调用
-     */
-    private void postScript() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        musicPlayer.playPostScriptBackgroundMusic();
-        int x = 250, y = 490;
-        //标题
-        JLabel titleLabel = new JLabel("魔塔", JLabel.CENTER);
-        titleLabel.setForeground(Color.white);
-        titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 50));
-        titleLabel.setVisible(true);
-        JLabel titleEnglishLabel = new JLabel("Magic Tower", JLabel.CENTER);
-        titleEnglishLabel.setForeground(Color.white);
-        titleEnglishLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        titleEnglishLabel.setVisible(true);
-
-        //程序设计
-        JLabel programLabel = new JLabel("程序设计(Java):", JLabel.LEFT);
-        programLabel.setForeground(Color.white);
-        programLabel.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        programLabel.setVisible(true);
-        JLabel programValLabel = new JLabel("Vip、疯子", JLabel.LEFT);
-        programValLabel.setForeground(Color.white);
-        programValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        programValLabel.setVisible(true);
-
-        //人物图片
-        JLabel characterModelLabel = new JLabel("人物图片:", JLabel.LEFT);
-        characterModelLabel.setForeground(Color.white);
-        characterModelLabel.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        characterModelLabel.setVisible(true);
-        JLabel characterModelValLabel = new JLabel("原版魔塔", JLabel.LEFT);
-        characterModelValLabel.setForeground(Color.white);
-        characterModelValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        characterModelValLabel.setVisible(true);
-
-        //音效
-        JLabel soundEffectLabel = new JLabel("音效:", JLabel.LEFT);
-        soundEffectLabel.setForeground(Color.white);
-        soundEffectLabel.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        soundEffectLabel.setVisible(true);
-        JLabel soundEffectValLabel1 = new JLabel("Flash版魔塔(by 胖老鼠)", JLabel.LEFT);
-        soundEffectValLabel1.setForeground(Color.white);
-        soundEffectValLabel1.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        soundEffectValLabel1.setVisible(true);
-        JLabel soundEffectValLabel2 = new JLabel("Flash版魔塔(by cos105hk)", JLabel.LEFT);
-        soundEffectValLabel2.setForeground(Color.white);
-        soundEffectValLabel2.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        soundEffectValLabel2.setVisible(true);
-
-        //音乐
-        JLabel musicLabel = new JLabel("音乐(部分为中译):", JLabel.LEFT);
-        musicLabel.setForeground(Color.white);
-        musicLabel.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        musicLabel.setVisible(true);
-        JLabel musicValLabel1 = new JLabel("冰和珊瑚的迷宫 [风来的西林外传:女剑士飞鸟见参]", JLabel.LEFT);
-        musicValLabel1.setForeground(Color.white);
-        musicValLabel1.setFont(new Font("微软雅黑", Font.PLAIN, 12));
-        musicValLabel1.setVisible(true);
-        JLabel musicValLabel2 = new JLabel("废坑(悬崖的风穴) [风来的西林2:鬼袭来!西林城!]", JLabel.LEFT);
-        musicValLabel2.setForeground(Color.white);
-        musicValLabel2.setFont(new Font("微软雅黑", Font.PLAIN, 13));
-        musicValLabel2.setVisible(true);
-        JLabel musicValLabel3 = new JLabel("片头曲 [浪漫沙加-吟游诗人之歌]", JLabel.LEFT);
-        musicValLabel3.setForeground(Color.white);
-        musicValLabel3.setFont(new Font("微软雅黑", Font.PLAIN, 15));
-        musicValLabel3.setVisible(true);
-        JLabel musicValLabel4 = new JLabel("地牢2 [浪漫沙加-吟游诗人之歌]", JLabel.LEFT);
-        musicValLabel4.setForeground(Color.white);
-        musicValLabel4.setFont(new Font("微软雅黑", Font.PLAIN, 15));
-        musicValLabel4.setVisible(true);
-        JLabel musicValLabel5 = new JLabel("最后的迷宫 [浪漫沙加-吟游诗人之歌]", JLabel.LEFT);
-        musicValLabel5.setForeground(Color.white);
-        musicValLabel5.setFont(new Font("微软雅黑", Font.PLAIN, 15));
-        musicValLabel5.setVisible(true);
-        JLabel musicValLabel6 = new JLabel("邪神复活 [浪漫沙加-吟游诗人之歌]", JLabel.LEFT);
-        musicValLabel6.setForeground(Color.white);
-        musicValLabel6.setFont(new Font("微软雅黑", Font.PLAIN, 15));
-        musicValLabel6.setVisible(true);
-        JLabel musicValLabel7 = new JLabel("Dance With Wind [阿玛迪斯战记]", JLabel.LEFT);
-        musicValLabel7.setForeground(Color.white);
-        musicValLabel7.setFont(new Font("微软雅黑", Font.PLAIN, 15));
-        musicValLabel7.setVisible(true);
-
-        //测试
-        JLabel testLabel = new JLabel("测试:", JLabel.LEFT);
-        testLabel.setForeground(Color.white);
-        testLabel.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        testLabel.setVisible(true);
-        JLabel testValLabel = new JLabel("Vip、疯子", JLabel.LEFT);
-        testValLabel.setForeground(Color.white);
-        testValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        testValLabel.setVisible(true);
-
-        //鸣谢
-        JLabel thanksLabel = new JLabel("鸣谢:", JLabel.LEFT);
-        thanksLabel.setForeground(Color.white);
-        thanksLabel.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        thanksLabel.setVisible(true);
-        JLabel thanksValLabel1 = new JLabel("Flash版魔塔(by 胖老鼠)", JLabel.LEFT);
-        thanksValLabel1.setForeground(Color.white);
-        thanksValLabel1.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        thanksValLabel1.setVisible(true);
-        JLabel thanksValLabel2 = new JLabel("Flash版魔塔(by cos105hk)", JLabel.LEFT);
-        thanksValLabel2.setForeground(Color.white);
-        thanksValLabel2.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        thanksValLabel2.setVisible(true);
-        JLabel thanksValLabel3 = new JLabel("提供素材的地方", JLabel.LEFT);
-        thanksValLabel3.setForeground(Color.white);
-        thanksValLabel3.setFont(new Font("微软雅黑", Font.PLAIN, 20));
-        thanksValLabel3.setVisible(true);
-
-        this.add(titleLabel);
-        this.add(titleEnglishLabel);
-        this.add(programLabel);
-        this.add(programValLabel);
-        this.add(characterModelLabel);
-        this.add(characterModelValLabel);
-        this.add(soundEffectLabel);
-        this.add(soundEffectValLabel1);
-        this.add(soundEffectValLabel2);
-        this.add(musicLabel);
-        this.add(musicValLabel1);
-        this.add(musicValLabel2);
-        this.add(musicValLabel3);
-        this.add(musicValLabel4);
-        this.add(musicValLabel5);
-        this.add(musicValLabel6);
-        this.add(musicValLabel7);
-        this.add(testLabel);
-        this.add(testValLabel);
-        this.add(thanksLabel);
-        this.add(thanksValLabel1);
-        this.add(thanksValLabel2);
-        this.add(thanksValLabel3);
-
-        for (int i = 0; i <= y + 840 + 40; i++) {
-            titleLabel.setBounds(x, y - i, 300, 50);
-            titleEnglishLabel.setBounds(x, y + 50 - i, 300, 30);
-
-            programLabel.setBounds(x, y + 140 - i, 300, 30);
-            programValLabel.setBounds(x + 40, y + 170 - i, 300, 30);
-
-            characterModelLabel.setBounds(x, y + 220 - i, 300, 30);
-            characterModelValLabel.setBounds(x + 40, y + 250 - i, 300, 30);
-
-            soundEffectLabel.setBounds(x, y + 300 - i, 300, 30);
-            soundEffectValLabel1.setBounds(x + 40, y + 330 - i, 300, 30);
-            soundEffectValLabel2.setBounds(x + 40, y + 360 - i, 300, 30);
-
-            musicLabel.setBounds(x, y + 410 - i, 300, 30);
-            musicValLabel1.setBounds(x + 40, y + 440 - i, 300, 30);
-            musicValLabel2.setBounds(x + 40, y + 470 - i, 300, 30);
-            musicValLabel3.setBounds(x + 40, y + 500 - i, 300, 30);
-            musicValLabel4.setBounds(x + 40, y + 530 - i, 300, 30);
-            musicValLabel5.setBounds(x + 40, y + 560 - i, 300, 30);
-            musicValLabel6.setBounds(x + 40, y + 590 - i, 300, 30);
-            musicValLabel7.setBounds(x + 40, y + 620 - i, 300, 30);
-
-            testLabel.setBounds(x, y + 670 - i, 300, 30);
-            testValLabel.setBounds(x + 40, y + 700 - i, 300, 30);
-
-            thanksLabel.setBounds(x, y + 750 - i, 300, 30);
-            thanksValLabel1.setBounds(x + 40, y + 780 - i, 300, 30);
-            thanksValLabel2.setBounds(x + 40, y + 810 - i, 300, 30);
-            thanksValLabel3.setBounds(x + 40, y + 840 - i, 300, 30);
-
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //制作
-        JLabel emailLabel = new JLabel("联系方式:", JLabel.LEFT);
-        emailLabel.setForeground(Color.white);
-        emailLabel.setFont(new Font("微软雅黑", Font.BOLD, 30));
-        emailLabel.setVisible(true);
-        emailLabel.setBounds(155, 160, 300, 50);
-        JLabel emailValLabel = new JLabel("xuehy1999@qq.com", JLabel.LEFT);
-        emailValLabel.setForeground(Color.white);
-        emailValLabel.setFont(new Font("微软雅黑", Font.PLAIN, 30));
-        emailValLabel.setVisible(true);
-        emailValLabel.setBounds(155, 210, 300, 50);
-        this.add(emailLabel);
-        this.add(emailValLabel);
-        for (int i = 0; i <= 0xFE; i++) {
-            emailLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-            emailValLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        for (int i = 0; i <= 100; i++) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        for (int i = 0xFE; i >= 0; i--) {
-            emailLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-            emailValLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //end
-        JLabel endLabel = new JLabel("二零二零年八月八日 · 宁波", JLabel.CENTER);
-        endLabel.setForeground(Color.white);
-        endLabel.setFont(new Font("微软雅黑", Font.BOLD, 30));
-        endLabel.setVisible(true);
-        endLabel.setBounds(0, 0, 576, 430);
-        this.add(endLabel);
-        for (int i = 0; i <= 0xFE; i++) {
-            endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        for (int i = 0; i <= 100; i++) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        for (int i = 0xFE; i >= 0; i--) {
-            endLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //end
-        JLabel thankPlayLabel = new JLabel("Thanks for playing", JLabel.CENTER);
-        thankPlayLabel.setForeground(Color.white);
-        thankPlayLabel.setFont(new Font("微软雅黑", Font.BOLD, 30));
-        thankPlayLabel.setVisible(true);
-        thankPlayLabel.setBounds(0, 0, 576, 430);
-        this.add(thankPlayLabel);
-        for (int i = 0; i <= 0xFE; i++) {
-            thankPlayLabel.setForeground(new Color(0xFF, 0xFF, 0xFF, i));
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        for (int i = 0; i <= 300; i++) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 }

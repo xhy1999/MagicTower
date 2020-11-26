@@ -110,7 +110,6 @@ public class NpcDialogPane {
                     npcDialogPane.setVisible(false);
                     TowerPanel.canMove = true;
                     TowerPanel.input.clear();
-
                     if (finalNpc.canRemove && !(x == null || y == null)) {
                         if (TowerPanel.isNormalFloor()) {
                             tower.getGameMapList().get(TowerPanel.floor).layer1[y][x] = "";
@@ -121,10 +120,12 @@ public class NpcDialogPane {
                     finalNpc.script_end(tower);
                     if (npcId.equals("npc07_1_2")) {
                         //TODO towerPanel.over();    结局2
+                        TowerPanel.end = 2;
                         TowerPanel.running = false;
                     } else if (npcId.equals("npc07_2_2")) {
                         //TODO towerPanel.over();    结局3
                         TowerPanel.running = false;
+                        TowerPanel.end = 3;
                     }
                 }
             }

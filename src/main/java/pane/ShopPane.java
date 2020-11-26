@@ -96,8 +96,8 @@ public class ShopPane {
         });
         shopPane.add(showPanel);
         shopPane.setVisible(true);
-        shopPane.requestFocus();
         shopPane.repaint();
+        shopDialogue.requestFocus();
     }
 
     private static void init(Shop shop) {

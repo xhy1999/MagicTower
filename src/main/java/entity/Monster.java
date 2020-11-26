@@ -92,6 +92,8 @@ public final class Monster extends Entity implements Cloneable,Serializable {
                     tower.getGameMapList().get(21).upPositionY = 6;
                 } else {
                     //TODO towerPanel.over();   结局1
+                    TowerPanel.end = 1;
+                    TowerPanel.running = false;
                 }
             }
         }

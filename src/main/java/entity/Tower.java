@@ -36,7 +36,7 @@ public final class Tower implements Cloneable {
 
     private List<GameMap> gameMapList;
     private HashMap<String, GameMap> specialMap;
-    //TODO 正式版需要修改为 false
+    //TODO(是否挑战额外楼层即是否挑战血影) 正式版需要修改为 false
     public static boolean specialFloor = true;
 
     private static <T> List<T> deepCopy(List<T> src) throws IOException, ClassNotFoundException {
@@ -54,8 +54,8 @@ public final class Tower implements Cloneable {
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(obj);
         oos.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream ois = new ObjectInputStream(bais);
+        ByteArrayInputStream bai = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bai);
         T clonedObj = (T) ois.readObject();
         ois.close();
         return clonedObj;
@@ -159,14 +159,6 @@ public final class Tower implements Cloneable {
 
     public Map<String, Shop> getShopMap() {
         return shopMap;
-    }
-
-    public void setGameMapList(List<GameMap> gameMapList) {
-        this.gameMapList = gameMapList;
-    }
-
-    public void setSpecialMap(HashMap<String, GameMap> specialMap) {
-        this.specialMap = specialMap;
     }
 
     public List<GameMap> getGameMapList() {
