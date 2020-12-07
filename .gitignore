@@ -2,4 +2,6 @@
 target/
 build/
 out/artifacts/MagicTower_jar/MagicTower.jar
+src/main/java/score/DataProtectionUtil.java
+src/main/java/score/UploadScore.java
 src/main/java/META-INF/MANIFEST.MF

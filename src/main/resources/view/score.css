@@ -1,0 +1,34 @@
+.main-border-pane {
+    -fx-background-image: url("/image/score/bg_yellow.png");
+    -fx-background-repeat: repeat;
+    -fx-background-size: 60 60;
+    -fx-background-position: center center;
+}
+.label-item-bg {
+    -fx-background-radius: 10;
+    -fx-background-color: #f4f4f4;
+    -fx-background-repeat: repeat;
+    -fx-background-size: 32 32;
+    -fx-background-position: center center;
+    -fx-border-color: #d4d1bf;
+    -fx-border-radius: 10;
+}
+.label-pic-bg {
+    -fx-pref-width: 25;
+    -fx-pref-height: 25;
+    -fx-background-radius: 13;
+    -fx-background-color: linear-gradient(to bottom,#e9e6f8,#c1bfea);
+    -fx-background-position: center center;
+    -fx-border-color: #d9d6c4;
+    -fx-border-radius: 13;
+}
+.label-item-pic-bg {
+    -fx-pref-width: 25;
+    -fx-pref-height: 25;
+    -fx-padding: 0 0 1 1;
+    -fx-background-radius: 13;
+    -fx-background-color: linear-gradient(to bottom,#e9e6f8,#c1bfea);
+    -fx-background-position: center center;
+    -fx-border-color: #d9d6c4;
+    -fx-border-radius: 13;
+}

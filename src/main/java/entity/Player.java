@@ -1,13 +1,18 @@
 package entity;
 
+import lombok.Data;
+import score.UploadScore;
+
 import javax.swing.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Xhy
  */
+@Data
 public final class Player implements Cloneable {
 
     public String name;
@@ -24,6 +29,10 @@ public final class Player implements Cloneable {
     public int minFloor;
     public byte x;
     public byte y;
+    public int killNum;
+    public int killBossNum;
+    public int stepNum;
+    public long startPlayTime;
 
     public Map<String, Integer> inventory;
 
@@ -34,13 +43,13 @@ public final class Player implements Cloneable {
     ImageIcon[][] playerIcon;
 
     public Player() {
-        this.name = "Hero";
+        this.name = "勇士";
         //TODO 正式版这里要改为 2000
         this.hp = 2000;
         //TODO 正式版这里要改为 10
-        this.attack = 10000;
+        this.attack = 10;
         //TODO 正式版这里要改为 10
-        this.defense = 10000;
+        this.defense = 10;
         //TODO 正式版这里要改为 0
         this.exp = 0;
         //TODO 正式版这里要改为 0
@@ -48,17 +57,18 @@ public final class Player implements Cloneable {
         //TODO 正式版这里要改为 1
         this.level = 1;
         //TODO 正式版这里要改为 0
-        this.yKey = 10;
+        this.yKey = 0;
         //TODO 正式版这里要改为 0
-        this.bKey = 10;
+        this.bKey = 0;
         //TODO 正式版这里要改为 0
-        this.rKey = 10;
+        this.rKey = 0;
         this.maxFloor = 0;
         this.minFloor = 0;
         this.x = 0;
         this.y = 0;
         this.inventory = new HashMap<>();
         this.playerIcon = new ImageIcon[4][4];
+        this.startPlayTime = UploadScore.getNetworkTime();
     }
 
     public ImageIcon[][] getPlayerIcon() {

@@ -1,15 +1,16 @@
 package main;
 
-import com.jogamp.opengl.awt.GLJPanel;
 import end.NormalEnd;
 import entity.*;
-import util.*;
+import score.ScoreApplication;
+import util.FightCalc;
+import util.KeyInputHandler;
+import util.MusicPlayer;
+import util.ScreenUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -17,9 +18,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static pane.FloorTransferPane.floorTransferPane;
+import static pane.FloorTransferPane.showFloorTransfer;
 import static pane.MonsterManualPane.monsterManualPane;
 import static pane.MonsterManualPane.showMonsterManual;
-import static pane.FloorTransferPane.showFloorTransfer;
 import static pane.NpcDialogPane.npcDialogPane;
 import static pane.NpcDialogPane.showNpcDialog;
 import static pane.ShopPane.shopPane;
@@ -291,6 +292,8 @@ public final class TowerPanel extends JPanel implements Runnable {
             } else if (stair.contains("stair03") || stair.contains("stair04")) {
                 this.tower.getStairMap().get(stair).script(this, this.tower, specialGameMapNo);
                 updateFloorNum();
+                musicPlayer.playBackgroundMusic(floor);
+                nowMonsterManual = 0;
                 return;
             }
         } else {
@@ -298,6 +301,8 @@ public final class TowerPanel extends JPanel implements Runnable {
             if (stair.contains("stair03") || stair.contains("stair04")) {
                 this.tower.getStairMap().get(stair).script(this, this.tower, specialGameMapNo);
                 updateFloorNum();
+                musicPlayer.playBackgroundMusic(floor);
+                nowMonsterManual = 0;
                 return;
             }
         }
@@ -1135,6 +1140,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         } else {
             NormalEnd.end(this);
         }
+        new ScoreApplication().launch(ScoreApplication.class);
     }
 
 
