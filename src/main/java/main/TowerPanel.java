@@ -108,6 +108,7 @@ public final class TowerPanel extends JPanel implements Runnable {
     private Tower tower;
 
     public static JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
+    public static ScreenUtil screenUtil = new ScreenUtil();
 
     public TowerPanel(Tower tower) {
         this.add(monsterManualPane);
@@ -137,10 +138,10 @@ public final class TowerPanel extends JPanel implements Runnable {
         this.showAttribute();// 属性展示界面
         //设定焦点在本窗体
         this.setFocusable(true);
+        this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         //主窗体
         mainframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainframe.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        ScreenUtil screenUtil = new ScreenUtil();
         mainframe.setLocation(screenUtil.getScreenWidth() / 3, screenUtil.getScreenWidth() / 6);
         //得到一个Toolkit对象
         Toolkit tool = this.getToolkit();
@@ -1140,7 +1141,9 @@ public final class TowerPanel extends JPanel implements Runnable {
         } else {
             NormalEnd.end(this);
         }
-        new ScoreApplication().launch(ScoreApplication.class);
+        ScoreApplication scoreApplication = new ScoreApplication();
+        scoreApplication.setPlayer(this.tower.getPlayer());
+        scoreApplication.launch(ScoreApplication.class);
     }
 
 
