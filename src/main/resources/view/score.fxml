@@ -1,55 +1,444 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-image: url('@../image/icon/mt.png');" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="score.ScoreController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="360.0" prefWidth="350.0" styleClass="main-border-pane"
+            xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="score.ScoreController">
     <top>
-        <HBox fx:id="hBox" alignment="CENTER" prefHeight="80.0" prefWidth="350.0" style="-fx-spacing: 15px; -fx-background-color: #00000000;" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../image/icon/mt.png" />
-               </image>
-            </ImageView>
-            <VBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="250.0" style="-fx-spacing: 5px;">
-               <children>
-                  <Label text="请输入您的尊姓大名:" />
-                  <TextField fx:id="playerNameText">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </TextField>
-               </children>
-            </VBox>
-         </children>
+        <HBox fx:id="hBox" alignment="CENTER" prefHeight="80.0" prefWidth="350.0"
+              style="-fx-spacing: 15px; -fx-background-color: #00000000;" BorderPane.alignment="CENTER">
+            <children>
+                <Label style="-fx-border-color: #680808; -fx-border-radius: 10; -fx-border-width: 2;"
+                       styleClass="104,24,24">
+                    <graphic>
+                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../image/icon/mt.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <padding>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+                    </padding>
+                </Label>
+                <VBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="250.0" style="-fx-spacing: 5px;">
+                    <children>
+                        <Label text="请输入您的尊姓大名:"/>
+                        <TextField fx:id="playerNameText">
+                            <font>
+                                <Font size="15.0"/>
+                            </font>
+                        </TextField>
+                    </children>
+                </VBox>
+            </children>
         </HBox>
     </top>
     <bottom>
-      <HBox alignment="CENTER" prefHeight="80.0" prefWidth="350.0" style="-fx-spacing: 50px;" BorderPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" text="上传分数" />
-            <Button mnemonicParsing="false" text="查看排行榜" />
-         </children>
-      </HBox>
-   </bottom>
-   <center>
-      <HBox prefHeight="100.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <HBox prefHeight="100.0" prefWidth="200.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" />
-               </children>
-            </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0" />
-            <VBox prefHeight="200.0" prefWidth="100.0" />
-         </children></HBox>
-   </center>
+        <VBox alignment="CENTER" prefHeight="40.0" prefWidth="350.0" style="" BorderPane.alignment="CENTER">
+            <children>
+                <VBox alignment="BOTTOM_RIGHT" prefHeight="40.0" prefWidth="100.0">
+                    <children>
+                        <HBox alignment="TOP_CENTER" prefHeight="25.0" prefWidth="200.0" style="-fx-spacing: 20px;">
+                            <children>
+                                <Button mnemonicParsing="false" text="上传分数"/>
+                                <Button mnemonicParsing="false" text="查看排行榜"/>
+                            </children>
+                        </HBox>
+                        <Label fx:id="msgLabel">
+                            <VBox.margin>
+                                <Insets right="2.0"/>
+                            </VBox.margin>
+                        </Label>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </bottom>
+    <center>
+        <VBox alignment="TOP_CENTER" prefHeight="250.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER" prefHeight="40.0" prefWidth="350.0" style="-fx-spacing: 5px;">
+                    <children>
+                        <Label text="总得分:">
+                            <font>
+                                <Font name="Microsoft YaHei Bold" size="25.0"/>
+                            </font>
+                        </Label>
+                        <Label text="16575">
+                            <font>
+                                <Font name="Microsoft YaHei Bold" size="25.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="200.0" prefWidth="350.0">
+                    <children>
+                        <VBox prefHeight="200.0" prefWidth="125.0" style="-fx-spacing: 2;">
+                            <children>
+                                <HBox alignment="CENTER" onMouseEntered="#lvMsg" onMouseExited="#clearMsgLabel"
+                                      prefHeight="30.0" prefWidth="120.0" styleClass="label-item-bg">
+                                    <children>
+                                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="45.0"
+                                               style="-fx-background-radius: 10px; -fx-background-color: linear-gradient(to bottom,#f8e663,#f8bc4b);"
+                                               text="LV"/>
+                                        <Label fx:id="lvLabel" alignment="CENTER" prefHeight="20.0" prefWidth="60.0"
+                                               text="0">
+                                            <font>
+                                                <Font size="14.0"/>
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" onMouseEntered="#hpMsg" onMouseExited="#clearMsgLabel"
+                                      prefHeight="30.0" prefWidth="120.0" styleClass="label-item-bg">
+                                    <children>
+                                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="45.0"
+                                               style="-fx-background-radius: 10px; -fx-background-color: linear-gradient(to bottom,#cef195,#b2da32);"
+                                               text="HP"/>
+                                        <Label fx:id="hpLabel" alignment="CENTER" prefHeight="20.0" prefWidth="60.0"
+                                               text="0">
+                                            <font>
+                                                <Font size="14.0"/>
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" onMouseEntered="#atkMsg" onMouseExited="#clearMsgLabel"
+                                      prefHeight="30.0" prefWidth="120.0" styleClass="label-item-bg">
+                                    <children>
+                                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="45.0"
+                                               style="-fx-background-radius: 10px; -fx-background-color: linear-gradient(to bottom,#ffd4cb,#ffa5aa);"
+                                               text="ATK"/>
+                                        <Label fx:id="atkLabel" alignment="CENTER" prefHeight="20.0" prefWidth="60.0"
+                                               text="0">
+                                            <font>
+                                                <Font size="14.0"/>
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" onMouseEntered="#defMsg" onMouseExited="#clearMsgLabel"
+                                      prefHeight="30.0" prefWidth="120.0" styleClass="label-item-bg">
+                                    <children>
+                                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="45.0"
+                                               style="-fx-background-radius: 10px; -fx-background-color: linear-gradient(to bottom,#d5e9fb,#9ec2e1);"
+                                               text="DEF"/>
+                                        <Label fx:id="defLabel" alignment="CENTER" prefHeight="20.0" prefWidth="60.0"
+                                               text="0">
+                                            <font>
+                                                <Font size="14.0"/>
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" onMouseEntered="#expMsg" onMouseExited="#clearMsgLabel"
+                                      prefHeight="30.0" prefWidth="120.0" styleClass="label-item-bg">
+                                    <children>
+                                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="45.0"
+                                               style="-fx-background-radius: 10px; -fx-background-color: linear-gradient(to bottom,#fcbe9d,#f37e40);"
+                                               text="EXP"/>
+                                        <Label fx:id="expLabel" alignment="CENTER" prefHeight="20.0" prefWidth="60.0"
+                                               text="0">
+                                            <font>
+                                                <Font size="14.0"/>
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" onMouseEntered="#monMsg" onMouseExited="#clearMsgLabel"
+                                      prefHeight="30.0" prefWidth="120.0" styleClass="label-item-bg">
+                                    <children>
+                                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="45.0"
+                                               style="-fx-background-radius: 10px; -fx-background-color: linear-gradient(to bottom,#fbf4c0,#f2dd45);"
+                                               text="MON"/>
+                                        <Label fx:id="monLabel" alignment="CENTER" prefHeight="20.0" prefWidth="60.0"
+                                               text="0">
+                                            <font>
+                                                <Font size="14.0"/>
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="220.0">
+                            <children>
+                                <VBox prefHeight="100.0" prefWidth="220.0">
+                                    <children>
+                                        <HBox prefHeight="100.0" prefWidth="350.0">
+                                            <children>
+                                                <VBox prefHeight="0.0" prefWidth="90.0" style="-fx-spacing: 2;">
+                                                    <children>
+                                                        <HBox alignment="CENTER" onMouseEntered="#yKeyMsg"
+                                                              onMouseExited="#clearMsgLabel" prefHeight="30.0"
+                                                              prefWidth="90.0" styleClass="label-item-bg">
+                                                            <children>
+                                                                <Label contentDisplay="CENTER" prefHeight="25.0"
+                                                                       prefWidth="25.0" styleClass="label-item-pic-bg">
+                                                                    <graphic>
+                                                                        <ImageView fitHeight="20.0" fitWidth="20.0"
+                                                                                   pickOnBounds="true"
+                                                                                   preserveRatio="true">
+                                                                            <image>
+                                                                                <Image url="@../image/item/item01_1.png"/>
+                                                                            </image>
+                                                                        </ImageView>
+                                                                    </graphic>
+                                                                    <HBox.margin>
+                                                                        <Insets/>
+                                                                    </HBox.margin>
+                                                                    <padding>
+                                                                        <Insets bottom="1.0" left="1.0"/>
+                                                                    </padding>
+                                                                </Label>
+                                                                <Label prefHeight="20.0" text="×">
+                                                                    <font>
+                                                                        <Font size="15.0"/>
+                                                                    </font>
+                                                                    <HBox.margin>
+                                                                        <Insets left="1.0"/>
+                                                                    </HBox.margin>
+                                                                </Label>
+                                                                <Label fx:id="yKeyLabel" alignment="CENTER"
+                                                                       prefHeight="30.0" prefWidth="40.0" text="0">
+                                                                    <font>
+                                                                        <Font size="16.0"/>
+                                                                    </font>
+                                                                    <HBox.margin>
+                                                                        <Insets/>
+                                                                    </HBox.margin>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER" onMouseEntered="#bKeyMsg"
+                                                              onMouseExited="#clearMsgLabel" prefHeight="30.0"
+                                                              prefWidth="90.0" styleClass="label-item-bg">
+                                                            <children>
+                                                                <Label contentDisplay="CENTER" prefHeight="25.0"
+                                                                       prefWidth="25.0" styleClass="label-item-pic-bg">
+                                                                    <graphic>
+                                                                        <ImageView fitHeight="20.0" fitWidth="20.0"
+                                                                                   pickOnBounds="true"
+                                                                                   preserveRatio="true">
+                                                                            <image>
+                                                                                <Image url="@../image/item/item01_2.png"/>
+                                                                            </image>
+                                                                        </ImageView>
+                                                                    </graphic>
+                                                                    <padding>
+                                                                        <Insets bottom="1.0" left="1.0"/>
+                                                                    </padding>
+                                                                </Label>
+                                                                <Label prefHeight="20.0" text="×">
+                                                                    <font>
+                                                                        <Font size="15.0"/>
+                                                                    </font>
+                                                                    <HBox.margin>
+                                                                        <Insets left="1.0"/>
+                                                                    </HBox.margin>
+                                                                </Label>
+                                                                <Label fx:id="bKeyLabel" alignment="CENTER"
+                                                                       prefHeight="30.0" prefWidth="40.0" text="0">
+                                                                    <font>
+                                                                        <Font size="16.0"/>
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER" onMouseEntered="#rKeyMsg"
+                                                              onMouseExited="#clearMsgLabel" prefHeight="30.0"
+                                                              prefWidth="90.0" styleClass="label-item-bg">
+                                                            <children>
+                                                                <Label contentDisplay="CENTER" prefHeight="25.0"
+                                                                       prefWidth="25.0" styleClass="label-item-pic-bg">
+                                                                    <graphic>
+                                                                        <ImageView fitHeight="20.0" fitWidth="20.0"
+                                                                                   pickOnBounds="true"
+                                                                                   preserveRatio="true">
+                                                                            <image>
+                                                                                <Image url="@../image/item/item01_3.png"/>
+                                                                            </image>
+                                                                        </ImageView>
+                                                                    </graphic>
+                                                                    <padding>
+                                                                        <Insets bottom="1.0" left="1.0"/>
+                                                                    </padding>
+                                                                </Label>
+                                                                <Label prefHeight="20.0" text="×">
+                                                                    <font>
+                                                                        <Font size="15.0"/>
+                                                                    </font>
+                                                                    <HBox.margin>
+                                                                        <Insets left="1.0"/>
+                                                                    </HBox.margin>
+                                                                </Label>
+                                                                <Label fx:id="rKeyLabel" alignment="CENTER"
+                                                                       prefHeight="30.0" prefWidth="40.0" text="0">
+                                                                    <font>
+                                                                        <Font size="16.0"/>
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                    <HBox.margin>
+                                                        <Insets left="5.0"/>
+                                                    </HBox.margin>
+                                                </VBox>
+                                                <VBox alignment="TOP_CENTER" prefHeight="0.0" prefWidth="125.0"
+                                                      style="-fx-spacing: 2;">
+                                                    <children>
+                                                        <HBox alignment="CENTER" onMouseEntered="#moveMsg"
+                                                              onMouseExited="#clearMsgLabel" prefHeight="30.0"
+                                                              prefWidth="90.0" styleClass="label-item-bg">
+                                                            <children>
+                                                                <Label alignment="CENTER" contentDisplay="CENTER"
+                                                                       prefHeight="25.0" prefWidth="25.0"
+                                                                       styleClass="label-pic-bg">
+                                                                    <graphic>
+                                                                        <ImageView fitHeight="20.0" fitWidth="20.0"
+                                                                                   pickOnBounds="true"
+                                                                                   preserveRatio="true">
+                                                                            <image>
+                                                                                <Image url="@../image/player/player01_2_2.png"/>
+                                                                            </image>
+                                                                        </ImageView>
+                                                                    </graphic>
+                                                                    <padding>
+                                                                        <Insets bottom="1.0" left="1.0"/>
+                                                                    </padding>
+                                                                </Label>
+                                                                <Label fx:id="stepLabel" alignment="CENTER"
+                                                                       prefHeight="30.0" prefWidth="40.0" text="0">
+                                                                    <font>
+                                                                        <Font size="16.0"/>
+                                                                    </font>
+                                                                    <HBox.margin>
+                                                                        <Insets left="10.0"/>
+                                                                    </HBox.margin>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER" onMouseEntered="#killMsg"
+                                                              onMouseExited="#clearMsgLabel" prefHeight="30.0"
+                                                              prefWidth="90.0" styleClass="label-item-bg">
+                                                            <children>
+                                                                <Label alignment="CENTER" contentDisplay="CENTER"
+                                                                       prefHeight="25.0" prefWidth="25.0"
+                                                                       styleClass="label-pic-bg">
+                                                                    <graphic>
+                                                                        <ImageView fitHeight="25.0" fitWidth="25.0"
+                                                                                   pickOnBounds="true"
+                                                                                   preserveRatio="true">
+                                                                            <image>
+                                                                                <Image url="@../image/monster/monster01_1_1.png"/>
+                                                                            </image>
+                                                                        </ImageView>
+                                                                    </graphic>
+                                                                </Label>
+                                                                <Label fx:id="killLabel" alignment="CENTER"
+                                                                       prefHeight="30.0" prefWidth="40.0" text="0">
+                                                                    <font>
+                                                                        <Font size="16.0"/>
+                                                                    </font>
+                                                                    <HBox.margin>
+                                                                        <Insets left="10.0"/>
+                                                                    </HBox.margin>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER" onMouseEntered="#killBossMsg"
+                                                              onMouseExited="#clearMsgLabel" prefHeight="30.0"
+                                                              prefWidth="90.0" styleClass="label-item-bg">
+                                                            <children>
+                                                                <Label alignment="CENTER" contentDisplay="CENTER"
+                                                                       prefHeight="25.0" prefWidth="25.0"
+                                                                       styleClass="label-pic-bg">
+                                                                    <graphic>
+                                                                        <ImageView fitHeight="17.0" fitWidth="17.0"
+                                                                                   pickOnBounds="true"
+                                                                                   preserveRatio="true">
+                                                                            <image>
+                                                                                <Image url="@../image/monster/monster11_8_1.png"/>
+                                                                            </image>
+                                                                        </ImageView>
+                                                                    </graphic>
+                                                                    <padding>
+                                                                        <Insets top="1.0"/>
+                                                                    </padding>
+                                                                </Label>
+                                                                <Label fx:id="killBossLabel" alignment="CENTER"
+                                                                       prefHeight="30.0" prefWidth="40.0" text="0">
+                                                                    <font>
+                                                                        <Font size="16.0"/>
+                                                                    </font>
+                                                                    <HBox.margin>
+                                                                        <Insets left="10.0"/>
+                                                                    </HBox.margin>
+                                                                </Label>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                    <HBox.margin>
+                                                        <Insets left="5.0"/>
+                                                    </HBox.margin>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER" prefHeight="100.0" prefWidth="220.0">
+                                    <children>
+                                        <Label fx:id="scoreLabel" alignment="CENTER" contentDisplay="CENTER"
+                                               rotate="-18.4" text="A">
+                                            <font>
+                                                <Font name="Microsoft YaHei" size="70.0"/>
+                                            </font>
+                                            <textFill>
+                                                <LinearGradient endX="1.0" endY="1.0" startX="0.7238095238095238"
+                                                                startY="0.18095238095238092">
+                                                    <stops>
+                                                        <Stop>
+                                                            <color>
+                                                                <Color red="0.9254902005195618"
+                                                                       green="0.8980392217636108"
+                                                                       blue="0.47843137383461"/>
+                                                            </color>
+                                                        </Stop>
+                                                        <Stop offset="1.0">
+                                                            <color>
+                                                                <Color red="1.0" green="0.48627451062202454"
+                                                                       blue="0.0235294122248888"/>
+                                                            </color>
+                                                        </Stop>
+                                                    </stops>
+                                                </LinearGradient>
+                                            </textFill>
+                                            <VBox.margin>
+                                                <Insets right="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                            </children>
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
 </BorderPane>

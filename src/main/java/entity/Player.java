@@ -29,9 +29,9 @@ public final class Player implements Cloneable {
     public int minFloor;
     public byte x;
     public byte y;
-    public int killNum;
-    public int killBossNum;
-    public int stepNum;
+    public int killNum = 823;
+    public int killBossNum = 8;
+    public int stepNum = 4241;
     public long startPlayTime;
 
     public Map<String, Integer> inventory;
@@ -45,23 +45,23 @@ public final class Player implements Cloneable {
     public Player() {
         this.name = "勇士";
         //TODO 正式版这里要改为 2000
-        this.hp = 2000;
+        this.hp = 136203;
         //TODO 正式版这里要改为 10
-        this.attack = 10;
+        this.attack = 4623;
         //TODO 正式版这里要改为 10
-        this.defense = 10;
+        this.defense = 4195;
         //TODO 正式版这里要改为 0
-        this.exp = 0;
+        this.exp = 32643;
         //TODO 正式版这里要改为 0
-        this.money = 0;
+        this.money = 86431;
         //TODO 正式版这里要改为 1
-        this.level = 1;
+        this.level = 151;
         //TODO 正式版这里要改为 0
-        this.yKey = 0;
+        this.yKey = 9;
         //TODO 正式版这里要改为 0
-        this.bKey = 0;
+        this.bKey = 99;
         //TODO 正式版这里要改为 0
-        this.rKey = 0;
+        this.rKey = 999;
         this.maxFloor = 0;
         this.minFloor = 0;
         this.x = 0;

@@ -22,9 +22,8 @@ public class ScorePanel extends JPanel {
 
     private Image backgroundImage;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ScorePanel panel = new ScorePanel(new Player());
-        //ScorePanel();
     }
 
     public ScorePanel(Player player) {
@@ -32,7 +31,7 @@ public class ScorePanel extends JPanel {
         this.setLayout(null);
         //设定初始构造时面板大小
         this.setPreferredSize(new Dimension(SCORE_WINDOW_WIDTH, SCORE_WINDOW_HEIGHT));
-        this.backgroundImage = new ImageIcon(this.getClass().getResource("/image/wall/floor04_1.png")).getImage();
+        this.backgroundImage = new ImageIcon(this.getClass().getResource("/image/score/bg_yellow.png")).getImage();
         this.initUI();
         //设定焦点在本窗体
         this.setFocusable(true);

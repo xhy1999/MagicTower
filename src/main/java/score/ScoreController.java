@@ -1,58 +1,75 @@
 package score;
 
-import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import entity.Player;
+import entity.Tower;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import main.TowerPanel;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static javafx.scene.layout.BackgroundPosition.CENTER;
-import static javafx.scene.layout.BackgroundRepeat.NO_REPEAT;
-import static javafx.scene.layout.BackgroundRepeat.REPEAT;
-import static javafx.scene.layout.BackgroundSize.DEFAULT;
-
 public class ScoreController implements Initializable {
 
-    private static final int SCORE_WINDOW_WIDTH = 400;
-    private static final int SCORE_WINDOW_HEIGHT = 350;
-
-    @FXML private BorderPane borderPane;
-    @FXML private HBox hBox;
     @FXML private TextField playerNameText;
+
+    @FXML private Label msgLabel;
+    @FXML private Label lvLabel;
+    @FXML private Label hpLabel;
+    @FXML private Label atkLabel;
+    @FXML private Label defLabel;
+    @FXML private Label expLabel;
+    @FXML private Label monLabel;
+    @FXML private Label yKeyLabel;
+    @FXML private Label bKeyLabel;
+    @FXML private Label rKeyLabel;
+    @FXML private Label stepLabel;
+    @FXML private Label killLabel;
+    @FXML private Label killBossLabel;
+    @FXML private Label scoreLabel;
+
+    private final static short SLEEP_TIME = 30;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initBackGround();
         initPlayerNameText();
-    }
-
-    public void initBackGround() {
-//        BackgroundImage myBI = new BackgroundImage(new Image(this.getClass().getResource("/image/icon/mt.png").toString(),
-//                32,32,false,true),
-//                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-//                BackgroundSize.DEFAULT);
-//        borderPane.setBackground(new Background(myBI));
-//        Image image1 = new Image(this.getClass().getResource("/image/icon/mt.png").toString());
-//        BackgroundSize bSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
-//        hBox.setBackground(new Background(new BackgroundImage(image1,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundPosition.CENTER,
-//                bSize)));
-        borderPane.setGraphic();
-        hBox.setBackground(new Background(new BackgroundImage(new Image(this.getClass().getResource("/image/wall/floor04_1.png").toString()), REPEAT, NO_REPEAT, CENTER, DEFAULT)));
+        lvLabel.textProperty().bind(lvService.valueProperty());
+        hpLabel.textProperty().bind(hpService.valueProperty());
+        atkLabel.textProperty().bind(atkService.valueProperty());
+        defLabel.textProperty().bind(defService.valueProperty());
+        expLabel.textProperty().bind(expService.valueProperty());
+        monLabel.textProperty().bind(monService.valueProperty());
+        yKeyLabel.textProperty().bind(yKeyService.valueProperty());
+        bKeyLabel.textProperty().bind(bKeyService.valueProperty());
+        rKeyLabel.textProperty().bind(rKeyService.valueProperty());
+        stepLabel.textProperty().bind(stepService.valueProperty());
+        killLabel.textProperty().bind(killService.valueProperty());
+        killBossLabel.textProperty().bind(killBossService.valueProperty());
+        scoreLabel.textProperty().bind(scoreService.valueProperty());
+        lvService.start();
+        hpService.start();
+        atkService.start();
+        defService.start();
+        expService.start();
+        monService.start();
+        yKeyService.start();
+        bKeyService.start();
+        rKeyService.start();
+        stepService.start();
+        killService.start();
+        killBossService.start();
+        scoreService.start();
     }
 
     //名字长度不超过40位
@@ -65,6 +82,291 @@ public class ScoreController implements Initializable {
         });
     }
 
+    Service<String> scoreService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    updateValue("A");
+                    for (int i = 1; i <= 4; i++) {
+                        Thread.sleep(700);
+                        switch (i) {
+                            case 1:
+                                updateValue("A");
+                                break;
+                            case 2:
+                                updateValue("S");
+                                break;
+                            case 3:
+                                updateValue("SS");
+                                break;
+                            case 4:
+                                updateValue("SSS");
+                                break;
+                        }
+                    }
+                    return "SSS";
+                }
+            };
+        }
+    };
 
+    Service<String> lvService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getLevel() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getLevel() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> hpService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getHp() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getHp() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> atkService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getAttack() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getAttack() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> defService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getDefense() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getDefense() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> expService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getExp() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getExp() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> monService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getMoney() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getMoney() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> yKeyService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getYKey() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getYKey() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> bKeyService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getBKey() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getBKey() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> rKeyService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getRKey() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getRKey() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> stepService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getStepNum() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getStepNum() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> killService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getKillNum() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getKillNum() + "";
+                }
+            };
+        }
+    };
+
+    Service<String> killBossService = new Service<String>() {
+        @Override
+        protected Task<String> createTask() {
+            return new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    for (int i = 1; i <= 100; i++) {
+                        updateValue((int) (ScoreApplication.player.getKillBossNum() * (i / 100.0)) + "");
+                        Thread.sleep(SLEEP_TIME);
+                    }
+                    return ScoreApplication.player.getKillBossNum() + "";
+                }
+            };
+        }
+    };
+
+    @FXML
+    public void clearMsgLabel() {
+        Platform.runLater(() -> msgLabel.setText(""));
+    }
+
+    @FXML
+    public void lvMsg() {
+        Platform.runLater(() -> msgLabel.setText("玩家等级"));
+    }
+
+    @FXML
+    public void hpMsg() {
+        Platform.runLater(() -> msgLabel.setText("玩家血量"));
+    }
+
+    @FXML
+    public void atkMsg() {
+        Platform.runLater(() -> msgLabel.setText("玩家攻击"));
+    }
+
+    @FXML
+    public void defMsg() {
+        Platform.runLater(() -> msgLabel.setText("玩家防御"));
+    }
+
+    @FXML
+    public void expMsg() {
+        Platform.runLater(() -> msgLabel.setText("玩家经验"));
+    }
+
+    @FXML
+    public void monMsg() {
+        Platform.runLater(() -> msgLabel.setText("玩家金币"));
+    }
+
+    @FXML
+    public void yKeyMsg() {
+        Platform.runLater(() -> msgLabel.setText("黄钥匙数"));
+    }
+
+    @FXML
+    public void bKeyMsg() {
+        Platform.runLater(() -> msgLabel.setText("蓝钥匙数"));
+    }
+
+    @FXML
+    public void rKeyMsg() {
+        Platform.runLater(() -> msgLabel.setText("红钥匙数"));
+    }
+
+    @FXML
+    public void moveMsg() {
+        Platform.runLater(() -> msgLabel.setText("玩家移动步数"));
+    }
+
+    @FXML
+    public void killMsg() {
+        Platform.runLater(() -> msgLabel.setText("杀敌数"));
+    }
+
+    @FXML
+    public void killBossMsg() {
+        Platform.runLater(() -> msgLabel.setText("击杀Boss数"));
+    }
 
 }
