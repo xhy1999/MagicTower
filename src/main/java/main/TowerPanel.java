@@ -81,7 +81,6 @@ public final class TowerPanel extends JPanel implements Runnable {
     JLabel rKeyPicLabel, rKeyLabel;
     JLabel monPicLabel, monLabel;
 
-    JDialog dialogBox;
     JLabel showMesLabel;
     JLabel fpsLabel, showFpsLabel;
 
@@ -140,7 +139,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         mainframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainframe.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         ScreenUtil screenUtil = new ScreenUtil();
-        mainframe.setLocation(screenUtil.getScreenWidth() / 3, screenUtil.getScreenWidth() / 6);
+        mainframe.setLocation((screenUtil.getScreenWidth() - WINDOW_WIDTH) / 2, (screenUtil.getScreenHeight() - WINDOW_HEIGHT - 100) / 2);
         //得到一个Toolkit对象
         Toolkit tool = this.getToolkit();
         Image image = tool.getImage(this.getClass().getResource("/image/icon/mt.png"));

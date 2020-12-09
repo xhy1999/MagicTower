@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-image: url('@../image/icon/mt.png');" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="score.ScoreController">
+    <top>
+        <HBox fx:id="hBox" alignment="CENTER" prefHeight="80.0" prefWidth="350.0" style="-fx-spacing: 15px; -fx-background-color: #00000000;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../image/icon/mt.png" />
+               </image>
+            </ImageView>
+            <VBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="250.0" style="-fx-spacing: 5px;">
+               <children>
+                  <Label text="请输入您的尊姓大名:" />
+                  <TextField fx:id="playerNameText">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+               </children>
+            </VBox>
+         </children>
+        </HBox>
+    </top>
+    <bottom>
+      <HBox alignment="CENTER" prefHeight="80.0" prefWidth="350.0" style="-fx-spacing: 50px;" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" text="上传分数" />
+            <Button mnemonicParsing="false" text="查看排行榜" />
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <HBox prefHeight="100.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" />
+            <VBox prefHeight="200.0" prefWidth="100.0" />
+         </children></HBox>
+   </center>
+</BorderPane>
