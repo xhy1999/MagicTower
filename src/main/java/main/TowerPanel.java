@@ -3,6 +3,7 @@ package main;
 import com.jogamp.opengl.awt.GLJPanel;
 import end.NormalEnd;
 import entity.*;
+import score.ScoreApplication;
 import util.*;
 
 import javax.swing.*;
@@ -40,7 +41,7 @@ public final class TowerPanel extends JPanel implements Runnable {
     public static final byte CS = 32;
 
     //标题栏高度
-    public static int TITLE_HEIGHT = 26;
+    public static int TITLE_HEIGHT = 35;
 
     //行
     public static final int GAME_ROW = 11;
@@ -50,8 +51,8 @@ public final class TowerPanel extends JPanel implements Runnable {
     /**
      * 窗体的宽和高
      */
-    public static final int WINDOW_WIDTH = 18 * CS - 10;
-    public static final int WINDOW_HEIGHT = 14 * CS - 10 + 16;
+    public static final int WINDOW_WIDTH = 582;//18 * CS + 6;
+    public static final int WINDOW_HEIGHT = 499;//14 * CS + 16 + 35;
 
     /**
      * 人物方向
@@ -106,6 +107,7 @@ public final class TowerPanel extends JPanel implements Runnable {
     private Tower tower;
 
     public static JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
+    public static ScreenUtil screenUtil = new ScreenUtil();
 
     public TowerPanel(Tower tower) {
         this.add(monsterManualPane);
@@ -130,7 +132,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         /********************UI部分********************/
         this.setLayout(null);
         //设定初始构造时面板大小
-        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        //this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         //this.createMenuBar();// 创建游戏菜单栏
         this.showAttribute();// 属性展示界面
         //设定焦点在本窗体
@@ -147,7 +149,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         Container contentPane = mainframe.getContentPane();
         contentPane.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         contentPane.add(this, BorderLayout.CENTER);
-        mainframe.pack();
+        //mainframe.pack();
         this.setFocusable(true);
         mainframe.setResizable(false);
         mainframe.setVisible(true);
@@ -163,7 +165,10 @@ public final class TowerPanel extends JPanel implements Runnable {
     @Override
     public void run() {
         TITLE_HEIGHT = (int) (mainframe.getBounds().getSize().getHeight() - this.getSize().getHeight());
-        Short fps = 0; //tick = 0
+        if (TITLE_HEIGHT != 35) {
+            mainframe.setSize(WINDOW_WIDTH, WINDOW_HEIGHT - 35 + TITLE_HEIGHT);
+        }
+        Short fps = 0;
         double fpsTimer = System.currentTimeMillis();
         double nsPerTick = 1000000000.0 / 10;
         double then = System.nanoTime();
@@ -810,8 +815,8 @@ public final class TowerPanel extends JPanel implements Runnable {
         floorNumLabel.setFont(new Font("微软雅黑", Font.BOLD, 14));
 
 
-        lvLabel = new JLabel("Lv." + this.tower.getPlayer().level, JLabel.CENTER);
-        lvLabel.setBounds(96 - 10, CS + 17, 60, CS);
+        lvLabel = new JLabel("Lv." + this.tower.getPlayer().level, JLabel.LEFT);
+        lvLabel.setBounds(96 - 10, CS + 17, 70, CS);
         lvLabel.setForeground(Color.white);
         lvLabel.setFont(new Font("微软雅黑", Font.BOLD, 18));
         //lvLabel.setOpaque(true);
@@ -966,17 +971,17 @@ public final class TowerPanel extends JPanel implements Runnable {
 
     private void drawBackGround(Graphics g) {
         //构造背景界面
-        for (int i = 0; i <= 14; i++) {
-            for (int j = 0; j <= 17; j++) {
+        for (int i = 0; i <= 15; i++) {
+            for (int j = 0; j <= 18; j++) {
                 if (i == 7 && (j == 1 || j == 2 || j == 3 || j == 4)) {
                     g.drawImage(this.tower.getWallImage()[1], j * CS, i * CS, this);
                     continue;
                 }
-                if (i == 13 || i == 14) {
+                if (i == 13 || i == 14 || i == 15) {
                     g.drawImage(this.tower.getFloorImage()[0], j * CS, i * CS, this);
                     continue;
                 }
-                if (i == 0 || i == 12 || j == 0 || j == 5 || j == 17) {
+                if (i == 0 || i == 12 || j == 0 || j == 5 || j == 17 || j == 18) {
                     if (i == 0 && (j == 10 || j == 11 || j == 12)) {
                         g.drawImage(this.tower.getFloorImage()[0], j * CS, i * CS, this);
                     } else {
@@ -1134,6 +1139,9 @@ public final class TowerPanel extends JPanel implements Runnable {
         } else {
             NormalEnd.end(this);
         }
+        ScoreApplication app = new ScoreApplication();
+        app.setPlayer(this.tower.getPlayer());
+        app.launch(ScoreApplication.class);
     }
 
 
