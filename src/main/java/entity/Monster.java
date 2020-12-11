@@ -63,7 +63,6 @@ public final class Monster extends Entity implements Cloneable,Serializable {
         }
         if (this.getId().equals("monster10_4")) {
             if (TowerPanel.floor == 16) {
-                System.out.println("16");
                 tower.getMonsterMap().get("monster03_4").updateAttribute(3333, 1200, 1133, 112, 100);
                 tower.getMonsterMap().get("monster04_13").updateAttribute(2000, 1106, 973, 106, 93);
                 tower.getMonsterMap().get("monster07_4").updateAttribute(1600, 1306, 1200, 117, 100);
@@ -77,6 +76,7 @@ public final class Monster extends Entity implements Cloneable,Serializable {
                 tower.getNpcMap().get("npc06_2_2").canMeet = false;
             }
             else if (TowerPanel.floor == 21) {
+                tower.getPlayer().killBossNum++;
                 tower.getMonsterMap().get("monster03_4").updateAttribute(4999, 2400, 2266, 140, 125);
                 tower.getMonsterMap().get("monster04_13").updateAttribute(3000, 2212, 1946, 132, 116);
                 tower.getMonsterMap().get("monster07_4").updateAttribute(2400, 2612, 2400, 146, 125);
@@ -98,6 +98,7 @@ public final class Monster extends Entity implements Cloneable,Serializable {
             }
         }
         else if (this.getId().contains("monster11")) {
+            tower.getPlayer().killBossNum++;
             if (this.getId().equals("monster11_8")) {
                 String[][] monsterLayer = tower.getSpecialMap().get(TowerPanel.specialGameMapNo).layer1;
                 //y
@@ -117,6 +118,7 @@ public final class Monster extends Entity implements Cloneable,Serializable {
             }
         }
         else if (this.getId().contains("monster12")) {
+            tower.getPlayer().killBossNum++;
             if (this.getId().equals("monster12_8")) {
                 String[][] monsterLayer = tower.getSpecialMap().get(TowerPanel.specialGameMapNo).layer1;
                 //y

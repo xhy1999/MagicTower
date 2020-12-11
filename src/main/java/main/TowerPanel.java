@@ -95,7 +95,7 @@ public final class TowerPanel extends JPanel implements Runnable {
     public static KeyInputHandler input;
     public static MusicPlayer musicPlayer;
     //TODO 正式版这里要改为 false
-    public static boolean canUseFloorTransfer = false;
+    public static boolean canUseFloorTransfer = true;
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     public static byte end;
@@ -122,7 +122,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         this.tower.getPlayer().x = this.tower.getGameMapList().get(floor).upPositionX;
         this.tower.getPlayer().y = this.tower.getGameMapList().get(floor).upPositionY;
         //TODO 正式版这里要改为 0
-        this.tower.getPlayer().maxFloor = 0;
+        this.tower.getPlayer().maxFloor = 23;
         this.tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
@@ -313,6 +313,7 @@ public final class TowerPanel extends JPanel implements Runnable {
             }
             musicPlayer.walk();
             this.tower.getPlayer().y--;
+            this.tower.getPlayer().stepNum++;
             lastMove = System.currentTimeMillis();
         } else if (input.down.down) {
             this.DIRECTION = DIRECTION_DOWN;
@@ -322,6 +323,7 @@ public final class TowerPanel extends JPanel implements Runnable {
             }
             musicPlayer.walk();
             this.tower.getPlayer().y++;
+            this.tower.getPlayer().stepNum++;
             lastMove = System.currentTimeMillis();
         } else if (input.left.down) {
             this.DIRECTION = DIRECTION_LEFT;
@@ -331,6 +333,7 @@ public final class TowerPanel extends JPanel implements Runnable {
             musicPlayer.walk();
             moveNo = (byte) ((moveNo + 1) % 4);
             this.tower.getPlayer().x--;
+            this.tower.getPlayer().stepNum++;
             lastMove = System.currentTimeMillis();
         } else if (input.right.down) {
             this.DIRECTION = DIRECTION_RIGHT;
@@ -340,6 +343,7 @@ public final class TowerPanel extends JPanel implements Runnable {
             musicPlayer.walk();
             moveNo = (byte) ((moveNo + 1) % 4);
             this.tower.getPlayer().x++;
+            this.tower.getPlayer().stepNum++;
             lastMove = System.currentTimeMillis();
         } else if (canUseMonsterManual && input.use_rod.down) {
             mainExecutor.execute(() -> {
@@ -760,6 +764,7 @@ public final class TowerPanel extends JPanel implements Runnable {
                 this.tower.getPlayer().hp = pHP;
                 this.tower.getPlayer().money += monster.getMoney();
                 this.tower.getPlayer().exp += monster.getExp();
+                this.tower.getPlayer().killNum++;
                 monster.script_end(this.tower);
                 return true;
             } else {

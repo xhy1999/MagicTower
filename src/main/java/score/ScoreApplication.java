@@ -45,6 +45,7 @@ public class ScoreApplication extends Application {
 
     public void setPlayer(Player player) {
         this.player = player;
+        this.player.calculateScore();
     }
 
 }

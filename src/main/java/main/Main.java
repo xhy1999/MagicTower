@@ -2,10 +2,6 @@ package main;
 
 import entity.Tower;
 
-import static pane.FloorTransferPane.floorTransferPane;
-import static pane.MonsterManualPane.monsterManualPane;
-import static pane.SpecialItemPane.specialItemPane;
-
 /**
  * @author Xhy
  */

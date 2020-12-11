@@ -29,10 +29,11 @@ public final class Player implements Cloneable {
     public int minFloor;
     public byte x;
     public byte y;
-    public int killNum = 823;
-    public int killBossNum = 8;
-    public int stepNum = 4241;
+    public int killNum;
+    public int killBossNum;
+    public int stepNum;
     public long startPlayTime;
+    private Integer playerScore;
 
     public Map<String, Integer> inventory;
 
@@ -45,27 +46,30 @@ public final class Player implements Cloneable {
     public Player() {
         this.name = "勇士";
         //TODO 正式版这里要改为 2000
-        this.hp = 136203;
+        this.hp = 2000;
         //TODO 正式版这里要改为 10
-        this.attack = 4623;
+        this.attack = 10;
         //TODO 正式版这里要改为 10
-        this.defense = 4195;
+        this.defense = 10;
         //TODO 正式版这里要改为 0
-        this.exp = 32643;
+        this.exp = 0;
         //TODO 正式版这里要改为 0
-        this.money = 86431;
+        this.money = 0;
         //TODO 正式版这里要改为 1
-        this.level = 151;
+        this.level = 1;
         //TODO 正式版这里要改为 0
-        this.yKey = 9;
+        this.yKey = 0;
         //TODO 正式版这里要改为 0
-        this.bKey = 99;
+        this.bKey = 0;
         //TODO 正式版这里要改为 0
-        this.rKey = 999;
+        this.rKey = 0;
         this.maxFloor = 0;
         this.minFloor = 0;
         this.x = 0;
         this.y = 0;
+        this.killNum = 0;
+        this.killBossNum = 0;
+        this.stepNum = 0;
         this.inventory = new HashMap<>();
         this.playerIcon = new ImageIcon[4][4];
         this.startPlayTime = UploadScore.getNetworkTime();
@@ -87,4 +91,11 @@ public final class Player implements Cloneable {
     public String toString() {
         return "Player{" + "name='" + name + '\'' + ", hp=" + hp + ", attack=" + attack + ", defense=" + defense + ", exp=" + exp + ", money=" + money + ", level=" + level + ", yKey=" + yKey + ", bKey=" + bKey + ", rKey=" + rKey + ", maxFloor=" + maxFloor + ", minFloor=" + minFloor + ", x=" + x + ", y=" + y + ", inventory=" + inventory + ", playerIcon=" + Arrays.toString(playerIcon) + '}';
     }
+
+    public void calculateScore() {
+        double score = hp * 0.01 + attack * 1.8 + defense * 1.8 + exp / 3 + money * 0.3 + yKey * 3 + bKey * 15 + rKey * 30;
+        score = score * (1 + 0.1 * this.killBossNum);
+        this.playerScore = (int) score;
+    }
+
 }
