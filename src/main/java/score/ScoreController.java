@@ -23,44 +23,29 @@ import java.util.ResourceBundle;
 
 public class ScoreController implements Initializable {
 
-    @FXML
-    private TextField playerNameText;
+    @FXML private TextField playerNameText;
 
-    @FXML
-    private Label msgLabel;
-    @FXML
-    private Label lvLabel;
-    @FXML
-    private Label hpLabel;
-    @FXML
-    private Label atkLabel;
-    @FXML
-    private Label defLabel;
-    @FXML
-    private Label expLabel;
-    @FXML
-    private Label monLabel;
-    @FXML
-    private Label yKeyLabel;
-    @FXML
-    private Label bKeyLabel;
-    @FXML
-    private Label rKeyLabel;
-    @FXML
-    private Label stepLabel;
-    @FXML
-    private Label killLabel;
-    @FXML
-    private Label killBossLabel;
-    @FXML
-    private Label fractionLabel;
-    @FXML
-    private Label scoreLabel;
+    @FXML private Label msgLabel;
+    @FXML private Label lvLabel;
+    @FXML private Label hpLabel;
+    @FXML private Label atkLabel;
+    @FXML private Label defLabel;
+    @FXML private Label expLabel;
+    @FXML private Label monLabel;
+    @FXML private Label yKeyLabel;
+    @FXML private Label bKeyLabel;
+    @FXML private Label rKeyLabel;
+    @FXML private Label stepLabel;
+    @FXML private Label killLabel;
+    @FXML private Label killBossLabel;
+    @FXML private Label fractionLabel;
+    @FXML private Label scoreLabel;
 
-    @FXML
-    private Button uploadScoreBtn;
+    @FXML private Button uploadScoreBtn;
+    @FXML private Button viewRankingBtn;
 
     private final static short SLEEP_TIME = 30;
+    public static Long ranking;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -97,9 +82,24 @@ public class ScoreController implements Initializable {
         uploadScoreBtn.setOnMouseClicked(event -> {
             uploadScore();
         });
+        viewRankingBtn.setOnMouseClicked(event -> {
+            viewRanking();
+        });
     }
 
-    private boolean isUpload = false;
+    private void viewRanking() {
+        new Thread(() -> {
+            try {
+                Desktop desktop = Desktop.getDesktop();
+                if ((desktop.isDesktopSupported()) && desktop.isSupported(Desktop.Action.BROWSE)) {
+                    URI uri = new URI("www.baidu.com");
+                    desktop.browse(uri);
+                }
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }).start();
+    }
 
     private void uploadScore() {
         if (StringUtils.isBlank(playerNameText.getText())) {
@@ -125,39 +125,21 @@ public class ScoreController implements Initializable {
             return new Task<String>() {
                 @Override
                 protected String call() throws Exception {
-                    /*updateValue("上传成功,点击查看");
-                    try {
-                        Desktop desktop = Desktop.getDesktop();
-                        if ((desktop.isDesktopSupported()) && desktop.isSupported(Desktop.Action.BROWSE)) {
-                            URI uri = new URI("www.baidu.com");
-                            desktop.browse(uri);
-                        }
-                    } catch (IOException ex) {
-                        System.out.println(ex.getMessage());
-                    } catch (URISyntaxException ex) {
-                        System.out.println(ex.getMessage());
-                    }*/
                     uploadScoreBtn.setDisable(true);
                     updateValue("正在上传...");
                     String res = UploadScore.uploadScore(ScoreApplication.player);
-                    System.out.println(res);
                     if (res.contains("失败")) {
                         uploadScoreBtn.setDisable(false);
                         return "上传失败,点击重试";
                     }
-                    System.out.println(1);
                     Platform.runLater(() -> {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("分数上传成功");
                         alert.setHeaderText("");
                         alert.setContentText(res);
-                        alert.showAndWait();
+                        alert.show();
                     });
-
-                    System.out.println(2);
-                    isUpload = true;
-                    System.out.println(3);
-                    return "上传成功,点击查看";
+                    return "分数上传成功";
                 }
             };
         }

@@ -18,6 +18,7 @@ public class ScoreApplication extends Application {
 
     public static void main(String[] args) {
         player = new Player();
+        player.calculateScore();
         launch();
     }
 

@@ -44,7 +44,7 @@
                         <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" style="-fx-spacing: 20px;">
                             <children>
                                 <Button fx:id="uploadScoreBtn" mnemonicParsing="false" text="上传分数" />
-                                <Button mnemonicParsing="false" text="查看排行榜" />
+                                <Button fx:id="viewRankingBtn" mnemonicParsing="false" text="查看排行榜" />
                             </children>
                         </HBox>
                         <Label fx:id="msgLabel">
