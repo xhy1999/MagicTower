@@ -30,7 +30,10 @@ public final class Player implements Cloneable {
     public byte x;
     public byte y;
     public int killNum;
-    public int killBossNum;
+    public int killBossNum;     //击杀boss总数
+    public int killBoss1Num;    //击杀boss1(21层吸血鬼)数量,最高为1
+    public int killBoss2Num;    //击杀boss2(大鱿鱼)数量,最高为9
+    public int killBoss3Num;    //击杀boss3(魔龙)数量,最高为9
     public int stepNum;
     public long startPlayTime;
     private Integer playerScore;
@@ -69,6 +72,9 @@ public final class Player implements Cloneable {
         this.y = 0;
         this.killNum = 0;
         this.killBossNum = 0;
+        this.killBoss1Num = 0;
+        this.killBoss2Num = 0;
+        this.killBoss3Num = 0;
         this.stepNum = 0;
         this.inventory = new HashMap<>();
         this.playerIcon = new ImageIcon[4][4];
@@ -93,8 +99,9 @@ public final class Player implements Cloneable {
     }
 
     public void calculateScore() {
+        this.killBossNum = this.killBoss1Num + this.killBoss2Num + this.killBoss3Num;
         double score = hp * 0.01 + attack * 1.8 + defense * 1.8 + exp / 3 + money * 0.3 + yKey * 3 + bKey * 15 + rKey * 30;
-        score = score * (1 + 0.1 * this.killBossNum);
+        score = score * (1 + 0.1 * this.killBoss1Num + 0.2 * this.killBoss2Num + 0.5 * this.killBoss3Num);
         this.playerScore = (int) score;
     }
 
