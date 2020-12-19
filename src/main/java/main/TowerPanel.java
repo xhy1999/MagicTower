@@ -274,7 +274,6 @@ public final class TowerPanel extends JPanel implements Runnable {
                 updateFloorNum();
                 DIRECTION = DIRECTION_DOWN;
                 musicPlayer.playBackgroundMusic(floor);
-                nowMonsterManual = 0;
                 if (floor < this.tower.getPlayer().minFloor) {
                     this.tower.getPlayer().minFloor = floor;
                 }
@@ -287,7 +286,6 @@ public final class TowerPanel extends JPanel implements Runnable {
                 updateFloorNum();
                 DIRECTION = DIRECTION_DOWN;
                 musicPlayer.playBackgroundMusic(floor);
-                nowMonsterManual = 0;
                 if (floor > this.tower.getPlayer().maxFloor) {
                     this.tower.getPlayer().maxFloor = floor;
                 }
@@ -1119,6 +1117,7 @@ public final class TowerPanel extends JPanel implements Runnable {
     }
 
     static public void updateFloorNum() {
+        nowMonsterManual = 0;
         if (floor == -1) {
             if (specialGameMapNo.equals("hell")) {
                 floorNumLabel.setText("地下层");
