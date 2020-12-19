@@ -85,6 +85,7 @@ public final class Monster extends Entity implements Cloneable,Serializable {
                 this.name = "吸血鬼";
                 showNpcDialog(tower, "npc06_2_3", null, null);
                 tower.getNpcMap().get("npc06_2_3").canMeet = false;
+                tower.getPlayer().killBoss1Num++;
                 if (tower.specialFloor) {
                     tower.getGameMapList().get(21).layer3[1][5] = "stair02";
                     tower.getGameMapList().get(21).layer3[6][5] = "";
@@ -98,7 +99,7 @@ public final class Monster extends Entity implements Cloneable,Serializable {
             }
         }
         else if (this.getId().contains("monster11")) {
-            tower.getPlayer().killBossNum++;
+            tower.getPlayer().killBoss2Num++;
             if (this.getId().equals("monster11_8")) {
                 String[][] monsterLayer = tower.getSpecialMap().get(TowerPanel.specialGameMapNo).layer1;
                 //y
@@ -118,7 +119,7 @@ public final class Monster extends Entity implements Cloneable,Serializable {
             }
         }
         else if (this.getId().contains("monster12")) {
-            tower.getPlayer().killBossNum++;
+            tower.getPlayer().killBoss3Num++;
             if (this.getId().equals("monster12_8")) {
                 String[][] monsterLayer = tower.getSpecialMap().get(TowerPanel.specialGameMapNo).layer1;
                 //y

@@ -300,7 +300,7 @@
                                                             <children>
                                                                 <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="25.0" styleClass="label-pic-bg">
                                                                     <graphic>
-                                                                        <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                                                                        <ImageView fx:id="killBossImgView" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                                                                             <image>
                                                                                 <Image url="@../image/monster/monster11_8_1.png" />
                                                                             </image>

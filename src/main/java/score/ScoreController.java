@@ -12,6 +12,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import main.TowerPanel;
 import util.StringUtils;
 
 import java.awt.*;
@@ -44,12 +47,15 @@ public class ScoreController implements Initializable {
     @FXML private Button uploadScoreBtn;
     @FXML private Button viewRankingBtn;
 
+    @FXML private ImageView killBossImgView;
+
     private final static short SLEEP_TIME = 30;
     public static Long ranking;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initPlayerNameText();
+        initBossImg();
         lvLabel.textProperty().bind(lvService.valueProperty());
         hpLabel.textProperty().bind(hpService.valueProperty());
         atkLabel.textProperty().bind(atkService.valueProperty());
@@ -99,6 +105,21 @@ public class ScoreController implements Initializable {
                 System.err.println(e.getMessage());
             }
         }).start();
+    }
+
+    private void initBossImg() {
+        if (TowerPanel.end == 1) {
+            killBossImgView.setImage(new Image(this.getClass().getResource("/image/monster/monster10_15_1.png").toString()));
+        }
+        else if (TowerPanel.end == 2) {
+            killBossImgView.setImage(new Image(this.getClass().getResource("/image/monster/monster11_8_1.png").toString()));
+        }
+        else if (TowerPanel.end == 3) {
+            killBossImgView.setImage(new Image(this.getClass().getResource("/image/monster/monster12_8_1.png").toString()));
+        }
+        else {
+            killBossImgView.setImage(new Image(this.getClass().getResource("/image/player/player01_1_1.png").toString()));
+        }
     }
 
     private void uploadScore() {
@@ -357,9 +378,9 @@ public class ScoreController implements Initializable {
                     updateValue(val);
                     int score = ScoreApplication.player.getPlayerScore();
                     int num = 0;
-                    if (score >= 21000) {
+                    if (score >= 25000) {
                         num = 4;
-                    } else if (score >= 18000) {
+                    } else if (score >= 20000) {
                         num = 3;
                     } else if (score >= 15000) {
                         num = 2;

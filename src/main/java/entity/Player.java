@@ -49,17 +49,17 @@ public final class Player implements Cloneable {
     public Player() {
         this.name = "勇士";
         //TODO 正式版这里要改为 2000
-        this.hp = 2000;
+        this.hp = 209020;
         //TODO 正式版这里要改为 10
-        this.attack = 10;
+        this.attack = 4307;
         //TODO 正式版这里要改为 10
-        this.defense = 10;
+        this.defense = 3929;
         //TODO 正式版这里要改为 0
-        this.exp = 0;
+        this.exp = 14;
         //TODO 正式版这里要改为 0
-        this.money = 0;
+        this.money = 7;
         //TODO 正式版这里要改为 1
-        this.level = 1;
+        this.level = 192;
         //TODO 正式版这里要改为 0
         this.yKey = 0;
         //TODO 正式版这里要改为 0
