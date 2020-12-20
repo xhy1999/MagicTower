@@ -98,7 +98,12 @@ public class ScoreController implements Initializable {
             try {
                 Desktop desktop = Desktop.getDesktop();
                 if ((desktop.isDesktopSupported()) && desktop.isSupported(Desktop.Action.BROWSE)) {
-                    URI uri = new URI("www.baidu.com");
+                    URI uri;
+                    if (UploadScore.playerId == null) {
+                        uri = new URI("http://www.xuehaoyang.com:8089/magictower/view/ranking");
+                    } else {
+                        uri = new URI("http://www.xuehaoyang.com:8089/magictower/view/ranking?player_id=" + UploadScore.playerId);
+                    }
                     desktop.browse(uri);
                 }
             } catch (Exception e) {
@@ -131,9 +136,6 @@ public class ScoreController implements Initializable {
         if (!uploadScoreBtn.hasProperties()) {
             uploadScoreBtn.textProperty().bind(uploadScoreService.valueProperty());
         }
-        uploadScoreService.setOnSucceeded((WorkerStateEvent event) -> {
-            System.out.println("任务处理完成！");
-        });
         if (uploadScoreService.getState() == Worker.State.SUCCEEDED) {
             uploadScoreService.reset();
         }
