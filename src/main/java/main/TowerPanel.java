@@ -348,7 +348,7 @@ public final class TowerPanel extends JPanel implements Runnable {
                 showMonsterManual(this.tower);
             });
         } else if (canUseFloorTransfer && input.use_floor_transfer.down) {
-            if (!isNormalFloor()) {
+            if (!isNormalFloor() || floor == 21) {
                 musicPlayer.fail();
                 return;
             }
@@ -383,8 +383,6 @@ public final class TowerPanel extends JPanel implements Runnable {
 
     //开门时间
     private static final byte DOOR_OPEN_TIME = 40;
-    //对话中按下空格
-    private boolean escapeDown = false;
 
     /**
      * 判断能否移动到 (x,y)
@@ -407,7 +405,7 @@ public final class TowerPanel extends JPanel implements Runnable {
             return false;
         }
         if (layer1[y][x].contains("npc")) {
-            showNpcDialog(this.tower, layer1[y][x], x, y);
+            mainExecutor.execute(() -> showNpcDialog(this.tower, layer1[y][x], x, y));
             return false;
         } else if (layer1[y][x].contains("shop")) {
             mainExecutor.execute(() -> {

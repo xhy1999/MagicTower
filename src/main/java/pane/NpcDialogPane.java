@@ -118,7 +118,11 @@ public class NpcDialogPane {
                         }
                     }
                     finalNpc.script_end(tower);
-                    if (npcId.equals("npc07_1_2")) {
+                    if (npcId.equals("npc06_2_3") && !tower.specialFloor) {
+                        //TODO towerPanel.over();    结局1
+                        TowerPanel.end = 1;
+                        TowerPanel.running = false;
+                    } else if (npcId.equals("npc07_1_2")) {
                         //TODO towerPanel.over();    结局2
                         TowerPanel.end = 2;
                         TowerPanel.running = false;

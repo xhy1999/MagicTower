@@ -37,7 +37,7 @@ public final class Tower implements Cloneable {
     private List<GameMap> gameMapList;
     private HashMap<String, GameMap> specialMap;
     //TODO(是否挑战额外楼层即是否挑战血影) 正式版需要修改为 false
-    public static boolean specialFloor = true;
+    public static boolean specialFloor = false;
 
     private static <T> List<T> deepCopy(List<T> src) throws IOException, ClassNotFoundException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
