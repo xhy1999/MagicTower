@@ -353,9 +353,7 @@ public final class TowerPanel extends JPanel implements Runnable {
                 return;
             }
             canMove = false;
-            mainExecutor.execute(() -> {
-                showFloorTransfer(this.tower);
-            });
+            mainExecutor.execute(() -> showFloorTransfer(this.tower));
         }
         //TODO 正式版这里要去掉
         else if (input.escape.down) {

@@ -2,12 +2,12 @@ package entity;
 
 import lombok.Data;
 import score.UploadScore;
+import util.CopyUtil;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Xhy
@@ -38,7 +38,7 @@ public final class Player implements Cloneable {
     public long startPlayTime;
     private Integer playerScore;
 
-    public Map<String, Integer> inventory;
+    public HashMap<String, Integer> inventory;
 
     /**
      * 注意 不需要父类的icon
@@ -61,11 +61,11 @@ public final class Player implements Cloneable {
         //TODO 正式版这里要改为 1
         this.level = 192;
         //TODO 正式版这里要改为 0
-        this.yKey = 0;
+        this.yKey = 10;
         //TODO 正式版这里要改为 0
-        this.bKey = 0;
+        this.bKey = 10;
         //TODO 正式版这里要改为 0
-        this.rKey = 0;
+        this.rKey = 10;
         this.maxFloor = 0;
         this.minFloor = 0;
         this.x = 0;
@@ -90,7 +90,15 @@ public final class Player implements Cloneable {
     }
 
     public Player clone() throws CloneNotSupportedException {
-        return (Player) super.clone();
+        Player clonePlayer = (Player) super.clone();
+        try {
+            clonePlayer.setInventory(CopyUtil.deepCopy(this.inventory));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return clonePlayer;
     }
 
     @Override

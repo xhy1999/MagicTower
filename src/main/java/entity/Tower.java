@@ -1,6 +1,7 @@
 package entity;
 
 import load.*;
+import util.CopyUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * @author Xhy
  */
-public final class Tower implements Cloneable {
+public final class Tower implements Cloneable, Serializable {
 
     private Player player;
 
@@ -39,37 +40,16 @@ public final class Tower implements Cloneable {
     //TODO(是否挑战额外楼层即是否挑战血影) 正式版需要修改为 false
     public static boolean specialFloor = false;
 
-    private static <T> List<T> deepCopy(List<T> src) throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(byteOut);
-        out.writeObject(src);
-        ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(byteIn);
-        List<T> copy_list = (List<T>) in.readObject();
-        return copy_list;
-    }
-
-    private static <T extends Serializable> T deepCopyMap(T obj) throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(obj);
-        oos.close();
-        ByteArrayInputStream bai = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream ois = new ObjectInputStream(bai);
-        T clonedObj = (T) ois.readObject();
-        ois.close();
-        return clonedObj;
-    }
-
     public Tower clone() throws CloneNotSupportedException {
         Tower cloneTower = (Tower) super.clone();
         cloneTower.setPlayer(this.player.clone());
         try {
-            cloneTower.gameMapList = deepCopy(this.gameMapList);
-            cloneTower.specialMap = deepCopyMap(this.specialMap);
-            cloneTower.monsterMap = deepCopyMap(this.monsterMap);
-            cloneTower.shopMap = deepCopyMap(this.shopMap);
-            cloneTower.npcMap = deepCopyMap(this.npcMap);
+            cloneTower.gameMapList = CopyUtil.deepCopyList(this.gameMapList);
+            cloneTower.specialMap = CopyUtil.deepCopy(this.specialMap);
+            cloneTower.doorMap = CopyUtil.deepCopy(this.doorMap);
+            cloneTower.monsterMap = CopyUtil.deepCopy(this.monsterMap);
+            cloneTower.shopMap = CopyUtil.deepCopy(this.shopMap);
+            cloneTower.npcMap = CopyUtil.deepCopy(this.npcMap);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
