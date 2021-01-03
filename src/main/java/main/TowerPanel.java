@@ -95,7 +95,7 @@ public final class TowerPanel extends JPanel implements Runnable {
     public static KeyInputHandler input;
     public static MusicPlayer musicPlayer;
     //TODO 正式版这里要改为 false
-    public static boolean canUseFloorTransfer = true;
+    public static boolean canUseFloorTransfer = false;
     public static boolean canUseMonsterManual = true;
     public static String specialGameMapNo;
     public static byte end;
@@ -122,7 +122,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         this.tower.getPlayer().x = this.tower.getGameMapList().get(floor).upPositionX;
         this.tower.getPlayer().y = this.tower.getGameMapList().get(floor).upPositionY;
         //TODO 正式版这里要改为 0
-        this.tower.getPlayer().maxFloor = 23;
+        this.tower.getPlayer().maxFloor = 0;
         this.tower.getPlayer().minFloor = 0;
         musicPlayer = new MusicPlayer();
         musicPlayer.playBackgroundMusic(floor);
@@ -357,7 +357,7 @@ public final class TowerPanel extends JPanel implements Runnable {
         }
         //TODO 正式版这里要去掉
         else if (input.escape.down) {
-            running = false;
+            //running = false;
         } else if (input.save.down) {
             save();
         } else if (input.load.down) {
