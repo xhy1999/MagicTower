@@ -99,11 +99,11 @@ public class ScoreController implements Initializable {
                 Desktop desktop = Desktop.getDesktop();
                 if ((desktop.isDesktopSupported()) && desktop.isSupported(Desktop.Action.BROWSE)) {
                     URI uri;
-                    if (UploadScore.playerId == null) {
+//                    if (UploadScore.playerId == null) {
                         uri = new URI("http://www.xuehaoyang.com:8089/magictower/view/ranking");
-                    } else {
-                        uri = new URI("http://www.xuehaoyang.com:8089/magictower/view/ranking?player_id=" + UploadScore.playerId);
-                    }
+//                    } else {
+//                        uri = new URI("http://www.xuehaoyang.com:8089/magictower/view/ranking?player_id=" + UploadScore.playerId);
+//                    }
                     desktop.browse(uri);
                 }
             } catch (Exception e) {
@@ -150,18 +150,18 @@ public class ScoreController implements Initializable {
                 protected String call() throws Exception {
                     uploadScoreBtn.setDisable(true);
                     updateValue("正在上传...");
-                    String res = UploadScore.uploadScore(ScoreApplication.player);
-                    if (res.contains("失败")) {
-                        uploadScoreBtn.setDisable(false);
-                        return "上传失败,点击重试";
-                    }
-                    Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("分数上传成功");
-                        alert.setHeaderText("");
-                        alert.setContentText(res);
-                        alert.show();
-                    });
+//                    String res = UploadScore.uploadScore(ScoreApplication.player);
+//                    if (res.contains("失败")) {
+//                        uploadScoreBtn.setDisable(false);
+//                        return "上传失败,点击重试";
+//                    }
+//                    Platform.runLater(() -> {
+//                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//                        alert.setTitle("分数上传成功");
+//                        alert.setHeaderText("");
+//                        alert.setContentText(res);
+//                        alert.show();
+//                    });
                     return "分数上传成功";
                 }
             };

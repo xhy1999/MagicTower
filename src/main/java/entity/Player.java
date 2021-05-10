@@ -1,7 +1,6 @@
 package entity;
 
 import lombok.Data;
-import score.UploadScore;
 import util.CopyUtil;
 
 import javax.swing.*;
@@ -78,7 +77,7 @@ public final class Player implements Cloneable {
         this.stepNum = 0;
         this.inventory = new HashMap<>();
         this.playerIcon = new ImageIcon[4][4];
-        this.startPlayTime = UploadScore.getNetworkTime();
+        //this.startPlayTime = UploadScore.getNetworkTime();
     }
 
     public ImageIcon[][] getPlayerIcon() {
