@@ -3,6 +3,11 @@ package entity;
 import javax.swing.*;
 import java.io.Serializable;
 
+/**
+ * 商店
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class Shop extends Entity implements Cloneable, Serializable {
 
     public String need;

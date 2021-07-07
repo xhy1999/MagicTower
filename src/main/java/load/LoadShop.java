@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 商店加载类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class LoadShop {
 
     public HashMap<String, Shop> initShop() {

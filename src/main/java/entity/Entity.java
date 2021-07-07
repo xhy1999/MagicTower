@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.io.Serializable;
 
 /**
- * @author Xhy
+ * 实体
+ * @author xuehy
+ * @since 2020/6/9
  */
 public class Entity implements Cloneable, Serializable {
 

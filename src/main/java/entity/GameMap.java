@@ -2,6 +2,11 @@ package entity;
 
 import java.io.Serializable;
 
+/**
+ * 游戏地图
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class GameMap implements Cloneable, Serializable {
 
     /**

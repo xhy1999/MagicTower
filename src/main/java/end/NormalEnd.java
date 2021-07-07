@@ -6,8 +6,16 @@ import util.ImageUtil;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public class NormalEnd {
 
+    /**
+     * 游戏普通结局字幕
+     * @param towerPanel 游戏窗体
+     */
     public static void end(TowerPanel towerPanel) {
         for (int i = 0; i <= 0xFF; i++) {
             towerPanel.setBackground(new Color(0, 0, 0, i));

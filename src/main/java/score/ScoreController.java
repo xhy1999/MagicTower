@@ -1,29 +1,29 @@
 package score;
 
-import entity.Player;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import main.TowerPanel;
-import util.StringUtils;
+import util.StringUtil;
 
 import java.awt.*;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * 最终得分窗体控制器
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public class ScoreController implements Initializable {
 
     @FXML private TextField playerNameText;
@@ -128,7 +128,7 @@ public class ScoreController implements Initializable {
     }
 
     private void uploadScore() {
-        if (StringUtils.isBlank(playerNameText.getText())) {
+        if (StringUtil.isBlank(playerNameText.getText())) {
             Platform.runLater(() -> msgLabel.setText("请输入您的尊姓大名"));
             return;
         }

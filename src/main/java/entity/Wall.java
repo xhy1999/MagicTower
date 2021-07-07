@@ -2,6 +2,11 @@ package entity;
 
 import javax.swing.*;
 
+/**
+ * 墙
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class Wall extends Entity {
 
     public Wall(String id, ImageIcon imageIcon) {

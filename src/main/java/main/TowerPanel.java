@@ -8,8 +8,6 @@ import util.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +27,9 @@ import static pane.SpecialItemPane.showSpecialItem;
 import static pane.SpecialItemPane.specialItemPane;
 
 /**
- * @author Xhy
+ * 游戏主窗体绘制类
+ * @author xuehy
+ * @since 2020/6/9
  */
 public final class TowerPanel extends JPanel implements Runnable {
 

@@ -8,6 +8,11 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * 特殊物品提示绘制类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class SpecialItemPane {
 
     public static JLayeredPane specialItemPane = new JLayeredPane();

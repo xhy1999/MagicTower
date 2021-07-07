@@ -2,6 +2,11 @@ package entity;
 
 import javax.swing.*;
 
+/**
+ * 门
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class Door extends Entity {
 
     //openable为true才能打开

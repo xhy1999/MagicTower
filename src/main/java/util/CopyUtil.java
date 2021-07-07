@@ -3,6 +3,11 @@ package util;
 import java.io.*;
 import java.util.List;
 
+/**
+ * 深拷贝工具类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public class CopyUtil {
 
     public static <T> List<T> deepCopyList(List<T> src) throws IOException, ClassNotFoundException {

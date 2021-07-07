@@ -6,7 +6,9 @@ import javax.swing.*;
 import java.util.HashMap;
 
 /**
- * @author Xhy
+ * 怪物加载类
+ * @author xuehy
+ * @since 2020/6/9
  */
 public final class LoadMonster {
 

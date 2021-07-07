@@ -2,6 +2,11 @@ package util;
 
 import java.awt.*;
 
+/**
+ * 屏幕工具类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class ScreenUtil {
 
     private int screenWidth;

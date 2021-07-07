@@ -3,6 +3,11 @@ package util;
 import java.net.URL;
 import java.util.concurrent.*;
 
+/**
+ * 音频工具类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class MusicPlayer {
 
     Audio audio;

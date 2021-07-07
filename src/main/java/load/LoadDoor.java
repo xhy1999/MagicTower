@@ -5,6 +5,11 @@ import entity.Door;
 import javax.swing.*;
 import java.util.HashMap;
 
+/**
+ * 门加载类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class LoadDoor {
 
     public HashMap<String, Door> initDoor() {

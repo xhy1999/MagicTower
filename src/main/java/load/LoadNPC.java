@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * NPC加载类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class LoadNPC {
 
     //01-elf:精灵

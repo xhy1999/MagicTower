@@ -12,6 +12,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
+/**
+ * NPC对话框绘制类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public class NpcDialogPane {
 
     public static JLayeredPane npcDialogPane = new JLayeredPane();

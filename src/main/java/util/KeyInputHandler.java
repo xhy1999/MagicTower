@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Xhy
+ * 按键输入工具类
+ * 注意: JPanel可以这样用
+ * @author xuehy
+ * @since 2020/6/9
  */
 public final class KeyInputHandler implements KeyListener {
 

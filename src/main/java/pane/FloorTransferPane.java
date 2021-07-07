@@ -8,6 +8,11 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * 楼层传送绘制类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class FloorTransferPane {
 
     public static JLayeredPane floorTransferPane = new JLayeredPane();

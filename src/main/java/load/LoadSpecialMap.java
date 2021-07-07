@@ -4,6 +4,11 @@ import entity.GameMap;
 
 import java.util.HashMap;
 
+/**
+ * 特殊地图加载类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class LoadSpecialMap {
 
     public HashMap<String, GameMap> initSpecialMap() {

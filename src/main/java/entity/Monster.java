@@ -8,7 +8,9 @@ import java.io.Serializable;
 import static pane.NpcDialogPane.showNpcDialog;
 
 /**
- * @author Xhy
+ * 怪物
+ * @author xuehy
+ * @since 2020/6/9
  */
 public final class Monster extends Entity implements Cloneable,Serializable {
 

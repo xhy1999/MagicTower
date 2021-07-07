@@ -5,11 +5,15 @@ import main.TowerPanel;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public class PostScript {
 
     /**
-     * 字幕
-     * 需要在线程中调用
+     * 游戏结束字幕右侧文本显示脚本,需要在游戏主线程中调用
+     * @param towerPanel 游戏窗体
      */
     public static void postScript(TowerPanel towerPanel) {
         try {

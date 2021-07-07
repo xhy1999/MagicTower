@@ -3,6 +3,11 @@ package util;
 import entity.Monster;
 import entity.Player;
 
+/**
+ * 战斗结果计算器
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class FightCalc {
 
     private Monster monster;

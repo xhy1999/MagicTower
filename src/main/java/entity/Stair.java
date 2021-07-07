@@ -4,6 +4,11 @@ import main.TowerPanel;
 
 import javax.swing.*;
 
+/**
+ * 楼梯
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class Stair extends Entity {
 
     public Stair(String id, ImageIcon imageIcon) {

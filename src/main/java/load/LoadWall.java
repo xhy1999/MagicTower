@@ -5,6 +5,11 @@ import entity.Wall;
 import javax.swing.*;
 import java.util.HashMap;
 
+/**
+ * 墙加载类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class LoadWall {
 
     public HashMap<String, Wall> initWall() {

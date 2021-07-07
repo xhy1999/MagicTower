@@ -5,6 +5,11 @@ import entity.GameMap;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 地图加载类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class LoadMap {
 
     public List<GameMap> initMap() {

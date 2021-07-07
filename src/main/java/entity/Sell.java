@@ -3,6 +3,11 @@ package entity;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * 商店的商品
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class Sell implements Cloneable, Serializable {
 
     public List<String> name;

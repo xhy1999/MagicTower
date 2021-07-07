@@ -14,6 +14,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 怪物手册绘制类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class MonsterManualPane {
 
     public static JLayeredPane monsterManualPane = new JLayeredPane();

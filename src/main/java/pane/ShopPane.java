@@ -10,6 +10,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
 
+/**
+ * 商店绘制类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public class ShopPane {
 
     public static JLayeredPane shopPane = new JLayeredPane();

@@ -1,17 +1,15 @@
 package score;
 
-import entity.Player;
-import entity.Tower;
-import javafx.geometry.Pos;
-import util.KeyInputHandler;
-import util.MusicPlayer;
 import util.ScreenUtil;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static main.TowerPanel.CS;
-
+/**
+ * 最终得分窗体 JPanel对比版
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public class ScorePanel extends JPanel {
 
     private static JFrame scoreFrame = new JFrame("最终得分");
@@ -22,11 +20,12 @@ public class ScorePanel extends JPanel {
 
     private Image backgroundImage;
 
+    //窗体测试方法
     public static void main(String[] args) {
-        ScorePanel panel = new ScorePanel(new Player());
+        new ScorePanel();
     }
 
-    public ScorePanel(Player player) {
+    public ScorePanel() {
         /********************UI部分********************/
         this.setLayout(null);
         //设定初始构造时面板大小

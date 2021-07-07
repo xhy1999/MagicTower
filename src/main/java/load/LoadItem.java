@@ -5,6 +5,11 @@ import entity.Item;
 import javax.swing.*;
 import java.util.HashMap;
 
+/**
+ * 道具加载类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class LoadItem {
 
     public HashMap<String, Item> initItem() {

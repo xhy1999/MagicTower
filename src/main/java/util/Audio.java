@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * @author Xhy
+ * 音频输出工具类
+ * @author xuehy
+ * @since 2020/6/9
  */
 public final class Audio extends Thread {
 
@@ -18,22 +20,6 @@ public final class Audio extends Thread {
     public Audio(URL path, boolean isLoop) {
         this.path = path;
         this.isLoop = isLoop;
-    }
-
-    public URL getPath() {
-        return path;
-    }
-
-    public void setPath(URL path) {
-        this.path = path;
-    }
-
-    public boolean isLoop() {
-        return isLoop;
-    }
-
-    public void setLoop(boolean loop) {
-        isLoop = loop;
     }
 
     @Override
@@ -80,11 +66,7 @@ public final class Audio extends Thread {
 
     /**
      * 获取文件的编码信息
-     *
      * @return wav或者pcm文件的编码信息
-     * @Title: getInfo
-     * @Description: 获取件的编码信息
-     * @date 2020年6月21日 14:14:48
      */
     public String getInfo() {
         /*if (!new File(path.toString()).exists()) {
@@ -110,13 +92,7 @@ public final class Audio extends Thread {
     }
 
     /**
-     * 播放 mp3
-     *
-     * @throws IOException
-     * @throws UnsupportedAudioFileException
-     * @Title: playMp3
-     * @Description: 播放 mp3
-     * @date 2020年6月21日 14:21:57
+     * 播放MP3音频
      */
     public void playMp3() throws UnsupportedAudioFileException, IOException {
         AudioInputStream stream = null;
@@ -126,7 +102,7 @@ public final class Audio extends Thread {
         AudioFormat baseFormat = stream.getFormat();
         //设定输出格式为pcm格式的音频文件
         AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
-        // 输出到音频
+        //输出到音频
         stream = AudioSystem.getAudioInputStream(format, stream);
         AudioFormat target = stream.getFormat();
         DataLine.Info dinfo = new DataLine.Info(SourceDataLine.class, target, AudioSystem.NOT_SPECIFIED);
@@ -154,13 +130,7 @@ public final class Audio extends Thread {
     }
 
     /**
-     * 播放 flac
-     *
-     * @throws IOException
-     * @throws UnsupportedAudioFileException
-     * @Title: playFlac
-     * @Description: 播放 flac
-     * @date 2020年6月21日 14:34:20
+     * 播放FLAC音频
      */
     public void playFlac() throws UnsupportedAudioFileException, IOException {
         AudioInputStream audio = AudioSystem.getAudioInputStream(path);
@@ -192,13 +162,7 @@ public final class Audio extends Thread {
     }
 
     /**
-     * 播放 wav
-     *
-     * @throws IOException
-     * @throws UnsupportedAudioFileException
-     * @Title: playWav
-     * @Description: 播放 wav
-     * @date 2020年6月21日 14:45:31
+     * 播放WAV音频
      */
     public void playWav() throws UnsupportedAudioFileException, IOException {
         AudioInputStream stream = AudioSystem.getAudioInputStream(path);
@@ -227,13 +191,7 @@ public final class Audio extends Thread {
     }
 
     /**
-     * 播放 pcm
-     *
-     * @throws IOException
-     * @throws UnsupportedAudioFileException
-     * @Title: playPcm
-     * @Description: 播放 pcm
-     * @date 2020年6月21日 14:48:10
+     * 播放PCM音频
      */
     public void playPcm() throws UnsupportedAudioFileException, IOException {
         AudioInputStream stream = AudioSystem.getAudioInputStream(path);
@@ -263,12 +221,8 @@ public final class Audio extends Thread {
 
     /**
      * 读取pcm文件
-     *
      * @param path pcm文件路径
-     * @return AudioInputStream
-     * @Title: readPcm
-     * @Description: 读取pcm文件
-     * @date 2020年6月21日 14:53:12
+     * @return AudioInputStream 流
      */
     public AudioInputStream readPcm(String path) throws UnsupportedAudioFileException, IOException {
         File file = new File(path);
@@ -282,48 +236,9 @@ public final class Audio extends Thread {
     }
 
     /**
-     * 获取 mp3 脉冲编码调制
-     *
-     * @param rPath mp3文件路径
-     * @param sPath pcm文件保存路径
-     * @return AudioInputStream
-     * @Title: getPcmFromMp3
-     * @Description: 获取 mp3 脉冲编码调制
-     * @date 2020年6月21日 15:01:43
-     */
-    public void getPcmFromMp3(String rPath, String sPath) {
-        File file = new File(rPath);
-        if (!file.exists()) {
-            throw new RuntimeException("文件不存在");
-        }
-        AudioInputStream stream = null;
-        AudioFormat format = null;
-        try {
-            AudioInputStream in = null;
-            //读取音频文件的类
-            MpegAudioFileReader mp = new MpegAudioFileReader();
-            in = mp.getAudioInputStream(file);
-            AudioFormat baseFormat = in.getFormat();
-            //设定输出格式为pcm格式的音频文件
-            format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
-            //输出到音频
-            stream = AudioSystem.getAudioInputStream(format, in);
-            AudioSystem.write(stream, AudioFileFormat.Type.WAVE, new File(sPath));
-            stream.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    /**
-     * Java Music mp3 转 pcm
-     *
+     * MP3转PCM
      * @param rPath MP3文件路径
      * @param sPath PCM文件保存路径
-     * @return AudioInputStream
-     * @Title: mp3ToPcm
-     * @Description: MP3 PCM
-     * @date 2020年6月21日 15:08:03
      */
     public void mp3ToPcm(String rPath, String sPath) {
         File file = new File(rPath);
@@ -350,16 +265,9 @@ public final class Audio extends Thread {
     }
 
     /**
-     * wav转pcm
-     *
+     * WAV转PCM
      * @param wPath wav文件路径
      * @param pPath pcm文件保存路径
-     * @return AudioInputStream
-     * @throws IOException
-     * @throws UnsupportedAudioFileException
-     * @Title: wavToPcm
-     * @Description: wav转pcm
-     * @date 2020年6月21日 15:13:45
      */
     public void wavToPcm(String wPath, String pPath) {
         File file = new File(wPath);

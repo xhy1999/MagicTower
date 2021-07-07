@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Xhy
+ * 魔塔实体
+ * @author xuehy
+ * @since 2020/6/9
  */
 public final class Tower implements Cloneable, Serializable {
 

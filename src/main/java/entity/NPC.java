@@ -6,6 +6,11 @@ import javax.swing.*;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * NPC
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class NPC extends Entity implements Cloneable, Serializable {
 
     public List<Dialogue> dialogues;

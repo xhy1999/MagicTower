@@ -1,6 +1,11 @@
 package util;
 
-public class StringUtils {
+/**
+ * 字符工具类
+ * @author xuehy
+ * @since 2020/6/9
+ */
+public class StringUtil {
 
     public static boolean isBlank(String str) {
         int strLen;
@@ -10,11 +15,8 @@ public class StringUtils {
                     return false;
                 }
             }
-
-            return true;
-        } else {
-            return true;
         }
+        return true;
     }
 
 }

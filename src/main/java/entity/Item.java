@@ -2,6 +2,11 @@ package entity;
 
 import javax.swing.*;
 
+/**
+ * 游戏道具
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class Item extends Entity {
 
     public String msg;

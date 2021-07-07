@@ -3,7 +3,9 @@ package main;
 import entity.Tower;
 
 /**
- * @author Xhy
+ * 游戏主函数
+ * @author xuehy
+ * @since 2020/6/9
  */
 public class Main {
 

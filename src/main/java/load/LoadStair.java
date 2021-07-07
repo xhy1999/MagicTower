@@ -5,6 +5,11 @@ import entity.Stair;
 import javax.swing.*;
 import java.util.HashMap;
 
+/**
+ * 楼梯加载类
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public final class LoadStair {
 
     public HashMap<String, Stair> initStair() {

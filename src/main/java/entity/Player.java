@@ -9,7 +9,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * @author Xhy
+ * 玩家
+ * @author xuehy
+ * @since 2020/6/9
  */
 @Data
 public final class Player implements Cloneable {

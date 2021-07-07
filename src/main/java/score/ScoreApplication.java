@@ -12,10 +12,16 @@ import main.TowerPanel;
 
 import java.io.IOException;
 
+/**
+ * 最终得分窗体
+ * @author xuehy
+ * @since 2020/6/9
+ */
 public class ScoreApplication extends Application {
 
     protected static Player player;
 
+    //窗体测试方法
     public static void main(String[] args) {
         player = new Player();
         player.calculateScore();
