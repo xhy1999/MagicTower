@@ -17,7 +17,9 @@
   - [Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)的静态资源（通过编写的C#工具类截取）
 - 音频资源
   - 游戏音效
+    - [Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)的静态资源
     - Flash魔塔（原版、胖老鼠版、cos105hk版）
+  - BGM
     - [Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)的静态资源
     - 氷とサンゴのダンジョン 　　　　　　　　　　　  [[風来のシレン外伝 女剣士アスカ見参! (DC) ]](https://music.163.com/#/song?id=1397495802)
     - 廃坑 （断崖の風穴） 　　　　　　　　　　　　　[[風来のシレン2 鬼襲来!シレン城! (N64) ]](https://music.163.com/#/song?id=1397495784)
@@ -26,7 +28,8 @@
     - 邪神復活 　　　　　　　　　　　　　　　　　　&nbsp;[[Romancing SaGa Original Soundtrack -REMASTER- ]](https://y.qq.com/n/ryqq/albumDetail/000u4Skk1lvxqI)
     - ダンジョン2 　　　　　　　　　　　　　　　　 &nbsp;&nbsp;[[Romancing SaGa Original Soundtrack -REMASTER- ]](https://y.qq.com/n/ryqq/albumDetail/000u4Skk1lvxqI)
     - Dance with wind 　　　　　　　　　　　　　　 &nbsp;&nbsp;&nbsp;[[阿玛迪斯战记 游戏原声带]](https://music.163.com/#/album?id=3233573)
-- 注：以上的链接仅为能够搜索到的版本，并不代表资源的出处，若有侵权，请联系我删除。
+
+**注：以上的链接仅为能够搜索到的版本，并不代表资源的出处，若有侵权，请联系我删除。**
 
 ## 关于作者
 不瞒你们说，本人特别喜欢打游戏，也喜欢做一些奇奇怪怪的东西，例如脚本、**等。在校期间也希望完成一个比较有特色的毕业设计，也就有了本项目。限于本人当时水平，代码中存在部分的问题，但基本的游玩完全没有问题，现在开源出来供大家参考、借鉴，同时也欢迎大家向我反馈问题。
@@ -50,7 +53,7 @@
   - org.jogamp.gluegen　　　　　 (Java OpenGL)　 2.3.2
 
 ## 二、打包与运行
-注：若想要在开发环境运行，则运行main.Main即可。
+**注：若想要在开发环境运行，则运行main.Main即可。**
 
 ### 1.打包（以IDEA 2021.1为例）
 
@@ -84,6 +87,8 @@
 ### 3.运行（Linux环境）
 Linux需要有图形化桌面，否则无法运行，运行时在jar包的路径执行指令`java -jar MagicTower.jar`
 
-注意：运行请使用Java 1.8以上环境，Linux请使用Java 1.8_271以上版本，否则可能导致分数结算界面无法正常弹出。
+**注意：运行请使用Java 1.8以上环境，Linux请使用Java 1.8_271以上版本，否则可能导致分数结算界面无法正常弹出。**
+
+<br><br>
 
 未完待续...
