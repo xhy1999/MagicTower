@@ -85,25 +85,33 @@ public final class TowerPanel extends JPanel implements Runnable {
     JLabel showMesLabel;
     JLabel fpsLabel, showFpsLabel;
 
-    /**
-     * 帧数(每秒8帧)
-     */
+    //当前帧数 (每秒8帧)
     private byte frames = 0;
 
+    //游戏运行
     public static boolean running = false;
+    //玩家是否可以移动
     public static boolean canMove = true;
+    //按键监听器
     public static KeyInputHandler input;
+    //音频工具类
     public static MusicPlayer musicPlayer;
-    //TODO 正式版这里要改为 false
+    //TODO 是否可以使用楼层跳跃,正式版这里要改为 false
     public static boolean canUseFloorTransfer = false;
+    //是否可以查看怪物手册
     public static boolean canUseMonsterManual = true;
+    //特殊楼层 (若玩家处于特殊楼层,则使用这个变量记录当前所在楼层索引)
     public static String specialGameMapNo;
+    //结局
     public static byte end;
-    //TODO 正式版这里要改为 0
+    //TODO 当前所在楼层,正式版这里要改为 0
     public static int floor = 0;
 
+    //线程池
     public static ExecutorService mainExecutor;
+    //保存的魔塔
     private List<Tower> gameSave;
+    //当前魔塔
     private Tower tower;
 
     public static JFrame mainframe = new JFrame("魔塔v1.13  (复刻者:Vip、疯子)");
@@ -117,16 +125,22 @@ public final class TowerPanel extends JPanel implements Runnable {
         this.add(npcDialogPane);
         this.tower = tower;
         this.gameSave = new LinkedList<>();
+        //初始化线程池
         this.mainExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
                 1L, TimeUnit.SECONDS, new SynchronousQueue<>());
+        //初始化玩家位置
         this.tower.getPlayer().x = this.tower.getGameMapList().get(floor).upPositionX;
         this.tower.getPlayer().y = this.tower.getGameMapList().get(floor).upPositionY;
-        //TODO 正式版这里要改为 0
+        //TODO 初始化玩家到过的最高和最低楼层,正式版这里要改为 0
         this.tower.getPlayer().maxFloor = 0;
         this.tower.getPlayer().minFloor = 0;
+        //初始化音频
         musicPlayer = new MusicPlayer();
+        //播放当前楼层音频
         musicPlayer.playBackgroundMusic(floor);
+        //初始化人物方向
         DIRECTION = DIRECTION_UP;
+        //初始化按键监听器
         input = new KeyInputHandler(this);
 
         /********************UI部分********************/
@@ -158,8 +172,6 @@ public final class TowerPanel extends JPanel implements Runnable {
     public void start() {
         running = true;
         new Thread(this).start();
-        //audioPlayer = new AudioPlayer();
-        //audioPlayer.startBackgroundMusic(tower.getPlayer().floor);
     }
 
     @Override
@@ -178,7 +190,6 @@ public final class TowerPanel extends JPanel implements Runnable {
             needTick += (now - then) / nsPerTick;
             then = now;
             while (needTick >= 1) {
-                //tick++;
                 tick();
                 needTick--;
             }
@@ -192,12 +203,9 @@ public final class TowerPanel extends JPanel implements Runnable {
             if (System.currentTimeMillis() - fpsTimer > 125) {
                 playerPicLabel.setIcon(tower.getPlayer().getPlayerIcon()[1][frames % 4]);
                 if (frames == 7) {
-                    //System.out.printf("FPS:%d %n", fps);
-                    //System.out.printf("FPS:%d tick:%d %n", fps, tick);
                     showFpsLabel.setText(fps.toString());
                     frames = 0;
                     fps = 0;
-                    //tick = 0;
                 } else {
                     frames++;
                 }
@@ -379,12 +387,11 @@ public final class TowerPanel extends JPanel implements Runnable {
         }
     }
 
-    //开门时间
+    //开门时间(ms)
     private static final byte DOOR_OPEN_TIME = 40;
 
     /**
      * 判断能否移动到 (x,y)
-     *
      * @param x
      * @param y
      * @return
@@ -1014,8 +1021,8 @@ public final class TowerPanel extends JPanel implements Runnable {
      * 绘制地图
      */
     private static final byte INTERVAL_2 = 2;
+
     private void drawMap(Graphics g) {
-        //System.out.println("构造地图中..." + drawMapNo++);
         GameMap gameMap;
         if (isNormalFloor()) {
             gameMap = this.tower.getGameMapList().get(floor);
@@ -1105,7 +1112,6 @@ public final class TowerPanel extends JPanel implements Runnable {
 
     /**
      * 判断是否在普通法楼层
-     *
      * @return 如果在普通楼层, 则返回true;反之,则返回false
      */
     public static boolean isNormalFloor() {
