@@ -8,8 +8,14 @@
 游戏的主体框架已经搭建完成，其中，提供了比较多的扩展接口，大家可以轻松的在本项目的基础上完成自己的魔塔。
 
 ## 参考资料
-- 游戏主题的时间轴变化参考了[Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)的设计
-- 游戏主体中的窗体设计参考了[MagicTower](https://github.com/gdut-yy/MagicTower)的设计
+- [Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)
+- [MagicTower](https://github.com/gdut-yy/MagicTower)
+
+## 通关演示视频
+视频中的游戏版本较早,但地图设计上没有区别
+
+[【致童年】通关自己复刻的魔塔24层](https://www.bilibili.com/video/BV1PK4y1e7H7)
+
 
 ## 资源列表
 - 图片资源
@@ -87,8 +93,85 @@
 ### 3.运行（Linux环境）
 Linux需要有图形化桌面，否则无法运行，运行时在jar包的路径执行指令`java -jar MagicTower.jar`
 
-**注意：运行请使用Java 1.8以上环境，Linux请使用Java 1.8_271以上版本，否则可能导致分数结算界面无法正常弹出。**
+运行效果如下：
 
+<img src="readme-images/running-linux.jpg" style="zoom:60%">
+
+**注意：运行请使用Java 1.8以上环境，Linux请使用Java 1.8_271或以上版本，否则可能导致分数结算界面无法正常弹出。**
+
+## 三、游戏客户端主体设计
+以下为游戏的主要设计图（早期版本）
+
+<img src="readme-images/game-design-main.png" style="zoom:100%">
 <br><br>
 
+以下为游戏的主要类图（早期版本）
+
+<img src="readme-images/game-design-class.jpg" style="zoom:100%">
+<br><br>
+
+以下为游戏的启动加载图
+<img src="readme-images/game-loading.png" style="zoom:100%">
+<br><br>
+
+## 四、游戏客户端主要模块设计
+### (1).游戏动画效果与刷新率
+**注：此模块参考了[Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)的设计**
+
+Flash可以直接通过时间轴实现动画的效果，但Java不行，因此我在Java窗体绘制类中，增加一个"帧"的概念，即每过一定的时间，将当前的"帧"改变，
+
+例如：
+每过125ms将"帧"数加1，那么每秒将会有8"帧"，因此每个实体只要根据"帧"来显示即可。需要注意的是，这里“帧”的概念并不是我们熟悉的FPS(每秒传输帧数)，在这个游戏中，决定FPS的是电脑的性能，但是即使电脑的性能再高，肉眼也只能看到每秒8"帧"的变换。
+
+```java
+public void run() {
+    TITLE_HEIGHT = (int) (mainframe.getBounds().getSize().getHeight() - this.getSize().getHeight());
+    if (TITLE_HEIGHT != 35) {
+        mainframe.setSize(WINDOW_WIDTH, WINDOW_HEIGHT - 35 + TITLE_HEIGHT);
+    }
+    Short fps = 0;
+    double fpsTimer = System.currentTimeMillis();
+    //每隔100ms进行一次按键判断
+    double nsPerTick = 1000000000.0 / 10;
+    double then = System.nanoTime();
+    double needTick = 0;
+    while (running) {
+        double now = System.nanoTime();
+        needTick += (now - then) / nsPerTick;
+        then = now;
+        while (needTick >= 1) {
+            //进行一次按键判断
+            tick();
+            needTick--;
+        }
+        try {
+            //在此处控制FPS，sleep20ms，则1s最多刷新50次
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //告诉java让其执行绘制方法
+        repaint();
+        fps++;
+        if (System.currentTimeMillis() - fpsTimer > 125) {
+            playerPicLabel.setIcon(tower.getPlayer().getPlayerIcon()[1][frames % 4]);
+            if (frames == 7) {
+                //显示FPS
+                showFpsLabel.setText(fps.toString());
+                frames = 0;
+                fps = 0;
+            } else {
+                frames++;
+            }
+            fpsTimer += 125;
+        }
+    }
+    //游戏结束后执行的代码
+    end();
+}
+```
+
+
+
+<br><br>
 未完待续...
