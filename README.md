@@ -116,7 +116,7 @@ Linux需要有图形化桌面，否则无法运行，运行时在jar包的路径
 
 ## 四、游戏客户端主要模块设计
 ### (1).游戏动画效果与刷新率
-**注：此模块参考了[Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)的设计**
+**注：此模块参考了[Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)**
 
 Flash可以直接通过时间轴实现动画的效果，但Java不行，因此我在Java窗体绘制类中，增加一个"帧"的概念，即每过一定的时间，将当前的"帧"改变，
 
@@ -170,6 +170,48 @@ public void run() {
     end();
 }
 ```
+
+### (2).声音播放
+**注：此模块参考了[Java 播放 MP3](https://zhuanlan.zhihu.com/p/100460174)**
+
+JavaSoundAPI原生支持.wav .au .aiff 这些格式的音频文件，当然PCM文件也是可以直接播放的，如果是mp3，ogg，ape，flac则需要第三方jar包。我是通过获取MP3的PCM来播放MP3，这需要导入Google的一个jar包(com.googlecode.soundlibs)。
+
+在初始化类MusicPlayer时，会先声明一个线程池，也就是说大部分的音效将会通过线程池播放。播放详情见类Audio。
+
+### (3).按键监听器
+**注：此模块参考了[Tower-of-the-Deathmaster](https://github.com/jiminma50/Tower-of-the-Deathmaster)**
+
+若要实现胖老鼠魔塔或新新魔塔类似的按键监听器，则只要在主绘制类中实现KeyListener接口即可，而我个人比较偏向于间隔一段时间判断按键是否按下，这样可以显得不会太僵硬，因此我实现一个监听类(这个类实现了KeyListener接口)，在主绘制类中实例化，并在主线程中间隔一段时间(100ms)判断某按键是否被按下。
+
+### (4).地图绘制
+首先，根据楼层获取tower中此楼层对应的三个图层，循环每一行与每一列，以layer3、layer2、layer1的顺序获取并根据其中保存的id去寻找并绘制实体。
+
+### (5).事件脚本
+在与NPC或怪物对话前后往往会有部分判断或事件发生，考虑到这个事件可能会更改实体的属性，于是我将脚本写在了对应的实体类中，
+例如在第一次与仙子对话后：
+```java
+public void script_end(Tower tower) {
+  	//判断NPC的id
+    if (this.id.equals("npc01_1_1")) {
+        //各色钥匙数量+1
+        tower.getPlayer().yKey++;
+        tower.getPlayer().bKey++;
+        tower.getPlayer().rKey++;
+        //在左边一格显示新的仙子NPC
+        tower.getGameMapList().get(0).layer1[8][4] = "npc01_1_2";
+    }
+    …
+}
+```
+### (6).特殊楼层与楼层变换
+我将普通楼层放在了List中，将特殊楼层放在了Map中，这么做的原因如下：
+- 在胖老鼠的魔塔V1.12中，22层会有左右两个分支层，也都为22层，而我为了调整游戏难度，也将在第0层之前加入一个彩蛋层，但是这对于List来说会出现问题：`下标越界`、`特殊层的索引到底是多少`。
+
+因此我会将普通的0-23层存入List中，22层的左右分支和彩蛋层存入特殊楼层中，但是这又会出现神秘楼层传送的问题，因为它不能像普通楼层一样，直接加减楼层索引而实现楼层变换。
+
+解决方法：
+首先，在主绘制类中，有两个变量，分别代表普通楼层索引(`floor:int)`和特殊楼层名(`specialGameMapNo:String`)，当玩家在普通楼层时，floor的值为0-23，此时specialGameMapNo的值为null；反之，用户在特殊楼层时，floor的值为-1，specialGameMapNo的值不为null。当主绘制线程绘制游戏地图时，首先判断地图是普通地图还是特殊地图，然后再去对应的实体中获取地图进行绘制。
+
 
 
 
